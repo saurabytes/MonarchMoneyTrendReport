@@ -9,6 +9,7 @@ Listening to Bob Marley and the Whalers - The Capitol Sessions '73 🎶🪘
 **Unreleaased:**
 
 • FIXED: Corrected consistancy with "Difference" of zero being green.
+
 • NEW: Roll up totals for Income & Expenses.
 
 
