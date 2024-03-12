@@ -8,8 +8,8 @@ This past weekend I was able to learn JavaScript and write a program to do what 
 
 To use - On the Sankey Diagram:
 
-    Run the Sankey Diagram for a Compare Period you want ("Last Year" or say "1/1/2023 to 3/31/2023") and then press Trend Compare
-    Run the Sankey Diagram again for a new/current period you want ("This Year") and press Trend Report
+1. Run the Sankey Diagram for a Compare Period you want ("Last Year" or say "1/1/2023 to 3/31/2023") and then press Trend Compare
+2. Run the Sankey Diagram again for a new/current period you want ("This Year") and press Trend Report
 
 That's it.
 
