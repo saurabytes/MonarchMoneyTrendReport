@@ -21,6 +21,8 @@ I used the styles that were in MM so it looked the same, but I'm sure it will br
 
 The information is pulled not from a Query (graphql) and is really screen scraped - so it's really their data, just reformatted with some small tweaks. It would be great if MM could do something like this internally with their code so I can just remove this and not maintain it. But, again, this is written as a "band-aid" approach.
 
+This is JavaScript that I run using Tampermonkey.  TamperMonkey is available for Chrome, Microsoft Edge, Safari, Opera Next, and Firefox. (I use Firefox).
+
 I welcome any comments.
 
 Enjoy!
