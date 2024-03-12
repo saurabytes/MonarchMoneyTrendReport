@@ -15,9 +15,9 @@ That's it.
 
 Things I've learned along the way:
 
-    I used the styles that were in MM so it looked the same, but I'm sure it will break easily since styles are generated. If someone can give me the code to correct this, or at least look at the tags just at the beginning (ie: "TransactionsSummaryCard__ValueText*" it would probably be more stable between releases. (I'll keep it up-to-date at least this year and my MM runs out)
+I used the styles that were in MM so it looked the same, but I'm sure it will break easily since styles are generated. If someone can give me the code to correct this, or at least look at the tags just at the beginning (ie: "TransactionsSummaryCard__ValueText*" it would probably be more stable between releases. (I'll keep it up-to-date at least this year and my MM runs out)
 
-    "BOTH" Sankey does not work - only use Categories & Groups. I have not worked on it at all to work for "BOTH"
+"BOTH" Sankey does not work - only use Categories & Groups. I have not worked on it at all to work for "BOTH"
 
 The information is pulled not from a Query (graphql) and is really screen scraped - so it's really their data, just reformatted with some small tweaks. It would be great if MM could do something like this internally with their code so I can just remove this and not maintain it. But, again, this is written as a "band-aid" approach.
 
