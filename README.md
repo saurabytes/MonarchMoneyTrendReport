@@ -13,6 +13,8 @@ To use - On the Sankey Diagram:
 
 That's it.
 
+**Figures in GREEN are Good!   You made more, Green.  You spent less, Green.  You saved more, Green.**
+
 Things I've learned along the way:
 
 I used the styles that were in MM so it looked the same, but I'm sure it will break easily since styles are generated. If someone can give me the code to correct this, or at least look at the tags just at the beginning (ie: "TransactionsSummaryCard__ValueText*" it would probably be more stable between releases. (I'll keep it up-to-date at least this year and my MM runs out)
