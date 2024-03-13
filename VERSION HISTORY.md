@@ -1,9 +1,11 @@
 # MonarchMoneyTrendReport - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
-**Open Issues:**
+**Version 1.03:**
 
 • FIXED: Compared to month not in same format as Monarch Money (01 vs 1)
+
+• FIXED: Running comparisons consecutively would display incorrect data if the new period did not have that Income or Expense account.
 
 • NEW: Added column headers to "Copy to Clipboard" and formatted lines with indent.
 
