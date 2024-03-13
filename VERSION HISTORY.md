@@ -3,6 +3,10 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 **Open Issues:**
 
+• FIXED: Compared to month not in same format as Monarch Money (01 vs 1)
+
+• NEW: Added column headers to "Copy to Clipboard"
+
 
 **Version 1.02:**
 
