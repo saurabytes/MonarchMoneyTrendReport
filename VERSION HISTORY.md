@@ -5,7 +5,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 • FIXED: Compared to month not in same format as Monarch Money (01 vs 1)
 
-• NEW: Added column headers to "Copy to Clipboard"
+• NEW: Added column headers to "Copy to Clipboard" and formatted lines with indent.
 
 
 **Version 1.02:**
