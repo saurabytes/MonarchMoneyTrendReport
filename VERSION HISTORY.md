@@ -7,6 +7,8 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 • NEW: Added column headers to "Copy to Clipboard" and formatted lines with indent.
 
+• NEW: Ability to Compress report.
+
 
 **Version 1.02:**
 
