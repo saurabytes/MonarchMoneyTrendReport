@@ -1,8 +1,6 @@
 # MonarchMoneyTrendReport - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
-Listening to Bob Marley and the Whalers - The Capitol Sessions '73 🎶🪘
-
 **Open Issues:**
 
 
