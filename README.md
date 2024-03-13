@@ -4,7 +4,7 @@ Trend Report (Compare This Period/Last Period) for Monarch Money
 
 Being a former Mint User and needing a Trend Report bad, I decided to learn JavaScript and create one myself this past weekend. I use a Trend Report to simply pace my Total Savings comparing where I am this year to where I was last year same date (or really I use of of this month) "Should I tone it down or can I spend more" type of report. I'm able to just keep myself quickly on pace without the work of Goals or Budget setups, just go against last year how I want to throttle my spending & savings.
 
-This past weekend I was able to learn JavaScript and write a program to do what I needed it to do. I am not a JavaScript programmer so don't laugh at the code, my purpose was to make it do what I needed and I was. I added some extra work to have the same look and feel so I used the current styles for both Light & Dark Mode.
+This past weekend I was able to learn JavaScript and write a program to do what I needed. I am not a JavaScript programmer so don't laugh at the code. I added some extra work to have the same look and feel, so I used the current styles for both Light & Dark Mode.
 
 To use - On the Sankey Diagram:
 
@@ -21,9 +21,9 @@ I used the styles that were in MM so it looked the same, but I'm sure it will br
 
 "BOTH" Sankey does not work - only use Categories & Groups. I have not worked on it at all to work for "BOTH"
 
-The information is pulled not from a Query (graphql) and is really screen scraped - so it's really their data, just reformatted with some small tweaks. It would be great if MM could do something like this internally with their code so I can just remove this and not maintain it. But, again, this is written as a "band-aid" approach.
+The information is pulled not from a Query (graphql) and is really screen scraped - so it's really their data, just reformatted with some small tweaks. It would be great if MM could do something like this internally with their code so I can just remove this. But, again, this is written as a "band-aid" approach.
 
-This is JavaScript that I run using Tampermonkey.  TamperMonkey is available for Chrome, Microsoft Edge, Safari, Opera Next, and Firefox. (I use Firefox).
+This is JavaScript that I run using Tampermonkey.  Tampermonkey is available for Chrome, Microsoft Edge, Safari, Opera Next, and Firefox. (I use Firefox).
 
 I welcome any comments.
 
