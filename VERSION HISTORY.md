@@ -7,7 +7,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 • FIX: Running Report with no comparison would show "Undefined" in title.
 
-• FIX: Plus (+) sign in Compare might now show when exiting and returning back to Sankey.
+• FIX: Plus (+) sign in Compare might not show when exiting and returning back to Sankey.
 
 
 **Version 1.03:**
