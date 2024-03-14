@@ -1,7 +1,7 @@
 # MonarchMoneyTrendReport - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
-**Unreleased:**
+**Version 1.04:**
 
 • ADDED: Expand/Compress remembered between sessions.
 
