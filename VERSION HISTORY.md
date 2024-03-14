@@ -1,6 +1,15 @@
 # MonarchMoneyTrendReport - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
+**Unreleased:**
+
+• ADDED: Expand/Compress remembered between sessions.
+
+• FIX: Running Report with no comparison woudld show "Undefined" in title.
+
+• FIX: Plus (+) sign in Compare might now show when exiting and returning back to Sankey.
+
+
 **Version 1.03:**
 
 • FIXED: Compared to month not in same format as Monarch Money (01 vs 1)
