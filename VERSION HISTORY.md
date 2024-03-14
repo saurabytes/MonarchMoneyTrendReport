@@ -5,7 +5,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 • ADDED: Expand/Compress remembered between sessions.
 
-• FIX: Running Report with no comparison woudld show "Undefined" in title.
+• FIX: Running Report with no comparison would show "Undefined" in title.
 
 • FIX: Plus (+) sign in Compare might now show when exiting and returning back to Sankey.
 
