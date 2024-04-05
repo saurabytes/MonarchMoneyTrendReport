@@ -6,7 +6,7 @@
 // @author       Robert
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
-// @grant        none
+// @grant        GM_setClipboard
 // ==/UserScript==
 
 let r_Init = false;
@@ -55,9 +55,9 @@ function Sankey_Trends(InExec) {
             Trend_ClearCurrent();
             Trend_BuildReport(2);
             Trend_BreakdownReport();
-            Sankey_HideChartControls();
-            Sankey_HideTrendControls(false);
-            Sankey_UnHideTrendControls();
+            Sankey_UpdateChartControls("none");
+            Sankey_UpdateTrendControls("none","inline");
+            Sankey_ExpandText();
             TrendActive = true;
             break;
     }
@@ -276,22 +276,6 @@ function Sankey_Trends(InExec) {
         alert('Trend Report Comparison Loaded:\n\nStart Date: ' + TrendStartP + '\n\nEnd Date: ' + TrendEndP + '\n\nSelect another period and run Trend Report.');
     }
 
-    // not used, but sets date range to exact period last year for single click run (does not work)
-    function Trend_SetPast() {
-        const element=document.getElementById('date-picker-input--start');
-        let Start_Date = element.getAttribute("value").trim();
-        const element2=document.getElementById('date-picker-input--end');
-        let End_Date = element2.getAttribute("value").trim();
-        if(Start_Date != null && End_Date != null) {
-            const d = new Date();
-            let End_Year = d.getFullYear();
-            let New_Start = '01/01/' + End_Year;
-            let New_End = '12/31/' + End_Year;
-            element.value = New_Start;
-            element2.value = New_End;
-        }
-    }
-
     function Trend_UpdateQueue(InAnchor,InDesc,InAmount,InCuramount) {
         let update=false;
         for (let i = 0; i < TrendQueue.length; i++) {
@@ -393,64 +377,37 @@ function Sankey_UnhideTrends() {
             Sankey_Trends(2);
         });
     } else {
-        TrendButtonA = document.querySelector('div.ReportsChartCardControls__Root-sc-1w5c9v1-0');
-        if(TrendButtonA != null) {
-            TrendButtonA.style.display = "";
-        }
-        TrendButtonN = document.querySelector('button.TrendButtonN');
-        if(TrendButtonN != null) {
-            TrendButtonN.style.display = 'none';
-        }
-        TrendButtonE = document.querySelector('button.TrendButtonE');
-        if(TrendButtonE != null) {
-            TrendButtonE.style.display = 'none';
-        }
-        if(TrendButtonP != null) { TrendButtonP.style.display = ""; }
-        if(TrendButton != null) { TrendButton.style.display = ""; }
+        Sankey_UpdateChartControls("");
+        Sankey_UpdateTrendControls("inline","none")
     }
     let elements2 = document.querySelector('span.CardTitle-sc-1yuvwox-0');
-    if(elements2 != null) {
-        elements2.innerHTML = 'SANKEY DIAGRAM';
-    }
+    if(elements2 != null) { elements2.innerHTML = 'SANKEY DIAGRAM'; }
 }
 
 function Sankey_ShowTrends() {
 
     ShareButton = document.querySelector('div.ReportsChartCardControls__ButtonGroup-sc-1w5c9v1-1');
-
     // Unhide or try again if failed
     if(ShareButton) {
         Sankey_UnhideTrends();
     } else { SaveLocationPathName = ""; }
 }
 
-function Sankey_UnhideChartControls() {
+function Sankey_UpdateChartControls(DisplayType) {
     TrendButtonA = document.querySelector('div.ReportsChartCardControls__Root-sc-1w5c9v1-0');
-    if(TrendButtonA != null) { TrendButtonA.style.display = ""; }
+    if(TrendButtonA != null) { TrendButtonA.style.display = DisplayType; }
 }
 
-function Sankey_HideChartControls() {
-    TrendButtonA = document.querySelector('div.ReportsChartCardControls__Root-sc-1w5c9v1-0');
-    if(TrendButtonA != null) { TrendButtonA.style.display = "none"; }
-}
+function Sankey_UpdateTrendControls(InReport,InControls) {
 
-function Sankey_HideTrendControls(IncludeReport) {
+    TrendButtonN = document.querySelector('button.TrendButtonN');
+    if(TrendButtonN != null) { TrendButtonN.style.display = InControls; }
+    TrendButtonE = document.querySelector('button.TrendButtonE');
+    if(TrendButtonE != null) { TrendButtonE.style.display = InControls; }
 
-    if(TrendButtonN != null) { TrendButtonN.style.display = "none"; }
-    if(TrendButtonE != null) { TrendButtonE.style.display = "none"; }
-    if(IncludeReport == true) {
-        if(TrendButtonP != null) { TrendButtonP.style.display = "none"; }
-        if(TrendButton != null) { TrendButton.style.display = "none"; }
-    }
-}
+    if(TrendButtonP != null) { TrendButtonP.style.display = InReport; }
+    if(TrendButton != null) { TrendButton.style.display = InReport; }
 
-function Sankey_UnHideTrendControls() {
-
-    if(TrendButtonN != null) { TrendButtonN.style.display = "inline"; }
-    if(TrendButtonE != null) {
-        TrendButtonE.style.display = "inline";
-        Sankey_ExpandText();
-    }
 }
 
 function Sankey_ExpandText() {
@@ -485,13 +442,9 @@ function Sankey_FlexItems(InRemove,InStyle) {
 
 function Sankey_ToClipboard() {
 
-    if (navigator.clipboard == undefined) {
-        alert('Clipboard permissions for "navigator.clipboard.writeText" is not available in your browser.');
-    } else
-    {
-        navigator.clipboard.writeText(TrendClipboard);
-        alert('Trend Report data copied to Clipboard!');
-    }
+    GM_setClipboard (TrendClipboard);
+    alert('Trend Report data copied to Clipboard!');
+
 }
 
 function Sankey_LoadStyles() {
@@ -548,15 +501,15 @@ function getCookie(cname) {
         }
         if(TrendActive == true) {
             if(document.querySelector('div.SankeyDiagram__Root-y9ipuy-0') != null) {
-                Sankey_HideTrendControls(false);
+                Sankey_UpdateTrendControls("inline","none");
                 Sankey_UnhideTrends();
             }
         }
         if(window.location.pathname != SaveLocationPathName) {
             TrendActive = false;
             if(SaveLocationPathName == '/reports/sankey') {
-                Sankey_UnhideChartControls();
-                Sankey_HideTrendControls(true);
+                Sankey_UpdateChartControls("");
+                Sankey_UpdateTrendControls("none","none");
             }
 
             SaveLocationPathName = window.location.pathname;
