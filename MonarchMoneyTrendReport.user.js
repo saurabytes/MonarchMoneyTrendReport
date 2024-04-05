@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MonarchMoneyTrendReport
 // @namespace    http://tampermonkey.net/
-// @version      1.04
+// @version      1.05
 // @description  Enhance Sankey information into Trend format
 // @author       Robert
 // @match        https://app.monarchmoney.com/*
@@ -55,8 +55,9 @@ function Sankey_Trends(InExec) {
             Trend_ClearCurrent();
             Trend_BuildReport(2);
             Trend_BreakdownReport();
-            Sankey_HideTrends();
-            Sankey_UnhideClipboard();
+            Sankey_HideChartControls();
+            Sankey_HideTrendControls(false);
+            Sankey_UnHideTrendControls();
             TrendActive = true;
             break;
     }
@@ -404,23 +405,12 @@ function Sankey_UnhideTrends() {
         if(TrendButtonE != null) {
             TrendButtonE.style.display = 'none';
         }
+        if(TrendButtonP != null) { TrendButtonP.style.display = ""; }
+        if(TrendButton != null) { TrendButton.style.display = ""; }
     }
     let elements2 = document.querySelector('span.CardTitle-sc-1yuvwox-0');
     if(elements2 != null) {
         elements2.innerHTML = 'SANKEY DIAGRAM';
-    }
-}
-
-function Sankey_HideTrends() {
-    TrendButtonA = document.querySelector('div.ReportsChartCardControls__Root-sc-1w5c9v1-0');
-    if(TrendButtonA != null) {
-        TrendButtonA.style.display = "none";
-    }
-    if(TrendButtonN != null) {
-        TrendButtonN.style.display = "none";
-    }
-    if(TrendButtonE != null) {
-        TrendButtonE.style.display = "none";
     }
 }
 
@@ -434,11 +424,29 @@ function Sankey_ShowTrends() {
     } else { SaveLocationPathName = ""; }
 }
 
-function Sankey_UnhideClipboard() {
+function Sankey_UnhideChartControls() {
+    TrendButtonA = document.querySelector('div.ReportsChartCardControls__Root-sc-1w5c9v1-0');
+    if(TrendButtonA != null) { TrendButtonA.style.display = ""; }
+}
 
-    if(TrendButtonN != null) {
-        TrendButtonN.style.display = "inline";
+function Sankey_HideChartControls() {
+    TrendButtonA = document.querySelector('div.ReportsChartCardControls__Root-sc-1w5c9v1-0');
+    if(TrendButtonA != null) { TrendButtonA.style.display = "none"; }
+}
+
+function Sankey_HideTrendControls(IncludeReport) {
+
+    if(TrendButtonN != null) { TrendButtonN.style.display = "none"; }
+    if(TrendButtonE != null) { TrendButtonE.style.display = "none"; }
+    if(IncludeReport == true) {
+        if(TrendButtonP != null) { TrendButtonP.style.display = "none"; }
+        if(TrendButton != null) { TrendButton.style.display = "none"; }
     }
+}
+
+function Sankey_UnHideTrendControls() {
+
+    if(TrendButtonN != null) { TrendButtonN.style.display = "inline"; }
     if(TrendButtonE != null) {
         TrendButtonE.style.display = "inline";
         Sankey_ExpandText();
@@ -489,33 +497,19 @@ function Sankey_ToClipboard() {
 function Sankey_LoadStyles() {
 
     let element=document.querySelector('div.Grid__GridItem-s9hcqo-1');
-    if(element) {
-        css_table0 = 'Trend_' + element.className;
-    }
+    if(element) { css_table0 = 'Trend_' + element.className; }
     element=document.querySelector('div.Card__CardRoot-sc-1pcxvk9-0');
-    if(element) {
-        css_table1 = 'Trend_' + element.className;
-    }
+    if(element) { css_table1 = 'Trend_' + element.className; }
     element=document.querySelector('div.CardHeader__Root-r0eoe3-0');
-    if(element) {
-        css_table2 = 'Trend_' + element.className;
-    }
+    if(element) { css_table2 = 'Trend_' + element.className; }
     element=document.querySelector('div.TransactionsSummaryCard__CardInner-sc-10q11ba-1');
-    if(element) {
-        css_grid = 'TrendGrid ' + element.className;
-    }
+    if(element) { css_grid = 'TrendGrid ' + element.className; }
     element=document.querySelector('div.TransactionsSummaryCard__CardItem-sc-10q11ba-0');
-    if(element) {
-        css_items = 'Trend_' + element.className;
-    }
+    if(element) { css_items = 'Trend_' + element.className; }
     element=document.querySelector('div.CardHeader__Title-r0eoe3-1');
-    if(element) {
-        css_itemsB = 'Trend_' + element.className;
-    }
+    if(element) { css_itemsB = 'Trend_' + element.className; }
     element=document.querySelector('span.TransactionsSummaryCard__ValueText-sc-10q11ba-7');
-    if(element) {
-        css_itemsD = 'TrendItem_' + element.className;
-    }
+    if(element) { css_itemsD = 'TrendItem_' + element.className; }
 }
 
 function Init() {
@@ -541,7 +535,6 @@ function getCookie(cname) {
             c = c.substring(1);
         }
         if (c.indexOf(name) == 0) {
-            console.log(ca);
             return c.substring(name.length, c.length);
         }
     }
@@ -553,10 +546,17 @@ function getCookie(cname) {
         if(r_Init == false) {
             Init();
         }
+        if(TrendActive == true) {
+            if(document.querySelector('div.SankeyDiagram__Root-y9ipuy-0') != null) {
+                Sankey_HideTrendControls(false);
+                Sankey_UnhideTrends();
+            }
+        }
         if(window.location.pathname != SaveLocationPathName) {
             TrendActive = false;
             if(SaveLocationPathName == '/reports/sankey') {
-                Sankey_HideTrends();
+                Sankey_UnhideChartControls();
+                Sankey_HideTrendControls(true);
             }
 
             SaveLocationPathName = window.location.pathname;
@@ -566,11 +566,5 @@ function getCookie(cname) {
                 Sankey_ShowTrends();
             }
         }
-        if(TrendActive == true) {
-            if(document.querySelector('div.SankeyDiagram__Root-y9ipuy-0') != null) {
-                Sankey_UnhideTrends();
-            }
-        }
-
     },500);
 }());
