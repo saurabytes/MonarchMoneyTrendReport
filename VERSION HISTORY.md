@@ -1,6 +1,14 @@
 # MonarchMoneyTrendReport - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
+
+**Version 1.05:**
+
+• FIX: Sometimes button controls would disappear for Income & Spending after Trend Report
+
+• FIX: Console Log removed.
+
+
 **Version 1.04:**
 
 • ADDED: Expand/Compress remembered between sessions.
