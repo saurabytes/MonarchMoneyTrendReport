@@ -2,6 +2,11 @@
 Here are a list of Open Issues, Unreleased changes and past changes:
 
 
+
+**Version 1.06:**
+
+• UPDATE: New MM Calendar caused dates to not be extracted properly. 
+
 **Version 1.05:**
 
 • FIX: Sometimes button controls would disappear for Income & Spending after Trend Report
