@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MonarchMoneyTrendReport
 // @namespace    http://tampermonkey.net/
-// @version      1.05
+// @version      1.06
 // @description  Enhance Sankey information into Trend format
 // @author       Robert
 // @match        https://app.monarchmoney.com/*
@@ -267,11 +267,21 @@ function Sankey_Trends(InExec) {
         return el;
     }
 
+    function Trend_DeformatDate(InDate) {
+        const de = InDate.split(' ');
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        de[0] = months.indexOf(de[0]) + 1;
+        de[0] = ("0" + de[0]).slice(-2);
+        de[1] = de[1].replace(',','');
+        de[1] = ("0" + de[1]).slice(-2);
+        return de[0] + '/' + de[1] + '/' + de[2];
+    }
+
     function Trend_SetButton() {
-        const element=document.getElementById('date-picker-input--start');
-        TrendStartP = element.getAttribute("value").trim();
-        const element2=document.getElementById('date-picker-input--end');
-        TrendEndP = element2.getAttribute("value").trim();
+        const element = document.querySelector('span.ReportsChartCard__Subtitle-fyfjt8-1');
+        let mmDatesA = element.innerText.split(" - ");
+        TrendStartP = Trend_DeformatDate(mmDatesA[0]);
+        TrendEndP = Trend_DeformatDate(mmDatesA[1]);
         TrendButtonP.textContent = "Trend Compare +";
         alert('Trend Report Comparison Loaded:\n\nStart Date: ' + TrendStartP + '\n\nEnd Date: ' + TrendEndP + '\n\nSelect another period and run Trend Report.');
     }
