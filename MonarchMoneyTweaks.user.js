@@ -31,7 +31,7 @@ function MM_removeElements(InList) {
     for (const selector of InList) {
         const elements = document.querySelectorAll(selector);
         for (const el of elements) {
-            el.style.display = "none"
+            el.style.display = "none";
         }
     };
 }
@@ -40,7 +40,7 @@ function MenuReports(OnFocus) {
 
     if (SaveLocationPathName.substring(0,9) == '/reports/') {
         if(OnFocus == true) {
-            
+
         }
     }
 }
@@ -49,7 +49,7 @@ function MenuDisplay(OnFocus) {
 
     if (SaveLocationPathName.substring(0,17) == '/settings/display') {
         if(OnFocus == false) {
-           // r_Init = false;
+            r_Init = false;
         }
         if(OnFocus == true) {
             MM_CreateCheckbox('Hide Monarch Ads','MT_Ads');
@@ -67,7 +67,6 @@ function MM_CreateCheckbox(inValue,inCookie) {
    let qs = document.querySelector('.FormItemContainer__Root-j5b8rt-0');
    let e1 = document.createElement('div');
     e1.style = "font-size: 14px; margin:9px;";
-    //e1.innerText = inValue;
     qs.after(e1);
 
     let OldValue = getCookie(inCookie);
@@ -135,5 +134,5 @@ function getCookie(cname) {
             MenuDisplay(true);
         }
 
-    },500);
+    },100);
 }());
