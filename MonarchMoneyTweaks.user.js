@@ -10,18 +10,17 @@
 // ==/UserScript==
 
 let r_Init = false;
-let r_Display = false;
 let SaveLocationPathName = "";
 
 function Init() {
 
     let remove_list = [];
-    if (getCookie('MT_Ads') == true) { remove_list.push("[href~='/settings/referrals']"); };
-    if (getCookie('MT_Advice') == true) { remove_list.push("[href~='/advice']"); };
-    if (getCookie('MT_Investments') == true) { remove_list.push("[href~='/investments']"); };
-    if (getCookie('MT_Goals') == true) { remove_list.push("[href~='/objectives']"); };
-    if (getCookie('MT_Recurring') == true) { remove_list.push("[href~='/recurring']"); };
-    if (getCookie('MT_Budget') == true) { remove_list.push("[href~='/plan']"); };
+    if (getCookie('MT_Ads') == 1) { remove_list.push("[href~='/settings/referrals']"); };
+    if (getCookie('MT_Advice') == 1) { remove_list.push("[href~='/advice']"); };
+    if (getCookie('MT_Investments') == 1) { remove_list.push("[href~='/investments']"); };
+    if (getCookie('MT_Goals') == 1) { remove_list.push("[href~='/objectives']"); };
+    if (getCookie('MT_Recurring') == 1) { remove_list.push("[href~='/recurring']"); };
+    if (getCookie('MT_Budget') == 1) { remove_list.push("[href~='/plan']"); };
     MM_removeElements(remove_list);
 
 }
@@ -39,8 +38,9 @@ function MM_removeElements(InList) {
 function MenuReports(OnFocus) {
 
     if (SaveLocationPathName.substring(0,9) == '/reports/') {
+        if(OnFocus == false) {
+        }
         if(OnFocus == true) {
-
         }
     }
 }
@@ -65,22 +65,23 @@ function MenuDisplay(OnFocus) {
 function MM_CreateCheckbox(inValue,inCookie) {
 
    let qs = document.querySelector('.FormItemContainer__Root-j5b8rt-0');
-   let e1 = document.createElement('div');
-    e1.style = "font-size: 14px; margin:9px;";
-    qs.after(e1);
+   if(qs != null) {
+       let e1 = document.createElement('div');
+       e1.style = "font-size: 14px; margin: 9px;";
+       qs.after(e1);
 
-    let OldValue = getCookie(inCookie);
-    let e2 = document.createElement('input');
-    e2.type = 'checkbox';
-    e2.style = "position: relative;width: 20px;height: 20px;min-width: 20px;; margin:9px;";
-    if(OldValue == 1) {e2.checked = 'checked'};
-    e1.appendChild(e2);
-    e2.addEventListener('click', () => {
-        MM_FlipCookie(inCookie);
-   });
-
-    var text = document.createTextNode(inValue);
-    e2.parentNode.insertBefore(text, e2.nextSibling)
+       let OldValue = getCookie(inCookie);
+       let e2 = document.createElement('input');
+       e2.type = 'checkbox';
+       e2.style = "position: relative;width: 20px;height: 20px;min-width: 20px; margin:9px;";
+       if(OldValue == 1) {e2.checked = 'checked'};
+       e1.appendChild(e2);
+       e2.addEventListener('click', () => {
+           MM_FlipCookie(inCookie);
+       });
+       var text = document.createTextNode(inValue);
+       e2.parentNode.insertBefore(text, e2.nextSibling)
+   }
 
 }
 
@@ -123,13 +124,13 @@ function getCookie(cname) {
         }
 
         if(window.location.pathname != SaveLocationPathName) {
-            // Before Window Change
+            // Lose Focus on a page
             MenuReports(false);
             MenuDisplay(false);
 
             SaveLocationPathName = window.location.pathname;
 
-            // After Window Change
+            // Gain Focus on a Page
             MenuReports(true);
             MenuDisplay(true);
         }
