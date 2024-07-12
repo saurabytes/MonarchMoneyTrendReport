@@ -1,28 +1,24 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Monarch Tweaks
 // @author       Robert
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
-// @grant        GM_addStyle
 // ==/UserScript==
 
 let r_Init = false;
 let SaveLocationPathName = "";
 
-function Init() {
+function MM_Init() {
 
-    let remove_list = [];
-    if (getCookie('MT_Ads') == 1) { remove_list.push("[href~='/settings/referrals']"); };
-    if (getCookie('MT_Advice') == 1) { remove_list.push("[href~='/advice']"); };
-    if (getCookie('MT_Investments') == 1) { remove_list.push("[href~='/investments']"); };
-    if (getCookie('MT_Goals') == 1) { remove_list.push("[href~='/objectives']"); };
-    if (getCookie('MT_Recurring') == 1) { remove_list.push("[href~='/recurring']"); };
-    if (getCookie('MT_Budget') == 1) { remove_list.push("[href~='/plan']"); };
-    MM_removeElements(remove_list);
-
+    MM_removeElement("[href~='/settings/referrals']",getCookie('MT_Ads'));
+    MM_removeElement("[href~='/advice']",getCookie('MT_Advice'));
+    MM_removeElement("[href~='/investments']",getCookie('MT_Investments'));
+    MM_removeElement("[href~='/objectives']",getCookie('MT_Goals'));
+    MM_removeElement("[href~='/recurring']",getCookie('MT_Recurring'));
+    MM_removeElement("[href~='/plan']",getCookie('MT_Budget'));
 }
 
 function MM_removeElements(InList) {
@@ -30,9 +26,17 @@ function MM_removeElements(InList) {
     for (const selector of InList) {
         const elements = document.querySelectorAll(selector);
         for (const el of elements) {
-            el.style.display = "none";
+            el.style.display = '';
         }
     };
+}
+
+function MM_removeElement(InList,InValue) {
+
+    const elements = document.querySelectorAll(InList);
+    for (const el of elements) {
+        if(InValue == 1) {el.style.display = 'none'} else {el.style.display = ''};
+    }
 }
 
 function MenuReports(OnFocus) {
@@ -49,7 +53,7 @@ function MenuDisplay(OnFocus) {
 
     if (SaveLocationPathName.substring(0,17) == '/settings/display') {
         if(OnFocus == false) {
-            r_Init = false;
+
         }
         if(OnFocus == true) {
             MM_CreateCheckbox('Hide Monarch Ads','MT_Ads');
@@ -95,7 +99,7 @@ function MM_FlipCookie(inCookie) {
 
 function setCookie(cname, cvalue) {
 
-    document.cookie = cname + "=" + cvalue + ";" ;
+    document.cookie = cname + "=" + cvalue + ";expires=Fri, 31 Dec 9999 23:59:59 GMT;" ;
 }
 
 
@@ -119,7 +123,7 @@ function getCookie(cname) {
     setInterval(() => {
 
         if(r_Init == false) {
-            Init();
+            MM_Init();
             r_Init = true;
         }
 
@@ -135,5 +139,5 @@ function getCookie(cname) {
             MenuDisplay(true);
         }
 
-    },100);
+    },150);
 }());
