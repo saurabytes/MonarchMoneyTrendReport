@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.01
 // @description  Monarch Tweaks
 // @author       Robert
 // @match        https://app.monarchmoney.com/*
