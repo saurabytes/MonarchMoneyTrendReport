@@ -1,7 +1,16 @@
-# MonarchMoneyTrendReport - Version History
+# MonarchMoneyTweaks - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
+**Version 1.01:**
 
+• UPDATE: More efficient 
+• FIX: Cookies would expire 
+• UPDATE: Checkboxes will now update automatically for both turning on and off 
+
+
+
+# MonarchMoneyTrendReport - Version History
+Here are a list of Open Issues, Unreleased changes and past changes:
 
 **Version 1.06:**
 
