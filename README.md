@@ -1,10 +1,10 @@
-# MonarchMoneyTweaks
+# Monarch Money Tweaks
 Tweaks for Monarch Money
 
 Ability to turn ON/OFF menu items.
 
 
-# MonarchMoneyTrendReport
+# Monarch Money Trend Report
 Trend Report (Compare This Period/Last Period) for Monarch Money
 
 
