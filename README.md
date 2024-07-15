@@ -23,8 +23,6 @@ That's it.
 
 Things I've learned along the way:
 
-I used the styles that were in MM so it looked the same.
-
 "BOTH" Sankey does not work - only use Categories & Groups. I have not worked on it at all to work for "BOTH"
 
 The information is pulled not from a Query (graphql) and is really screen scraped - so it's really their data, just reformatted with some small tweaks. 
