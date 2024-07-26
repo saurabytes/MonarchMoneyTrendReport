@@ -1,9 +1,9 @@
 # Monarch Money Tweaks
 Tweaks for Monarch Money
 
-Ability to turn ON/OFF menu items.
+* Ability to turn ON/OFF menu items.
 
-Abilily to turn off Report Difference ToolTips
+* Abilily to turn off Report Difference ToolTips
 
 
 # Monarch Money Trend Report
