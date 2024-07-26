@@ -3,6 +3,8 @@ Tweaks for Monarch Money
 
 Ability to turn ON/OFF menu items.
 
+Abilily to turn off Report Difference ToolTips
+
 
 # Monarch Money Trend Report
 Trend Report (Compare This Period/Last Period) for Monarch Money
