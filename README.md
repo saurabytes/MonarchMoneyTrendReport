@@ -3,9 +3,9 @@ Tweaks for Monarch Money
 
 * Ability to turn ON/OFF menu items.
 
-* Ability to turn off Report Difference ToolTips
+* Ability to hide Report Tooltip Difference 
 
-* Ability to hide Create Rule ToolTip for always appearing
+* Ability to hide Hide Create Rule Tooltip
 
 
 # Monarch Money Trend Report
