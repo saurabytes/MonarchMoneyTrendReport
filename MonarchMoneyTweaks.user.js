@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.02
+// @version      1.03
 // @description  Monarch Tweaks
 // @author       Robert
 // @match        https://app.monarchmoney.com/*
@@ -10,6 +10,7 @@
 
 let r_Init = false;
 let r_Tips = 0;
+let r_Toaster = 0;
 let SaveLocationPathName = "";
 
 function MM_Init() {
@@ -21,6 +22,7 @@ function MM_Init() {
     MM_removeElement("[href~='/recurring']",getCookie('MT_Recurring'));
     MM_removeElement("[href~='/plan']",getCookie('MT_Budget'));
     r_Tips = getCookie("MT_HideTipDiff");
+    r_Toaster = getCookie("MT_HideToaster");
 }
 
 function MM_removeElements(InList,InValue) {
@@ -49,7 +51,7 @@ function MenuReports(OnFocus) {
         if(OnFocus == true) {
         }
         if(OnFocus == 2 && r_Tips == 1) {
-            MM_removeElement("div.ReportsTooltipRow__Diff-k9pa1b-3",1);
+            MM_removeElement("div.ReportsTooltipRow__Diff-k9pa1b-3","none");
         }
     }
 }
@@ -61,6 +63,7 @@ function MenuDisplay(OnFocus) {
 
         }
         if(OnFocus == true) {
+            MM_CreateCheckbox('Hide Create Rule Tooltip','MT_HideToaster');
             MM_CreateCheckbox('Hide Report Tooltip Difference','MT_HideTipDiff');
             MM_CreateCheckbox('Hide Monarch Ads','MT_Ads');
             MM_CreateCheckbox('Hide Advice','MT_Advice');
@@ -145,5 +148,8 @@ function getCookie(cname) {
             MenuDisplay(true);
         }
         MenuReports(2);
-    },100);
+        if(r_Toaster == 1) {
+            MM_removeElement('div.Toast__Root-sc-1mbc5m5-0',1);
+        }
+    },50);
 }());
