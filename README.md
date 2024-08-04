@@ -5,6 +5,8 @@ Tweaks for Monarch Money
 
 * Ability to turn off Report Difference ToolTips
 
+* Ability to hide Create Rule ToolTip for always appearing
+
 
 # Monarch Money Trend Report
 Trend Report (Compare This Period/Last Period) for Monarch Money
