@@ -1,13 +1,17 @@
 # MonarchMoneyTweaks - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
-**Version 1.01:**
+**Versions 1.01 - 1.03:**
 
 • UPDATE: More efficient 
 
 • FIX: Cookies would expire 
 
 • UPDATE: Checkboxes will now update automatically for both turning on and off 
+
+• New: Ability to Hide Report Tooltip Difference
+
+• New: Ability to Hide Hide Create Rule Tooltip
 
 
 
