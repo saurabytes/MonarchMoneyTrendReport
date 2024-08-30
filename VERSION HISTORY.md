@@ -18,6 +18,10 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 # MonarchMoneyTrendReport - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
+**Version 1.07:**
+
+• UPDATE: Trend buttons stopped working (div tag change). 
+
 **Version 1.06:**
 
 • UPDATE: New MM Calendar caused dates to not be extracted properly. 
