@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MonarchMoneyTrendReport
 // @namespace    http://tampermonkey.net/
-// @version      1.06
+// @version      1.07
 // @description  Enhance Sankey information into Trend format
 // @author       Robert
 // @match        https://app.monarchmoney.com/*
@@ -396,7 +396,7 @@ function Sankey_UnhideTrends() {
 
 function Sankey_ShowTrends() {
 
-    ShareButton = document.querySelector('div.ReportsChartCardControls__ButtonGroup-sc-1w5c9v1-1');
+    ShareButton = document.querySelector('div.ButtonGroup-sc-1eyv34j-0');
     // Unhide or try again if failed
     if(ShareButton) {
         Sankey_UnhideTrends();
