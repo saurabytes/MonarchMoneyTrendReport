@@ -1,6 +1,13 @@
 # MonarchMoneyTweaks - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
+**Versions 1.04:**
+
+• UPDATE: Efficient saving of Display menu options as they may be lost
+
+• NEW: New Save/Restore filters on Reports page
+
+
 **Versions 1.01 - 1.03:**
 
 • UPDATE: More efficient 
