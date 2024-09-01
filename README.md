@@ -7,7 +7,7 @@ Tweaks for Monarch Money
 
 * Ability to hide Report Tooltip Difference 
 
-* Ability to hide Hide Create Rule Tooltip
+* Ability to Hide Create Rule Tooltip
 
 
 # Monarch Money Trend Report
