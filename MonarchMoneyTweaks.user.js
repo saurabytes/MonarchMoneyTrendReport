@@ -40,7 +40,7 @@ function MM_Init() {
     GM_addStyle('.dropbtn {background-color: ' + a1 + ' padding: 12px; font-size: 12px; border: none; cursor: pointer;}');
     GM_addStyle('.dropbtn:hover, .dropbtn:focus {  background-color: ' + a3 + '}');
     GM_addStyle('.dropdown {  float: right;  position: relative;  display: inline-block;}');
-    GM_addStyle('.dropdown-content div {font-size: 0px; line-height: 4px; color: #ff7369; background-color: #ff7369;}');
+    GM_addStyle('.dropdown-content div {font-size: 0px; line-height: 3px; color: #ff7369; background-color: #ff7369;}');
     GM_addStyle('.dropdown-content {background-color: ' + a2 + ' display: none; position: absolute; min-width: 220px; overflow: auto; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0;  z-index: 1;}');
     GM_addStyle('.dropdown-content a {background-color: ' + a2 + ' font-weight: normal; font-style: normal; font-size: 15px;font-family: "Graphik", sans-serif; padding: 8px 8px; text-decoration: none; display: block;}');
     GM_addStyle('.dropdown a:hover {background-color: ' + a3 + ' }');
