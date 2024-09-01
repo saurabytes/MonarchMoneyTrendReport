@@ -1,6 +1,8 @@
 # Monarch Money Tweaks
 Tweaks for Monarch Money
 
+* Ability to Save and Restore Report Filters
+* 
 * Ability to turn ON/OFF menu items.
 
 * Ability to hide Report Tooltip Difference 
