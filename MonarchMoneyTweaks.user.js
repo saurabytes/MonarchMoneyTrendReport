@@ -216,12 +216,15 @@ function MenuFilter_Save(cn) {
     let NewReport = cn;
     if(NewReport == '') {
         NewReport = window.prompt('Name of Dataset');
+    } else {
+        NewReport = NewReport.substring(4)
     }
+
     if(NewReport != null && NewReport != "") {
         NewReport = NewReport.trim()
         const storedStr = localStorage.getItem('persist:reports');
         setCookie('MTF_' + NewReport, storedStr);
-        setCookie('MT_LastFilter','MTF_' + NewReport);
+        setCookie('MT_LastFilter', 'MTF_' + NewReport);
         alert('Filter Saved as "' + NewReport + '"');
     }
 }
