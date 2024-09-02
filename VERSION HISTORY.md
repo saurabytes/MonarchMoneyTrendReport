@@ -1,4 +1,4 @@
-# MonarchMoneyTweaks - Version History
+# Monarch Money Tweaks - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
 **Versions 1.05:**
@@ -29,7 +29,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 
 
-# MonarchMoneyTrendReport - Version History
+# Monarch Money Trend Report - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
 **Version 1.07:**
