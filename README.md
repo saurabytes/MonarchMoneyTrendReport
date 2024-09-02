@@ -16,8 +16,6 @@ Trend Report (Compare This Period/Last Period) for Monarch Money
 
 Being a former Mint User and needing a Trend Report bad, I decided to learn JavaScript and create one myself this past weekend. I use a Trend Report to simply pace my Total Savings comparing where I am this year (end of month) to where I was last year (end of month) - "Should I tone it down or can I spend more" type of report. I'm able to just keep myself quickly on pace without the work of Goals or Budget setups, just go against last year how I want to throttle my spending & savings.
 
-This past weekend I was able to learn JavaScript and write a program to do what I needed. I am not a JavaScript programmer so don't laugh at the code. I added some extra work to have the same look and feel, so I used the current styles for both Light & Dark Mode.
-
 To use - On the Sankey Diagram:
 
 1. Run the Sankey Diagram for a Compare Period you want ("Last Year" or say "1/1/2023 to 3/31/2023") and then press Trend Compare
