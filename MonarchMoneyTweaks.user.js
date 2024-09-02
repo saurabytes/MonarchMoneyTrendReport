@@ -244,7 +244,7 @@ window.onclick = function(event) {
         if (!event.target.matches('.MT_FilterRestore')) {
             document.getElementById("MTDropdown").classList.toggle("show");
             r_FilterD = false;
-            let et = event.target.href;
+            const et = event.target.href;
             let iMTF = et.search("#MTF_");
             if(iMTF > 0) {
                 let PathCookie = getCookie('MT_LastFilter');
