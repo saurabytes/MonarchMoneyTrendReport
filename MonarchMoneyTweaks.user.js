@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.04
+// @version      1.05
 // @description  Monarch Tweaks
 // @author       Robert
 // @match        https://app.monarchmoney.com/*
@@ -15,15 +15,6 @@ let r_Toaster = 0;
 let r_Filter = 0;
 let r_FilterD = false;
 let SaveLocationPathName = "";
-
-function getStyle() {
-  const cssObj = window.getComputedStyle(document.querySelectorAll('[class*=Page__Root]')[0], null);
-  const bgColor = cssObj.getPropertyValue('background-color');
-  if (bgColor === 'rgb(8, 32, 67)') {
-    return 'dark';
-  }
-  return 'light';
-}
 
 function MM_Init() {
 
@@ -128,38 +119,6 @@ function MenuReportsSetup() {
     }
 }
 
-window.onclick = function(event) {
-
-    if(r_FilterD == true) {
-        if (!event.target.matches('.MT_FilterRestore')) {
-            document.getElementById("MTDropdown").classList.toggle("show");
-            r_FilterD = false;
-            let et = event.target.href;
-            let iMTF = et.search("#MTF_");
-            if(iMTF > 0) {
-                iMTF+=1;
-                let cn = et.substring(iMTF);
-                cn = cn.replaceAll('%20',' ');
-                switch(cn) {
-                    case 'MTF_@':
-                        MenuFilter_Save('');
-                        break;
-                    case 'MTF_#':
-                        MenuFilter_Save(getCookie('MT_LastFilter'));
-                        break;
-                    case 'MTF_$':
-                        deleteCookie(getCookie('MT_LastFilter'));
-                        setCookie("MT_LastFilter","");
-                        break;
-                    default:
-                        MenuFilter_Restore(cn)
-                        break;
-                }
-            }
-        }
-    }
-}
-
 function MenuFilter() {
 
     let eID = document.getElementById("MTDropdown");
@@ -181,15 +140,15 @@ function MenuFilter() {
         }
         rnames.sort()
 
-        AddChildMenuItem(eID,'a','href','#MTF_@','Save New Dataset');
+        MenuAddChildItems(eID,'a','href','#MTF_@','Save New Dataset');
         let lc = getCookie('MT_LastFilter');
         if(lc) {
-            AddChildMenuItem(eID,'a','href','#MTF_#','Update as "' + lc.substring(4) + '"');
-            AddChildMenuItem(eID,'a','href','#MTF_$','Delete "' + lc.substring(4) + '"');
+            MenuAddChildItems(eID,'a','href','#MTF_#','Update "' + lc.substring(4) + '"');
+            MenuAddChildItems(eID,'a','href','#MTF_$','Delete "' + lc.substring(4) + '"');
         };
-        AddChildMenuItem(eID,'div','','','|');
+        MenuAddChildItems(eID,'div','','','|');
         for (var i = 0; i < rnames.length; i++) {
-            AddChildMenuItem(eID,'a','href','#' + rnames[i],rnames[i].substring(4));
+            MenuAddChildItems(eID,'a','href','#' + rnames[i],rnames[i].substring(4));
         }
         r_FilterD = true;
     } else
@@ -198,7 +157,7 @@ function MenuFilter() {
     };
 }
 
-function AddChildMenuItem(p,a,b,c,d) {
+function MenuAddChildItems(p,a,b,c,d) {
 
     let divI = document.createElement(a);
     if(b) {divI.setAttribute(b,c)};
@@ -219,6 +178,7 @@ function MenuFilter_Save(cn) {
         NewReport = NewReport.trim()
         const storedStr = localStorage.getItem('persist:reports');
         setCookie('MTF_' + NewReport, storedStr);
+        setCookie('MTP_' + NewReport, SaveLocationPathName);
         setCookie('MT_LastFilter', 'MTF_' + NewReport);
         alert('Filter Saved as "' + NewReport + '"');
     }
@@ -229,6 +189,9 @@ function MenuFilter_Restore(cn) {
     const storedStr = getCookie(cn);
     localStorage.setItem("persist:reports", storedStr);
     setCookie('MT_LastFilter', cn);
+
+    let PathCookie = cn.replace('MTF_','MTP_');
+    SaveLocationPathName = getCookie(PathCookie);
     window.location.assign(SaveLocationPathName);
 
 }
@@ -267,7 +230,7 @@ function MM_CreateCheckbox(inValue,inCookie) {
        if(OldValue == 1) {e2.checked = 'checked'};
        e1.appendChild(e2);
        e2.addEventListener('click', () => {
-           MM_FlipCookie(inCookie);
+           flipCookie(inCookie);
        });
        var text = document.createTextNode(inValue);
        e2.parentNode.insertBefore(text, e2.nextSibling)
@@ -275,7 +238,43 @@ function MM_CreateCheckbox(inValue,inCookie) {
 
 }
 
-function MM_FlipCookie(inCookie) {
+window.onclick = function(event) {
+
+    if(r_FilterD == true) {
+        if (!event.target.matches('.MT_FilterRestore')) {
+            document.getElementById("MTDropdown").classList.toggle("show");
+            r_FilterD = false;
+            let et = event.target.href;
+            let iMTF = et.search("#MTF_");
+            if(iMTF > 0) {
+                let PathCookie = getCookie('MT_LastFilter');
+                iMTF+=1;
+                let cn = et.substring(iMTF);
+                cn = cn.replaceAll('%20',' ');
+                switch(cn) {
+                    case 'MTF_@':
+                        MenuFilter_Save('');
+                        break;
+                    case 'MTF_#':
+                        MenuFilter_Save(getCookie('MT_LastFilter'));
+                        break;
+                    case 'MTF_$':
+                        deleteCookie(PathCookie);
+                        PathCookie = PathCookie.replace('MTF_','MTP_');
+                        deleteCookie(PathCookie);
+                        setCookie("MT_LastFilter","");
+                        break;
+                    default:
+                        MenuFilter_Restore(cn)
+                        break;
+                }
+            }
+        }
+    }
+}
+
+
+function flipCookie(inCookie) {
 
     let OldValue = getCookie(inCookie);
     if(OldValue == 1) { OldValue = 0 } else {OldValue = 1};
@@ -286,13 +285,11 @@ function MM_FlipCookie(inCookie) {
 function deleteCookie(cName) {
 
     document.cookie = cName + "= ;expires=31 Dec 2000 23:59:59 GMT; path=/" ;
-
  }
 
 function setCookie(cName, cValue) {
 
    document.cookie = cName + "=" + cValue + ";expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/" ;
-
 }
 
 function getCookie(cname) {
@@ -309,6 +306,16 @@ function getCookie(cname) {
         }
     }
     return "";
+}
+
+function getStyle() {
+
+  const cssObj = window.getComputedStyle(document.querySelectorAll('[class*=Page__Root]')[0], null);
+  const bgColor = cssObj.getPropertyValue('background-color');
+  if (bgColor === 'rgb(8, 32, 67)') {
+    return 'dark';
+  }
+  return 'light';
 }
 
 (function() {
