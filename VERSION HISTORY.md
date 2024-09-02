@@ -1,9 +1,14 @@
 # MonarchMoneyTweaks - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
+**Versions 1.05:**
+
+• NEW: Dataset will now also save/restore which Report (CashFlow/Income/Spending/Sankey)
+
+
 **Versions 1.04:**
 
-• UPDATE: Efficient saving of Display menu options as they may be lost
+• UPDATE: Display menu options may randomly be lost
 
 • NEW: New Save/Restore filters on Reports page
 
