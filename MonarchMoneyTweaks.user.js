@@ -181,34 +181,29 @@ function MenuFilter() {
         }
         rnames.sort()
 
-        let divI = document.createElement('a');
-        divI.setAttribute('href','#MTF_@');
-        divI.innerText = 'Save New Dataset'
-        eID.appendChild(divI);
-
+        AddChildMenuItem(eID,'a','href','#MTF_@','Save New Dataset');
         let lc = getCookie('MT_LastFilter');
         if(lc) {
-            let divI = document.createElement('a');
-            divI.setAttribute('href','#MTF_#');
-            divI.innerText = 'Update as "' + lc.substring(4) + '"';
-            eID.appendChild(divI);
-            divI = document.createElement('a');
-            divI.setAttribute('href','#MTF_$');
-            divI.innerText = 'Delete "' + lc.substring(4) + '"';
-            eID.appendChild(divI);
-        }
-        divI = document.createElement('div');
-        divI.innerText = '|';
-        eID.appendChild(divI);
-
+            AddChildMenuItem(eID,'a','href','#MTF_#','Update as "' + lc.substring(4) + '"');
+            AddChildMenuItem(eID,'a','href','#MTF_$','Delete "' + lc.substring(4) + '"');
+        };
+        AddChildMenuItem(eID,'div','','','|');
         for (var i = 0; i < rnames.length; i++) {
-            let divI = document.createElement('a');
-            divI.setAttribute('href','#' + rnames[i]);
-            divI.innerText = rnames[i].substring(4);
-            eID.appendChild(divI);
+            AddChildMenuItem(eID,'a','href','#' + rnames[i],rnames[i].substring(4));
         }
         r_FilterD = true;
-    } else {r_FilterD = false};
+    } else
+    {
+        r_FilterD = false
+    };
+}
+
+function AddChildMenuItem(p,a,b,c,d) {
+
+    let divI = document.createElement(a);
+    if(b) {divI.setAttribute(b,c)};
+    if(d) {divI.innerText = d};
+    p.appendChild(divI);
 }
 
 function MenuFilter_Save(cn) {
@@ -233,7 +228,7 @@ function MenuFilter_Restore(cn) {
 
     const storedStr = getCookie(cn);
     localStorage.setItem("persist:reports", storedStr);
-    setCookie('MT_LastFilter', cn, true);
+    setCookie('MT_LastFilter', cn);
     window.location.assign(SaveLocationPathName);
 
 }
