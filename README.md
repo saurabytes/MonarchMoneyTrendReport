@@ -1,7 +1,7 @@
 # Monarch Money Tweaks
 Tweaks for Monarch Money
 
-* Ability to Save and Restore Report Filters
+* Ability to Save and Restore Report Datasets
   
 * Ability to turn ON/OFF menu items.
 
