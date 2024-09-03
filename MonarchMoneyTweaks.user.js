@@ -66,19 +66,13 @@ function MM_removeElement(InList,InValue) {
 function MenuReports(OnFocus) {
 
     if (SaveLocationPathName.substring(0,9) == '/reports/') {
-        switch(OnFocus) {
-            case false:
-                break;
-            case true:
-                if(r_Filter == 0) {
-                    MenuReportsSetup()
-                }
-                break;
-            case 2:
-                if(r_Tips == 1) {
-                    MM_removeElement("div.ReportsTooltipRow__Diff-k9pa1b-3","none");
-                }
-                break;
+        if(OnFocus == false) {
+
+        }
+        if(OnFocus == true) {
+            if(r_Filter == 0) {
+                MenuReportsSetup()
+            }
         }
     }
 }
@@ -137,15 +131,15 @@ function MenuFilter() {
         }
         rnames.sort()
 
-        MenuAddChildItems(eID,'a','href','#MTF_@','Save New Dataset');
+        MenuFilter_AddItem(eID,'a','href','#MTF_@','Save New Dataset');
         let lc = getCookie('MT_LastFilter');
         if(lc) {
-            MenuAddChildItems(eID,'a','href','#MTF_#','Update "' + lc.substring(4) + '"');
-            MenuAddChildItems(eID,'a','href','#MTF_$','Delete "' + lc.substring(4) + '"');
+            MenuFilter_AddItem(eID,'a','href','#MTF_#','Update "' + lc.substring(4) + '"');
+            MenuFilter_AddItem(eID,'a','href','#MTF_$','Delete "' + lc.substring(4) + '"');
         };
-        MenuAddChildItems(eID,'div','','','|');
+        MenuFilter_AddItem(eID,'div','','','|');
         for (var i = 0; i < rnames.length; i++) {
-            MenuAddChildItems(eID,'a','href','#' + rnames[i],rnames[i].substring(4));
+            MenuFilter_AddItem(eID,'a','href','#' + rnames[i],rnames[i].substring(4));
         }
         r_FilterD = true;
     } else
@@ -154,7 +148,7 @@ function MenuFilter() {
     };
 }
 
-function MenuAddChildItems(p,a,b,c,d) {
+function MenuFilter_AddItem(p,a,b,c,d) {
 
     let divI = document.createElement(a);
     if(b) {divI.setAttribute(b,c)};
@@ -200,19 +194,19 @@ function MenuDisplay(OnFocus) {
 
         }
         if(OnFocus == true) {
-            MM_CreateCheckbox('Hide Create Rule Tooltip','MT_HideToaster');
-            MM_CreateCheckbox('Hide Report Tooltip Difference','MT_HideTipDiff');
-            MM_CreateCheckbox('Hide Monarch Ads','MT_Ads');
-            MM_CreateCheckbox('Hide Advice','MT_Advice');
-            MM_CreateCheckbox('Hide Investments','MT_Investments');
-            MM_CreateCheckbox('Hide Goals','MT_Goals');
-            MM_CreateCheckbox('Hide Recurring','MT_Recurring');
-            MM_CreateCheckbox('Hide Budget','MT_Budget');
+            MenuDisplay_CB('Hide Create Rule Tooltip','MT_HideToaster');
+            MenuDisplay_CB('Hide Report Tooltip Difference','MT_HideTipDiff');
+            MenuDisplay_CB('Hide Monarch Ads','MT_Ads');
+            MenuDisplay_CB('Hide Advice','MT_Advice');
+            MenuDisplay_CB('Hide Investments','MT_Investments');
+            MenuDisplay_CB('Hide Goals','MT_Goals');
+            MenuDisplay_CB('Hide Recurring','MT_Recurring');
+            MenuDisplay_CB('Hide Budget','MT_Budget');
         }
     }
 }
 
-function MM_CreateCheckbox(inValue,inCookie) {
+function MenuDisplay_CB(inValue,inCookie) {
 
    let qs = document.querySelector('.FormItemContainer__Root-j5b8rt-0');
    if(qs != null) {
@@ -323,11 +317,6 @@ function getStyle() {
             r_Init = true;
         }
 
-      //  if(event.type == "focusin") {
-       //     console.log(event);
-        //}
-
-
         if(window.location.pathname != SaveLocationPathName) {
             // Lose Focus on a page
             MenuReports(false);
@@ -340,8 +329,9 @@ function getStyle() {
             MenuDisplay(true);
         }
 
-        MenuReports(2);
-
+        if(r_Tips == 1) {
+            MM_removeElement("div.ReportsTooltipRow__Diff-k9pa1b-3","none");
+        }
         if(r_Toaster == 1) {
             MM_removeElement('div.Toast__Root-sc-1mbc5m5-0',1);
         }
