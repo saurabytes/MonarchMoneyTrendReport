@@ -15,7 +15,6 @@ let r_Toaster = 0;
 let r_Filter = 0;
 let r_FilterD = false;
 let SaveLocationPathName = "";
-let myObject = event;
 
 function MM_Init() {
 
