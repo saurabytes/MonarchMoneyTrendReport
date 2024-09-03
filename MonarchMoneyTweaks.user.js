@@ -15,27 +15,24 @@ let r_Toaster = 0;
 let r_Filter = 0;
 let r_FilterD = false;
 let SaveLocationPathName = "";
+let myObject = event;
 
 function MM_Init() {
 
-    let a1 = '#04AA6D; color: white;';
-    let a2 = 'rgb(13, 44, 92); color: white;';
-    let a3 = '#14457a; color: white;';
-    let s = getStyle();
-    if(s == 'light') {
+    let a1 = 'rgb(13, 44, 92); color: white;';
+    let a2 = '#14457a; color: white;';
+    if(getStyle() == 'light') {
         a1 = '#ffffff; color: rgb(8, 40, 100);';
-        a2 = '#ffffff; color: rgb(8, 40, 100);';
-        a3 = '#eaf6fd; color: rgb(61, 146, 222);';
+        a2 = '#eaf6fd; color: rgb(61, 146, 222);';
     }
 
     GM_addStyle('.dropbtn {background-color: ' + a1 + ' padding: 12px; font-size: 12px; border: none; cursor: pointer;}');
-    GM_addStyle('.dropbtn:hover, .dropbtn:focus {  background-color: ' + a3 + '}');
+    GM_addStyle('.dropbtn:hover, .dropbtn:focus {  background-color: ' + a2 + '}');
     GM_addStyle('.dropdown {  float: right;  position: relative;  display: inline-block;}');
     GM_addStyle('.dropdown-content div {font-size: 0px; line-height: 2px; color: #ff7369; background-color: #ff7369;}');
-    GM_addStyle('.dropdown-content {background-color: ' + a2 + ' display: none; position: absolute; min-width: 220px; overflow: auto; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0;  z-index: 1;}');
-    GM_addStyle('.dropdown-content a {background-color: ' + a2 + ' font-weight: normal; font-style: normal; font-size: 15px;font-family: "Graphik", sans-serif; padding: 8px 8px; text-decoration: none; display: block;}');
-    GM_addStyle('.dropdown a:hover {background-color: ' + a3 + ' }');
-
+    GM_addStyle('.dropdown-content {background-color: ' + a1 + ' display: none; position: absolute; min-width: 220px; overflow: auto; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0;  z-index: 1;}');
+    GM_addStyle('.dropdown-content a {background-color: ' + a1 + ' font-weight: normal; font-style: normal; font-size: 15px;font-family: "Graphik", sans-serif; padding: 8px 8px; text-decoration: none; display: block;}');
+    GM_addStyle('.dropdown a:hover {background-color: ' + a2 + ' }');
     GM_addStyle('.show {display: block;}');
 
     MM_removeElement("[href~='/settings/referrals']",getCookie('MT_Ads'));
@@ -44,6 +41,7 @@ function MM_Init() {
     MM_removeElement("[href~='/objectives']",getCookie('MT_Goals'));
     MM_removeElement("[href~='/recurring']",getCookie('MT_Recurring'));
     MM_removeElement("[href~='/plan']",getCookie('MT_Budget'));
+
     r_Tips = getCookie("MT_HideTipDiff");
     r_Toaster = getCookie("MT_HideToaster");
 }
@@ -315,7 +313,7 @@ function getStyle() {
   if (bgColor === 'rgb(8, 32, 67)') {
     return 'dark';
   }
-  return 'light';
+    return 'light';
 }
 
 (function() {
@@ -325,6 +323,11 @@ function getStyle() {
             MM_Init();
             r_Init = true;
         }
+
+      //  if(event.type == "focusin") {
+       //     console.log(event);
+        //}
+
 
         if(window.location.pathname != SaveLocationPathName) {
             // Lose Focus on a page
