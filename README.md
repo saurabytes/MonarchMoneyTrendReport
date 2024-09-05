@@ -2,19 +2,21 @@ Hello!
 
 I use **Monarch Money**.  
 
-I found there were opportunities to enhance the web application to make using it easier with more functionality and configuration options using Javascript and Tampermonkey.   All you need to do is add the **Tampermonkey** browser extension.  Tampermonkey is a browser extension for Chrome, Microsoft Edge, Safari, Opera Next, and Firefox.  Simply make sure it is installed by going to "Extensions" in your web browser.
+I found there were opportunities to enhance the Monarch Money web application with more functionality and configuration options using Javascript and Tampermonkey.   All you need to do is add the **Tampermonkey** browser extension.  Tampermonkey is a browser extension for Chrome, Microsoft Edge, Safari, Opera Next, and Firefox.  Simply make sure it is installed by going to "Extensions" in your web browser.
 
 Once installed, refresh Monarch Money and you will have new features and enhancements:
 
 # Monarch Money Tweaks
 
-* Ability to Save and Restore Report Datasets
+* Ability to Save and Restore Report Datasets (Save all settings on Reports page)
   
 * Ability to turn ON/OFF menu items.
 
 * Ability to hide Report Tooltip Difference 
 
 * Ability to Hide Create Rule Tooltip
+
+
 
 There is also a second optional extension which recreates a Mint Trends report, allowing you to compare two periods inside the Sankey report.
 
