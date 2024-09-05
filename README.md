@@ -40,8 +40,6 @@ Things I've learned along the way:
 
 The information is pulled not from a Query (graphql) and is really screen scraped - so it's really their data, just reformatted with some small tweaks. 
 
-This is JavaScript that I run using Tampermonkey.  Tampermonkey is available for Chrome, Microsoft Edge, Safari, Opera Next, and Firefox. (I use Firefox).
-
 I welcome any comments.
 
 Enjoy!
