@@ -1,5 +1,10 @@
+Hello!
+
+I use **Monarch Money**.  I found there were opportunities to enhance the web application to make using it easier with more functionality and configuration options using Javascript and Tampermonkey.   All you need to do is add the **Tampermonkey** browser extension.  Tampermonkey is a browser extension for Chrome, Microsoft Edge, Safari, Opera Next, and Firefox.  Simply make sure it is installed by going to "Extensions" in your web browser.
+
+Once installed, refresh Monarch Money and you will have new features and enhancements:
+
 # Monarch Money Tweaks
-Tweaks for Monarch Money
 
 * Ability to Save and Restore Report Datasets
   
@@ -9,14 +14,14 @@ Tweaks for Monarch Money
 
 * Ability to Hide Create Rule Tooltip
 
+There is also a second optional extension which recreates a Mint Trends report, allowing you to compare two periods inside the Sankey report.
 
 # Monarch Money Trend Report
 Trend Report (Compare This Period/Last Period) for Monarch Money
 
+The Trend Report is used to simply pace Total Savings comparing where you ae at one period to where you were another period (ie: same time, last year).
 
-Being a former Mint User and needing a Trend Report bad, I decided to learn JavaScript and create one myself this past weekend. I use a Trend Report to simply pace my Total Savings comparing where I am this year (end of month) to where I was last year (end of month) - "Should I tone it down or can I spend more" type of report. I'm able to just keep myself quickly on pace without the work of Goals or Budget setups, just go against last year how I want to throttle my spending & savings.
-
-To use - On the Sankey Diagram:
+To use - On the Reports / Sankey Diagram:
 
 1. Run the Sankey Diagram for a Compare Period you want ("Last Year" or say "1/1/2023 to 3/31/2023") and then press Trend Compare
 2. Run the Sankey Diagram again for a new/current period you want ("This Year") and press Trend Report
