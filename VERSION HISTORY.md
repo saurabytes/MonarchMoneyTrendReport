@@ -13,8 +13,6 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 • NEW: New Save/Restore filters on Reports page
 
 
-
-
 **Versions 1.01 - 1.03:**
 
 • UPDATE: More efficient 
@@ -36,18 +34,11 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 • UPDATE: Trend buttons stopped working (div tag change). 
 
-**Version 1.06:**
-
-• UPDATE: New MM Calendar caused dates to not be extracted properly. 
-
-**Version 1.05:**
+• UPDATE: New MM Calendar caused dates to not be extracted properly.
 
 • FIX: Sometimes button controls would disappear for Income & Spending after Trend Report
 
 • FIX: Console Log removed.
-
-
-**Version 1.04:**
 
 • ADDED: Expand/Compress remembered between sessions.
 
