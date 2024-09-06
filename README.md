@@ -2,7 +2,7 @@ Hello!
 
 I use **Monarch Money**.  
 
-I found there were opportunities to enhance the Monarch Money web application with more functionality and configuration options using Javascript and Tampermonkey.   All you need to do is add the **Tampermonkey** browser extension.  Tampermonkey is a browser extension for Chrome, Microsoft Edge, Safari, Opera Next, and Firefox.  You can install it by going to the following link.
+I found there were opportunities to enhance the Monarch Money web application with more functionality and configuration options using Tampermonkey.  Tampermonkey is a browser extension for Chrome, Microsoft Edge, Safari, Opera Next, and Firefox.  You can install it by going to the following link.
 
 https://www.tampermonkey.net/
 
@@ -10,7 +10,7 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
 
 # Monarch Money Tweaks
 
-* Ability to Save and Restore Report Datasets (Save all settings on Reports page)
+* Ability to Save and Restore different Report Datasets (Save/Restore all settings on Reports page)
   
 * Ability to turn ON/OFF menu items.
 
@@ -20,12 +20,12 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
 
 
 
-There is also a second optional extension which recreates a Mint Trends report, allowing you to compare two periods inside the Sankey report.
+There is also a second optional extension which recreates a Mint Trends report:
 
 # Monarch Money Trend Report
 Trend Report (Compare This Period/Last Period) for Monarch Money
 
-The Trend Report is used to simply pace Total Savings comparing where you ae at one period to where you were another period (ie: same time, last year).
+The Trend Report is used to simply pace Total Savings comparing where you are at one period to another period (ie: same time, last year).
 
 To use - On the Reports / Sankey Diagram:
 
