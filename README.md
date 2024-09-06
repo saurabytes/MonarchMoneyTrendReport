@@ -19,11 +19,9 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
 * Ability to Hide Create Rule Tooltip
 
 
-
-There is also a second optional extension which recreates a Mint Trends report:
-
 # Monarch Money Trend Report
-Trend Report (Compare This Period/Last Period) for Monarch Money
+
+There is also a optional second extension which recreates a Mint Trends report (Compare This Period/Last Period):
 
 The Trend Report is used to simply pace Total Savings comparing where you are at one period to another period (ie: same time, last year).
 
