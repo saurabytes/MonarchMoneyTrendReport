@@ -10,13 +10,17 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
 
 # Monarch Money Tweaks
 
-* Ability to Save and Restore different Report Datasets (Save/Restore all settings on Reports page)
+* Save and Restore different Report Datasets (Save/Restore all settings on Reports page)
   
-* Ability to turn ON/OFF menu items.
+* Turn ON/OFF menu items.
 
-* Ability to hide Report Tooltip Difference 
+* Hide Report Tooltip Difference 
 
-* Ability to Hide Create Rule Tooltip
+* Hide Create Rule Tooltip
+
+* Quickly split a transaction 50/50 by auto-filling the amounts
+
+* Correct Calendar Year pull-down to only be years of data instead of since 2000
 
 
 # Monarch Money Trend Report
