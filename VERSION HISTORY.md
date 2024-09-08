@@ -3,9 +3,9 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 **Versions 1.06 (beta):**
 
-• NEW: Added button to quickly Split 50/50
+• NEW: Correct Calendar Year pull-down to only be years of data instead of since 2000
 
-• NEW: Ability to  to quickly Split 50/50
+• NEW: Quickly split a transaction 50/50 by auto-filling the amounts
 
 • UPDATE: More efficient code for Hiding Popup "Difference" and Hiding Popup "Create New Rule"
 
