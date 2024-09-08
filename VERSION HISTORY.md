@@ -1,6 +1,14 @@
 # Monarch Money Tweaks - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
+**Versions 1.06 (beta):**
+
+• NEW: Added button to quickly Split 50/50
+
+• NEW: Ability to  to quickly Split 50/50
+
+• UPDATE: More efficient code for Hiding Popup "Difference" and Hiding Popup "Create New Rule"
+
 **Versions 1.05:**
 
 • NEW: Dataset will now also save/restore which Report (CashFlow/Income/Spending/Sankey)
