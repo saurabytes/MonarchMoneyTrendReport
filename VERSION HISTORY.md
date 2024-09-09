@@ -5,6 +5,8 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 • NEW: Correct Calendar Year pull-down to only be years of data instead of since 2000
 
+• NEW: Added "Last year YTD" to pull-down calendar
+
 • NEW: Quickly split a transaction 50/50 by auto-filling the amounts
 
 • UPDATE: More efficient code for Hiding Popup "Difference" and Hiding Popup "Create New Rule"
