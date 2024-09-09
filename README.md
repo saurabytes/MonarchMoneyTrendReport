@@ -14,9 +14,9 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
   
 * Turn ON/OFF menu items.
 
-* Hide Report Tooltip Difference 
+* Hide Report Tooltip "Difference Amount" in Reports
 
-* Hide Create Rule Tooltip
+* Hide Create Rule Popup in Transactions
 
 * Quickly split a transaction 50/50 by auto-filling the amounts
 
