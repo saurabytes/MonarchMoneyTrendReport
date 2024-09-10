@@ -29,6 +29,7 @@ function MM_Init() {
         a2 = 'background-color: #eaf6fd; color: rgb(61, 146, 222);';
     }
 
+    GM_addStyle('.MTCheckboxClass {line-height: 30px; font-size: 15px; width: 90px; border-color: rgb(228, 233, 240); border-radius: 4px; border-style: solid; border-width: 1px;}');
     GM_addStyle('.dropbtn {' + a1 + '; border: none; cursor: pointer;}');
     GM_addStyle('.dropbtn:hover, .dropbtn:focus {' + a2 + '}');
     GM_addStyle('.dropdown {float: right;  position: relative; display: inline-block; font-weight: 200;}');
@@ -379,6 +380,7 @@ function MenuDisplay(OnFocus) {
             r_Init = false;
         }
         if(OnFocus == true) {
+            MenuDisplay_Input('Monarch Money Tweaks','','header');
             MenuDisplay_Input('Lowest Calendar Year','MT_LowCalendarYear','number');
             MenuDisplay_Input('Hide Budget','MT_Budget','checkbox');
             MenuDisplay_Input('Hide Recurring','MT_Recurring','checkbox');
@@ -399,40 +401,55 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
     if(qs != null) {
         qs = qs.firstChild.lastChild;
         let e1 = document.createElement('div');
-        e1.style = 'margin: 13px 22px;';
+        if(inType == 'header') {
+            e1.innerText = inValue;
+            let x = document.querySelector('div.CardHeader__Root-r0eoe3-0');
+            if(x){
+                e1.className = x.className
+            }
+           e1.style = 'font-size: 18px;font-weight: 500;display: inline-block';
+        } else {
+            e1.style = 'margin: 11px 25px;';
+        }
         qs.after(e1);
+        let e2 = null;
+        let e3 = null;
 
         let OldValue = getCookie(inCookie);
 
-        if(inType == 'checkbox') {
-            let e2 = document.createElement('input');
-            e2.type = inType;
-            e2.style = "width: 20px; height: 20px;  margin: 5px 1px;"
-            if(OldValue == 1) {e2.checked = 'checked'};
-            e1.appendChild(e2);
-            e2.addEventListener('click', () => {
-                flipCookie(inCookie);
-            });
-            let e3 = document.createTextNode('  ' + inValue);
-            e2.parentNode.insertBefore(e3, e2.nextSibling)
-        } else {
-            let e3 = document.createElement("div");
-            e3.innerText = inValue;
-            e3.style = 'margin: 5px 1px; font-weight: 500;';
-            e1.appendChild(e3);
+        const d = new Date();
+        let year = d.getFullYear();
 
-            let e2 = document.createElement('input');
-            e2.type = inType;
-            e2.style = "line-height: 30px; font-size: 15px; width: 90px; border-color: rgb(228, 233, 240); border-radius: 4px; border-style: solid; border-width: 1px;";
-            const d = new Date();
-            let year = d.getFullYear();
-            e2.min = 2000;
-            e2.max = year;
-            e2.value = OldValue;
-            e1.appendChild(e2);
-            e2.addEventListener('click', () => {
-                setCookie(inCookie,e2.value);
-            });
+        switch(inType) {
+            case 'checkbox':
+                e2 = document.createElement('input');
+                e2.type = inType;
+                e2.style = "width: 20px; height: 20px; "
+                if(OldValue == 1) {e2.checked = 'checked'};
+                e1.appendChild(e2);
+                e2.addEventListener('click', () => {
+                    flipCookie(inCookie);
+                });
+                e3 = document.createTextNode('  ' + inValue);
+                e2.parentNode.insertBefore(e3, e2.nextSibling)
+                break;
+            case 'number':
+                e3 = document.createElement("div");
+                e3.innerText = inValue;
+                e3.style = 'font-size: 14px; font-weight: 500;';
+                e1.appendChild(e3);
+
+                e2 = document.createElement('input');
+                e2.type = inType;
+                e2.className = 'MTCheckboxClass';
+                e2.min = 2000;
+                e2.max = year;
+                e2.value = OldValue;
+                e1.appendChild(e2);
+                e2.addEventListener('click', () => {
+                    setCookie(inCookie,e2.value);
+                });
+                break;
         }
     }
 }
