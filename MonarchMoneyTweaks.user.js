@@ -552,26 +552,19 @@ function getDates(InValue) {
 
     if(InValue == 'LastYTDs') {
         year-=1;
-        let FullDate = '01/01/' + year;
-        return(FullDate);
+        month = 0;
     }
     if(InValue == 'LastYTDe') {
         year-=1;
         if(getCookie('MT_CalendarEOM') == 1) {
             day = daysInMonth(month,year);
         }
-               month+=1
-        let FullDate = ("0" + month).slice(-2) + '/' + ("0" + day).slice(-2) + '/' + year;
-        return(FullDate);
     }
     if(InValue == 'ThisQTRs') {
         if(month < 3) {month = 0};
         if(month == 4 || month == 5) {month = 3};
         if(month == 7 || month == 8) {month = 6};
         if(month == 10 || month == 11) {month = 9};
-        month+=1;
-        let FullDate = ("0" + month).slice(-2) + '/01/' + year;
-        return(FullDate);
     }
     if(InValue == 'ThisQTRe') {
         if(month < 2) {month = 2};
@@ -579,10 +572,10 @@ function getDates(InValue) {
         if(month == 6 || month == 7) {month = 8};
         if(month == 9 || month == 10) {month = 11};
         day = daysInMonth(month,year);
-        month+=1
-        let FullDate = ("0" + month).slice(-2) + '/' + ("0" + day).slice(-2) + '/' + year;
-        return(FullDate);
      }
+    month+=1;
+    let FullDate = ("0" + month).slice(-2) + '/' + ("0" + day).slice(-2) + '/' + year;
+    return(FullDate);
 }
 
 function getStyle() {
