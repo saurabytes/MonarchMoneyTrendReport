@@ -5,7 +5,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 • NEW: Correct Calendar Year pull-down to only be years of data instead of since 2000
 
-• NEW: Added "Last year YTD" to pull-down calendar. (See Settings/Display to configue how it behaves)
+• NEW: Added "Last year YTD" and "This Quarter" to pull-down calendar. (See Settings/Display to configue how it behaves)
 
 • NEW: Quickly split a transaction 50/50 by auto-filling the amounts
 
