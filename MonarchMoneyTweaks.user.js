@@ -141,7 +141,7 @@ const callback = (mutationList, observer) => {
         if(li[6]) {
             let useClass = li[0].className;
 
-             let div = document.createElement('div');
+            let div = document.createElement('div');
             div.className = useClass;
             div.innerText = 'This Quarter';
             let newli = li[5].nextSibling.after(div);
@@ -153,11 +153,11 @@ const callback = (mutationList, observer) => {
                     sb.click();
                 };
             });
-            let div2 = document.createElement('div');
-            div2.className = useClass;
-            div2.innerText = 'Last year YTD';
-            newli = li[5].nextSibling.after(div2);
-            div2.addEventListener('click', () => {
+            div = document.createElement('div');
+            div.className = useClass;
+            div.innerText = 'Last year YTD';
+            newli = li[5].nextSibling.after(div);
+            div.addEventListener('click', () => {
                 MM_InputTwoFields('input.DateInput_input',getDates('LastYTDs'),getDates('LastYTDe'));
                 let sb = MM_FindButton('','Apply');
                 if(sb) {
@@ -398,7 +398,7 @@ function MenuDisplay(OnFocus) {
             r_Init = false;
         }
         if(OnFocus == true) {
-            MenuDisplay_Input('Monarch Money Tweaks','','header');
+            MenuDisplay_Input('Monarch Money Tweaks - Version 1.06','','header');
             MenuDisplay_Input('Lowest Calendar Year','MT_LowCalendarYear','number');
             MenuDisplay_Input('Hide Budget','MT_Budget','checkbox');
             MenuDisplay_Input('Hide Recurring','MT_Recurring','checkbox');
