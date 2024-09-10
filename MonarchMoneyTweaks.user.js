@@ -441,7 +441,7 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
                 e2.style = "width: 20px; height: 20px; "
                 if(OldValue == 1) {e2.checked = 'checked'};
                 e1.appendChild(e2);
-                e2.addEventListener('click', () => {
+                e2.addEventListener('change', () => {
                     flipCookie(inCookie);
                 });
                 e3 = document.createTextNode('  ' + inValue);
@@ -460,7 +460,7 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
                 e2.max = year;
                 e2.value = OldValue;
                 e1.appendChild(e2);
-                e2.addEventListener('click', () => {
+                e2.addEventListener('change', () => {
                     setCookie(inCookie,e2.value);
                 });
                 break;
