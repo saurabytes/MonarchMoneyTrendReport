@@ -10,9 +10,11 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
 
 # Monarch Money Tweaks
 
-* Save and Restore different Report Datasets (Save/Restore all settings on Reports page)
+* Compressed / Smaller Transactions grid to show more items
   
 * Turn ON/OFF menu items.
+
+* Save and Restore different Report Datasets (Save/Restore all settings on Reports page)
 
 * Hide Report Tooltip "Difference Amount" in Reports
 
