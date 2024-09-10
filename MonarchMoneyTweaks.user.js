@@ -13,7 +13,8 @@ let r_Init = false;
 let r_TipsActive = 0;
 let r_ToasterActive = 0;
 let r_DatePickerActive = false;
-let r_Filter = 0, r_FilterD = false;
+let r_Filter = 0;
+let r_FilterD = false;
 let r_oo = null;
 let r_oo2 = null;
 const css_currency = 'USD';
@@ -134,17 +135,30 @@ const callback = (mutationList, observer) => {
         let li = document.querySelectorAll('div.DateRangePickerShortcuts__StyledMenuItem-jr6842-1');
         if(li[6]) {
             let useClass = li[0].className;
-            let div = document.createElement('div');
+
+             let div = document.createElement('div');
             div.className = useClass;
-            div.innerText = 'Last year YTD';
+            div.innerText = 'This Quarter';
             let newli = li[5].nextSibling.after(div);
             div.addEventListener('click', () => {
+                MM_InputTwoFields('input.DateInput_input',getDates('ThisQTRs'),getDates('ThisQTRe'));
+                let sb = MM_FindButton('','Apply');
+                if(sb) {
+                    focus(sb);
+                    sb.click();
+                };
+            });
+            let div2 = document.createElement('div');
+            div2.className = useClass;
+            div2.innerText = 'Last year YTD';
+            newli = li[5].nextSibling.after(div2);
+            div2.addEventListener('click', () => {
                 MM_InputTwoFields('input.DateInput_input',getDates('LastYTDs'),getDates('LastYTDe'));
                 let sb = MM_FindButton('','Apply');
                 if(sb) {
                     focus(sb);
-                    sb.click();} else
-                    {console.log('MM Tweaks Error',sb)};
+                    sb.click();
+                };
             });
         }
     }
@@ -531,16 +545,10 @@ function daysInMonth(iMonth, iYear) {
 
 function getDates(InValue) {
 
-    const d = new Date();
+    let d = new Date();
     let month = d.getMonth();
-    let day = d.getDate();
+    let day = 1;
     let year = d.getFullYear();
-
-    if(getCookie('MT_CalendarEOM') == 1) {
-        day = daysInMonth(month,year);
-    }
-
-    month+=1
 
     if(InValue == 'LastYTDs') {
         year-=1;
@@ -549,13 +557,32 @@ function getDates(InValue) {
     }
     if(InValue == 'LastYTDe') {
         year-=1;
-        let FullDate = ("0" + month).slice(-2) + '/' + ("0" + day).slice(-2) + '/' + year;
         if(getCookie('MT_CalendarEOM') == 1) {
-
-            FullDate = ("0" + month).slice(-2) + '/' + ("0" + day).slice(-2) + '/' + year;
+            day = daysInMonth(month,year);
         }
+               month+=1
+        let FullDate = ("0" + month).slice(-2) + '/' + ("0" + day).slice(-2) + '/' + year;
         return(FullDate);
     }
+    if(InValue == 'ThisQTRs') {
+        if(month < 3) {month = 0};
+        if(month == 4 || month == 5) {month = 3};
+        if(month == 7 || month == 8) {month = 6};
+        if(month == 10 || month == 11) {month = 9};
+        month+=1;
+        let FullDate = ("0" + month).slice(-2) + '/01/' + year;
+        return(FullDate);
+    }
+    if(InValue == 'ThisQTRe') {
+        if(month < 2) {month = 2};
+        if(month == 3 || month == 4) {month = 5};
+        if(month == 6 || month == 7) {month = 8};
+        if(month == 9 || month == 10) {month = 11};
+        day = daysInMonth(month,year);
+        month+=1
+        let FullDate = ("0" + month).slice(-2) + '/' + ("0" + day).slice(-2) + '/' + year;
+        return(FullDate);
+     }
 }
 
 function getStyle() {
@@ -583,6 +610,7 @@ function getDisplay(InA) {
         }
 
         if(window.location.pathname != SaveLocationPathName) {
+
             // Lose Focus on a page
             if(SaveLocationPathName) {
                 MenuReports(false);
