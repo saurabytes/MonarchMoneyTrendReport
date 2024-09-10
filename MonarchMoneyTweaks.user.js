@@ -42,7 +42,12 @@ function MM_Init() {
 
     GM_addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster")) + '};');
     GM_addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff")) + '};');
-
+    if(getCookie('MT_CompressedTx') == 1) {
+        GM_addStyle('.dHdtJt {font-size: 14px;}');
+        GM_addStyle('.hDZmpo {font-size: 14px;}');
+        GM_addStyle('.dnAUzj {font-size: 14px; padding: 2px;}');
+        GM_addStyle('.kphLtI {height: 28px;}');
+    }
     MM_hideElement("[href~='/settings/referrals']",getCookie('MT_Ads'));
     MM_hideElement("[href~='/advice']",getCookie('MT_Advice'));
     MM_hideElement("[href~='/investments']",getCookie('MT_Investments'));
@@ -236,7 +241,6 @@ function MenuTransactions(OnFocus) {
             r_oo = null;
         }
         if(OnFocus == true) {
-            sleep(2000);
             MM_FixCalendar('');
         }
     }
@@ -405,6 +409,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Hide Report Tooltip Difference','MT_HideTipDiff','checkbox');
             MenuDisplay_Input('Hide Create Rule Popup','MT_HideToaster','checkbox');
             MenuDisplay_Input('Calendar "Last year YTD" includes to end of month','MT_CalendarEOM','checkbox');
+            MenuDisplay_Input('Transactions panel has smaller compressed grid (Requires refresh page)','MT_CompressedTx','checkbox');
         }
     }
 }
