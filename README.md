@@ -22,6 +22,8 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
 
 * Correct Calendar Year pull-down to only be years of data instead of since 2000
 
+* Added "Last year YTD" and "This Quarter" to pop-up calendar.
+
 
 # Monarch Money Trend Report
 
