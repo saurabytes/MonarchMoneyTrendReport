@@ -9,6 +9,8 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 • NEW: Quickly split a transaction 50/50 by auto-filling the amounts
 
+• NEW: Compressed (smaller) Transactions grid to show more items on screen
+
 • UPDATE: More efficient code for Hiding Popup "Difference" and Hiding Popup "Create New Rule"
 
 **Versions 1.05:**
