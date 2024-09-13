@@ -24,7 +24,11 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
 
 * Correct Calendar Year pull-down to only be years of data instead of since 2000
 
-* Added "Last year YTD" and "This Quarter" to pop-up calendar.
+* "Last year YTD" and "This Quarter" to pop-up calendar.
+
+* Hide Accounts Net Worth Graph Panel
+
+• Show Pending Transactions in Red
 
 
 # Monarch Money Trend Report
