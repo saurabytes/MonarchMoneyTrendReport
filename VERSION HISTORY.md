@@ -2,7 +2,7 @@
 Here are a list of Open Issues, Unreleased changes and past changes:
 
 
-**Versions 1.06: (Beta) **
+**Versions 1.07: (Beta) **
 
 • NEW: Hide Accounts Net Worth Graph Panel
 
