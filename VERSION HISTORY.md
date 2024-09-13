@@ -1,7 +1,14 @@
 # Monarch Money Tweaks - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
-**Versions 1.06 (beta):**
+
+**Versions 1.06: (Beta) **
+
+• NEW: Hide Accounts Net Worth Graph Panel
+
+• NEW: Show Pending Transactions in Red
+
+**Versions 1.06:**
 
 • NEW: Correct Calendar Year pull-down to only be years of data instead of since 2000
 
