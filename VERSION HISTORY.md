@@ -2,6 +2,13 @@
 Here are a list of Open Issues, Unreleased changes and past changes:
 
 
+
+**Versions 1.08: Beta**
+
+• NEW: Report Graph Breadcrumbs and Drill-down
+
+• FIX: Correct Calendar Year pull-down did not always work on Transactinos screen. (more efficient)
+
 **Versions 1.07:**
 
 • NEW: Hide Accounts Net Worth Graph Panel
