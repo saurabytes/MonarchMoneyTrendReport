@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.07
+// @version      1.08
 // @description  Monarch Tweaks
 // @author       Robert
 // @match        https://app.monarchmoney.com/*
@@ -9,20 +9,24 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-const MM_Version = '1.07';
+const MM_Version = '1.08';
 let r_Init = false;
 let r_TipsActive = 0;
 let r_ToasterActive = 0;
 let r_DatePickerActive = false;
 let r_Filter = 0;
 let r_FilterD = false;
-let r_spawn = false;
+let r_spawn = 0;
+let r_eventListener = false;
 let r_oo = null;
 let r_oo2 = null;
 let r_ooPO = null;
 const css_currency = 'USD';
+let accountGroups = [];
+const graphql = 'https://api.monarchmoney.com/graphql';
 
 let SaveLocationPathName = "";
+
 
 function MM_Init() {
 
@@ -32,6 +36,9 @@ function MM_Init() {
         a1 = 'background-color: #ffffff; color: rgb(8, 40, 100);';
         a2 = 'background-color: #eaf6fd; color: rgb(61, 146, 222);';
     }
+
+    GM_addStyle('.MTlink {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px;  border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
+    GM_addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
 
     GM_addStyle('.MTCheckboxClass {width: 20px; height: 20px; border-color: rgb(228, 233, 240); border-radius: 4px; border-style: solid; border-width: 1px;}');
     GM_addStyle('.dropbtn {' + a1 + '; border: none; cursor: pointer;}');
@@ -66,7 +73,6 @@ function MM_Init() {
     MM_hideElement("[href~='/plan']",getCookie('MT_Budget'));
 
     MM_SetupCallbacks();
-
 }
 
 function MM_hideElement(InList,InValue) {
@@ -87,7 +93,7 @@ function MM_SetupCallbacks() {
         r_oo2 = useTarget;
     }
 }
-
+// ===[ Reports Menu ] ===
 function MenuReports(OnFocus) {
 
     if (SaveLocationPathName.substring(0,9) == '/reports/') {
@@ -100,13 +106,14 @@ function MenuReports(OnFocus) {
             };
         };
        if(OnFocus == true) {
-            MenuReportsSetup();
-            r_spawn = 1;
+           MenuReportsDataset();
+           MenuReportBreadcrumbListener();
+           r_spawn = 1;
         }
     }
 }
 
-function MenuReportsSetup() {
+function MenuReportsDataset() {
 
     if(r_Filter == 0) {
         const isFilter = document.querySelector('button.MT_FilterRestore')
@@ -141,7 +148,7 @@ function MenuReportsSetup() {
         }
     }
 }
-
+// ===[ Datasets Menu ] ===
 function MenuFilter() {
 
     let eID = document.getElementById("MTDropdown");
@@ -219,6 +226,7 @@ function MenuFilter_Restore(cn) {
 
 }
 
+// ===[ Calendar Fixes ] ===
 function MM_FixCalendar(inValue) {
 
     if(r_oo == null) {
@@ -236,7 +244,7 @@ function MM_FixCalendar(inValue) {
 
 function MM_FixCalendarYears() {
 
-    const elements = document.querySelectorAll('select');
+    const elements = document.querySelectorAll('select[name]');
     if(elements) {
         for (const li of elements) {
             if(li.getAttribute('hacked') != 'true') {
@@ -270,7 +278,7 @@ const MM_FixCalendarCallback = (mutationList, observer) => {
 
             let div = document.createElement('div');
             div.className = useClass;
-            div.innerText = 'This Quarter';
+            div.innerText = 'This quarter';
             let newli = li[5].nextSibling.after(div);
             div.addEventListener('click', () => {
                 inputTwoFields('input.DateInput_input',getDates('ThisQTRs'),getDates('ThisQTRe'));
@@ -292,48 +300,157 @@ const MM_FixCalendarCallback = (mutationList, observer) => {
                     sb.click();
                 };
             });
+            div = document.createElement('div');
+            div.className = useClass;
+            div.innerText = 'Last 12 months';
+            newli = li[5].nextSibling.after(div);
+            div.addEventListener('click', () => {
+                inputTwoFields('input.DateInput_input',getDates('12Mths'),getDates('Today'));
+                let sb = findButton('','Apply');
+                if(sb) {
+                    focus(sb);
+                    sb.click();
+                };
+            });
         }
     }
 };
 
-function getDates(InValue) {
+// ===[ Breadcrumbs ] =============================================================================
+function MenuReportBreadcrumbListener() {
 
-    let d = new Date();
-    let month = d.getMonth();
-    let day = 1;
-    let year = d.getFullYear();
-
-    if(InValue == 'LastYTDs') {
-        year-=1;
-        month = 0;
-    }
-    if(InValue == 'LastYTDe') {
-        year-=1;
-        if(getCookie('MT_CalendarEOM') == 1) {
-            day = daysInMonth(month,year);
+    if (SaveLocationPathName.endsWith('/income') || SaveLocationPathName.endsWith('/spending')) {
+        if(r_eventListener == false) {
+            if(getCookie("MT_ReportsDrilldown") == 1) {
+                window.addEventListener("click", event => {
+                    let cl = event.target.parentNode;
+                    if(cl) {
+                        const CheckLegend = cl.attributes[0].value;
+                        if(CheckLegend) {
+                            if(CheckLegend.includes("PieChartWithLegend") == true) {
+                                const parentAsearch = cl.parentNode.parentNode.search;
+                                MenuReportBreadcrumbGo(parentAsearch);
+                            };
+                        }
+                    }
+                }, true);
+                r_eventListener = true;
+            }
         }
-    }
-    if(InValue == 'ThisQTRs') {
-        if(month < 3) {month = 0};
-        if(month == 4 || month == 5) {month = 3};
-        if(month == 7 || month == 8) {month = 6};
-        if(month == 10 || month == 11) {month = 9};
-    }
-    if(InValue == 'ThisQTRe') {
-        if(month < 2) {month = 2};
-        if(month == 3 || month == 4) {month = 5};
-        if(month == 6 || month == 7) {month = 8};
-        if(month == 9 || month == 10) {month = 11};
-        day = daysInMonth(month,year);
-     }
-    month+=1;
-    let FullDate = ("0" + month).slice(-2) + '/' + ("0" + day).slice(-2) + '/' + year;
-    return(FullDate);
-
-    function daysInMonth(iMonth, iYear) {
-        return 32 - new Date(iYear, iMonth, 32).getDate();
+        BuildCategoryGroups();
     }
 }
+
+function MenuReportBreadcrumbGo(Parms) {
+
+    let bcl = '';
+    let groupId = '';
+    let groupName = '';
+
+    if(Parms) {
+        const params = new URLSearchParams(Parms);
+        const categorygroups = params.get('categoryGroups');
+        const categories = params.get('categories');
+
+        if(categories || categorygroups) {
+            let storedStr = localStorage.getItem('persist:reports');
+            let x = storedStr.indexOf('}",')
+            if(x > 0) {
+
+                // Remove current categories
+                let newStoredStr = removeAllEncompass(storedStr,',\"categories\":','\"]');
+
+                newStoredStr = newStoredStr.substring(0,x) + ',\\"categories\\":[';
+
+                if(categorygroups) {
+                    for (let i = 0; i < accountGroups.length; i++) {
+                        if(accountGroups[i].GROUP == categorygroups) {
+                            if(bcl == '1') { newStoredStr = newStoredStr + ','};
+                            bcl = '1';
+                            newStoredStr = newStoredStr + '\\"' + accountGroups[i].ID + '\\"';
+                            groupName = accountGroups[i].GROUPNAME;
+                            groupId = accountGroups[i].GROUP;
+                        };
+                    }
+                } else
+                {
+                    newStoredStr = newStoredStr + '\\"' + categories + '\\"';
+                    bcl = '2';
+                    [groupId,groupName] = GetCategoryGroup(categories);
+                }
+
+                newStoredStr = newStoredStr + ']' + storedStr.substring(x);
+                newStoredStr = newStoredStr.replace('"category_group','"category');
+
+                localStorage.setItem("persist:reports", newStoredStr);
+                localStorage.setItem("persist:breadcrumb",groupId + '/:/' + groupName + '/:/' + bcl);
+
+                // Redirect back to page
+                window.location.replace(SaveLocationPathName);
+            }
+        }
+    }
+
+    let x = document.querySelector('div.ReportsPieChart__Root-a4nd0f-0');
+    if(x) {
+        let groupStoredStr = localStorage.getItem('persist:breadcrumb');
+        if(groupStoredStr) {
+            let GroupStuff = groupStoredStr.split('/:/');
+            groupId = GroupStuff[0];
+            groupName = GroupStuff[1];
+            bcl = GroupStuff[2];
+        }
+
+        if(groupId) {
+            if(bcl == '2') {
+                let bc = document.createElement('button');
+                bc.className = 'MTlink';
+                bc.innerText = groupName + ' »';
+                x.prepend(bc);
+                bc.addEventListener('click', () => {
+                    window.location.replace(SaveLocationPathName + '?categoryGroups=' + groupId);
+                });
+            } else
+            {
+                let bc = document.createElement('span');
+                bc.className = 'MTlink2';
+                bc.innerText = '/ ' + groupName;
+                x.prepend(bc);
+            }
+        }
+
+        let bc3 = document.createElement('button');
+        bc3.className = 'MTlink';
+        bc3.innerText = 'Clear Categories »';
+        x.prepend(bc3);
+        bc3.addEventListener('click', () => {
+            let storedStr = localStorage.getItem('persist:reports');
+            let newStoredStr = removeAllEncompass(storedStr,',\\"categories\\":','\"]');
+            newStoredStr = newStoredStr.replace('"\\"category\\""','"\\"category_group\\""');
+            localStorage.setItem('persist:reports',newStoredStr);
+            localStorage.removeItem('persist:breadcrumb');
+            window.location.replace(SaveLocationPathName);
+        });
+    }
+}
+
+function removeAllEncompass(InValue,InStart,InEnd) {
+
+    let result = InValue;
+    if(InValue != null) {
+        let a = InValue.indexOf(InStart);
+        if(a > 0) {
+            let b = InValue.indexOf(InEnd,a+1);
+            if(b > a) {
+                b = b + InEnd.length;
+                result = InValue.substring(0, a) + InValue.substring(b);
+            }
+        }
+    }
+    return result;
+}
+
+// ===[ Splits ] ======================================
 
 const MM_SplitCallback = (mutationList, observer2) => {
 
@@ -380,18 +497,6 @@ function MM_SplitTransaction() {
     }
 }
 
-function MenuInstitutions(OnFocus) {
-
-     if (SaveLocationPathName.substring(0,22) == '/settings/institutions') {
-        if(OnFocus == false) {
-
-        }
-        if(OnFocus == true) {
-            //MenuDisplay_Input('Run "Refresh All" once a day','MT_RefreshAll','checkbox');
-        }
-    }
-}
-
 function MenuTransactions(OnFocus) {
 
     if (SaveLocationPathName.substring(0,13) == '/transactions') {
@@ -399,7 +504,7 @@ function MenuTransactions(OnFocus) {
             r_oo = null;
         }
         if(OnFocus == true) {
-            MM_FixCalendar('');
+            r_spawn = 1;
         }
     }
 }
@@ -422,10 +527,11 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Hide Monarch Ads','MT_Ads','checkbox');
             MenuDisplay_Input('Hide Report Tooltip Difference','MT_HideTipDiff','checkbox');
             MenuDisplay_Input('Hide Create Rule Popup','MT_HideToaster','checkbox');
-            MenuDisplay_Input('Calendar "Last year YTD" includes to end of month','MT_CalendarEOM','checkbox');
+            MenuDisplay_Input('Calendar "Last year" and "Last 12 months" include full month','MT_CalendarEOM','checkbox');
             MenuDisplay_Input('Transactions panel has smaller compressed grid (Requires refresh page)','MT_CompressedTx','checkbox');
             MenuDisplay_Input('Hide Accounts Net Worth Graph Panel','MT_HideAccountsGraph','checkbox');
             MenuDisplay_Input('Show Pending Transactions in Red','MT_PendingIsRed','checkbox');
+            MenuDisplay_Input('Add Drill-Down functionality to Reports Income/Spending','MT_ReportsDrilldown','checkbox');
         }
     }
 }
@@ -499,6 +605,7 @@ function MenuCheckSpawnProcess() {
         r_spawn+=1;
         if(r_spawn > 3) {
             r_spawn = 0;
+            MenuReportBreadcrumbGo(window.location.search);
             MM_FixCalendar('');
         }
     }
@@ -554,6 +661,54 @@ function inputTwoFields(InSelector,InValue1,InValue2) {
             x[1].value = '';
             document.execCommand('insertText', false, InValue2);
         }
+    }
+}
+
+function getDates(InValue) {
+
+    let d = new Date();
+    let month = d.getMonth();
+    let day = 1;
+    let year = d.getFullYear();
+
+    if(InValue == 'LastYTDs') {
+        year-=1;
+        month = 0;
+    }
+    if(InValue == 'Today') {
+        day = d.getDate();
+    }
+    if(InValue == '12Mths') {
+        year-=1;
+        if(getCookie('MT_CalendarEOM') == 1) {
+            day = 1;
+        } else {day = d.getDate();}
+    }
+    if(InValue == 'LastYTDe') {
+        year-=1;
+        if(getCookie('MT_CalendarEOM') == 1) {
+            day = daysInMonth(month,year);
+        }
+    }
+    if(InValue == 'ThisQTRs') {
+        if(month < 3) {month = 0};
+        if(month == 4 || month == 5) {month = 3};
+        if(month == 7 || month == 8) {month = 6};
+        if(month == 10 || month == 11) {month = 9};
+    }
+    if(InValue == 'ThisQTRe') {
+        if(month < 2) {month = 2};
+        if(month == 3 || month == 4) {month = 5};
+        if(month == 6 || month == 7) {month = 8};
+        if(month == 9 || month == 10) {month = 11};
+        day = daysInMonth(month,year);
+     }
+    month+=1;
+    let FullDate = ("0" + month).slice(-2) + '/' + ("0" + day).slice(-2) + '/' + year;
+    return(FullDate);
+
+    function daysInMonth(iMonth, iYear) {
+        return 32 - new Date(iYear, iMonth, 32).getDate();
     }
 }
 
@@ -623,6 +778,7 @@ function getDisplay(InA) {
 }
 
 (function() {
+
     setInterval(() => {
 
         if(r_Init == false) {
@@ -637,7 +793,6 @@ function getDisplay(InA) {
                 MenuReports(false);
                 MenuDisplay(false);
                 MenuTransactions(false);
-                MenuInstitutions(false);
             };
 
             SaveLocationPathName = window.location.pathname;
@@ -645,11 +800,65 @@ function getDisplay(InA) {
             // Gain Focus on a Page
             MenuReports(true);
             MenuDisplay(true);
-            MenuInstitutions(true);
             MenuTransactions(true);
         };
 
         MenuCheckSpawnProcess();
 
-    },250);
+    },500);
 }());
+
+function getGraphqlToken() {
+  return JSON.parse(JSON.parse(localStorage.getItem('persist:root')).user).token;
+}
+
+function callGraphQL(data) {
+  return {
+    mode: 'cors',
+    method: 'POST',
+    headers: {
+      accept: '*/*',
+      authorization: `Token ${getGraphqlToken()}`,
+      'content-type': 'application/json',
+      origin: 'https://app.monarchmoney.com',
+    },
+    body: JSON.stringify(data),
+  };
+}
+
+async function getCategoryData() {
+  const options = callGraphQL({
+    operationName: 'GetCategorySelectOptions',
+    variables: {},
+      query: "query GetCategorySelectOptions {\n  categoryGroups {\n    id\n    name\n    type\n    categories {\n      id\n      name\n      __typename\n    }\n    __typename\n  }\n  categories {\n    id\n    name\n    order\n    icon\n    group {\n      id\n      name\n    }\n  }\n}"
+    });
+
+  return fetch(graphql, options)
+    .then((response) => response.json())
+    .then((data) => {
+      return data.data;
+    }).catch((error) => {
+      console.error(error);
+    });
+}
+
+async function BuildCategoryGroups() {
+
+    if(accountGroups.length == 0) {
+        const categoryData = await getCategoryData();
+        for (let i = 0; i < categoryData.categories.length; i += 1) {
+            accountGroups.push({"GROUP": categoryData.categories[i].group.id, "GROUPNAME": categoryData.categories[i].group.name, "ID": categoryData.categories[i].id, "NAME": categoryData.categories[i].name});
+        }
+    }
+}
+
+function GetCategoryGroup(InId) {
+
+  for (let i = 0; i < accountGroups.length; i++) {
+      if(accountGroups[i].ID == InId) {
+          return [accountGroups[i].GROUP,accountGroups[i].GROUPNAME];
+      }
+  }
+
+    return [null,null];
+}
