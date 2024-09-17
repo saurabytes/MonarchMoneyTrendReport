@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 
 
-**Versions 1.08: Beta**
+**Versions 1.08:**
 
 • NEW: Reports Graph Breadcrumbs and Drill-down
 
