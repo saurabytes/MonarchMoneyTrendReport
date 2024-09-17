@@ -11,8 +11,10 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
 # Monarch Money Tweaks
 
 * Compressed / Smaller Transactions grid to show more items
+
+* Ability to Drill Down / connect Groups to Categories in Income & Spending reports
   
-* Turn ON/OFF menu items.
+* Turn ON/OFF menu items
 
 * Save and Restore different Report Datasets (Save/Restore all settings on Reports page)
 
@@ -24,7 +26,7 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
 
 * Correct Calendar Year pull-down to only be years of data instead of since 2000
 
-* "Last year YTD" and "This Quarter" to pop-up calendar.
+* "Last year YTD", "Last 12 months" and "This quarter" to pop-up calendar
 
 * Hide Accounts Net Worth Graph Panel
 
