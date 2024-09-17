@@ -9,7 +9,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 • NEW: Added "Last 12 months" to Calendar
 
-• FIX: Correct Calendar Year pull-down did not always work on Transactinos screen. (more efficient)
+• FIX: Correct Calendar Year pull-down did not always work on Transactions screen. (more efficient)
 
 **Versions 1.07:**
 
