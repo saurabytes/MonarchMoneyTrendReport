@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.08
+// @version      1.09
 // @description  Monarch Tweaks
 // @author       Robert
 // @match        https://app.monarchmoney.com/*
@@ -329,6 +329,10 @@ function MenuReportBreadcrumbListener() {
                         if(CheckLegend) {
                             if(CheckLegend.includes("PieChartWithLegend") == true) {
                                 const parentAsearch = cl.parentNode.parentNode.search;
+                                r_spawn = -1;
+                                event.stopImmediatePropagation();
+                                event.stopPropagation();
+                                event.preventDefault();
                                 MenuReportBreadcrumbGo(parentAsearch);
                             };
                         }
@@ -346,6 +350,7 @@ function MenuReportBreadcrumbGo(Parms) {
     let bcl = '';
     let groupId = '';
     let groupName = '';
+    let catName = '';
 
     if(Parms) {
         const params = new URLSearchParams(Parms);
@@ -376,14 +381,14 @@ function MenuReportBreadcrumbGo(Parms) {
                 {
                     newStoredStr = newStoredStr + '\\"' + categories + '\\"';
                     bcl = '2';
-                    [groupId,groupName] = GetCategoryGroup(categories);
+                    [groupId,groupName,catName] = GetCategoryGroup(categories);
                 }
 
                 newStoredStr = newStoredStr + ']' + storedStr.substring(x);
                 newStoredStr = newStoredStr.replace('"category_group','"category');
 
                 localStorage.setItem("persist:reports", newStoredStr);
-                localStorage.setItem("persist:breadcrumb",groupId + '/:/' + groupName + '/:/' + bcl);
+                localStorage.setItem("persist:breadcrumb",groupId + '/:/' + groupName + '/:/' + bcl + '/:/' + catName );
 
                 // Redirect back to page
                 window.location.replace(SaveLocationPathName);
@@ -391,46 +396,49 @@ function MenuReportBreadcrumbGo(Parms) {
         }
     }
 
-    let x = document.querySelector('div.ReportsPieChart__Root-a4nd0f-0');
-    if(x) {
-        let groupStoredStr = localStorage.getItem('persist:breadcrumb');
-        if(groupStoredStr) {
-            let GroupStuff = groupStoredStr.split('/:/');
-            groupId = GroupStuff[0];
-            groupName = GroupStuff[1];
-            bcl = GroupStuff[2];
-        }
-
-        if(groupId) {
-            if(bcl == '2') {
-                let bc = document.createElement('button');
-                bc.className = 'MTlink';
-                bc.innerText = groupName + ' »';
-                x.prepend(bc);
-                bc.addEventListener('click', () => {
-                    window.location.replace(SaveLocationPathName + '?categoryGroups=' + groupId);
-                });
-            } else
-            {
-                let bc = document.createElement('span');
-                bc.className = 'MTlink2';
-                bc.innerText = '/ ' + groupName;
-                x.prepend(bc);
+    if(r_spawn > -1) {
+        let x = document.querySelector('div.ReportsPieChart__Root-a4nd0f-0');
+        if(x) {
+            let groupStoredStr = localStorage.getItem('persist:breadcrumb');
+            if(groupStoredStr) {
+                let GroupStuff = groupStoredStr.split('/:/');
+                groupId = GroupStuff[0];
+                groupName = GroupStuff[1];
+                bcl = GroupStuff[2];
+                catName = GroupStuff[3];
             }
-        }
 
-        let bc3 = document.createElement('button');
-        bc3.className = 'MTlink';
-        bc3.innerText = 'Clear Categories »';
-        x.prepend(bc3);
-        bc3.addEventListener('click', () => {
-            let storedStr = localStorage.getItem('persist:reports');
-            let newStoredStr = removeAllEncompass(storedStr,',\\"categories\\":','\"]');
-            newStoredStr = newStoredStr.replace('"\\"category\\""','"\\"category_group\\""');
-            localStorage.setItem('persist:reports',newStoredStr);
-            localStorage.removeItem('persist:breadcrumb');
-            window.location.replace(SaveLocationPathName);
-        });
+            if(groupId) {
+                if(bcl == '2') {
+                    let bc = document.createElement('button');
+                    bc.className = 'MTlink';
+                    bc.innerText = groupName + ' »';
+                    x.prepend(bc);
+                    bc.addEventListener('click', () => {
+                        window.location.replace(SaveLocationPathName + '?categoryGroups=' + groupId);
+                    });
+                } else
+                {
+                    let bc = document.createElement('span');
+                    bc.className = 'MTlink2';
+                    bc.innerText = '/ ' + groupName;
+                    x.prepend(bc);
+                }
+            }
+
+            let bc3 = document.createElement('button');
+            bc3.className = 'MTlink';
+            bc3.innerText = 'Clear Categories »';
+            x.prepend(bc3);
+            bc3.addEventListener('click', () => {
+                let storedStr = localStorage.getItem('persist:reports');
+                let newStoredStr = removeAllEncompass(storedStr,',\\"categories\\":','\"]');
+                newStoredStr = newStoredStr.replace('"\\"category\\""','"\\"category_group\\""');
+                localStorage.setItem('persist:reports',newStoredStr);
+                localStorage.removeItem('persist:breadcrumb');
+                window.location.replace(SaveLocationPathName);
+            });
+        }
     }
 }
 
@@ -781,29 +789,31 @@ function getDisplay(InA) {
 
     setInterval(() => {
 
-        if(r_Init == false) {
-            MM_Init();
-            r_Init = true;
-        }
+        if(r_spawn > -1) {
+            if(r_Init == false) {
+                MM_Init();
+                r_Init = true;
+            }
 
-        if(window.location.pathname != SaveLocationPathName) {
+            if(window.location.pathname != SaveLocationPathName) {
 
-            // Lose Focus on a page
-            if(SaveLocationPathName) {
-                MenuReports(false);
-                MenuDisplay(false);
-                MenuTransactions(false);
+                // Lose Focus on a page
+                if(SaveLocationPathName) {
+                    MenuReports(false);
+                    MenuDisplay(false);
+                    MenuTransactions(false);
+                };
+
+                SaveLocationPathName = window.location.pathname;
+
+                // Gain Focus on a Page
+                MenuReports(true);
+                MenuDisplay(true);
+                MenuTransactions(true);
             };
 
-            SaveLocationPathName = window.location.pathname;
-
-            // Gain Focus on a Page
-            MenuReports(true);
-            MenuDisplay(true);
-            MenuTransactions(true);
-        };
-
-        MenuCheckSpawnProcess();
+            MenuCheckSpawnProcess();
+        }
 
     },500);
 }());
@@ -856,9 +866,9 @@ function GetCategoryGroup(InId) {
 
   for (let i = 0; i < accountGroups.length; i++) {
       if(accountGroups[i].ID == InId) {
-          return [accountGroups[i].GROUP,accountGroups[i].GROUPNAME];
+          return [accountGroups[i].GROUP,accountGroups[i].GROUPNAME,accountGroups[i].NAME];
       }
   }
 
-    return [null,null];
+    return [null,null,null];
 }
