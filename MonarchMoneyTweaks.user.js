@@ -9,7 +9,7 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-const MM_Version = '1.08';
+const MM_Version = '1.09';
 let r_Init = false;
 let r_TipsActive = 0;
 let r_ToasterActive = 0;
