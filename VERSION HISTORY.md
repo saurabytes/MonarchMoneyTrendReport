@@ -2,6 +2,10 @@
 Here are a list of Open Issues, Unreleased changes and past changes:
 
 
+**Versions 1.10:**
+
+• FIX:  Splits did not always work (Change in MM class).
+
 **Versions 1.09:**
 
 • FIX:  Corrected flicker to Transaction screen during Graphs Drill down.
