@@ -30,7 +30,7 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
 
 * Hide Accounts Net Worth Graph Panel
 
-* Show Pending Transactions in Red
+* Show Pending Transactions in Red when Settings / Preferences / "Allow Edits to Pending Transactions" is set to "Off".
 
 
 # Monarch Money Trend Report
