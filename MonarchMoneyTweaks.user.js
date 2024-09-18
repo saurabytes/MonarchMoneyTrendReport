@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.09
+// @version      1.10
 // @description  Monarch Tweaks
 // @author       Robert
 // @match        https://app.monarchmoney.com/*
@@ -9,7 +9,7 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-const MM_Version = '1.09';
+const MM_Version = '1.10';
 let r_Init = false;
 let r_TipsActive = 0;
 let r_ToasterActive = 0;
@@ -472,14 +472,14 @@ const MM_SplitCallback = (mutationList, observer2) => {
 
 function MM_SplitTransaction() {
 
-    let li = document.querySelector('.TransactionSplitOriginalTransactionContainer__Amount-r53kdf-5')
+    let li = document.querySelector('[class*="TransactionSplitOriginalTransactionContainer__Amount"]')
     if(li) {
         if(li.getAttribute('hacked') != 'true') {
             li.setAttribute('hacked','true');
             let AmtStr = li.innerText.replace("$","");
             AmtStr = AmtStr.replace(/,/g,"");
             let AmtA = parseFloat(AmtStr).toFixed(2)
-            li = document.querySelectorAll('.TransactionSplitModal__SplitSectionHeader-sc-1qu174z-3');
+            li = document.querySelectorAll('[class*="TransactionSplitModal__SplitSectionHeader"]');
             if(li[1]) {
                 let AmtB = AmtA / 2;
                 AmtB = parseFloat(AmtB).toFixed(2)
