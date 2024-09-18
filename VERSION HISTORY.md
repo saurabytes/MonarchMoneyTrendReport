@@ -2,6 +2,9 @@
 Here are a list of Open Issues, Unreleased changes and past changes:
 
 
+**Versions 1.09:**
+
+• FIX:  Corrected flicker to Transaction screen during Graphs Drill down.
 
 **Versions 1.08:**
 
