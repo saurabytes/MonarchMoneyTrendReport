@@ -2,7 +2,7 @@
 Here are a list of Open Issues, Unreleased changes and past changes:
 
 
-**Versions 1.11:**
+**Versions 1.11: (beta)**
 
 • NEW:  Bells and Whistles to the Budget Forecast screen.
 
