@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         MonarchMoneyTrendReport
+// @name         Monarch Money Trend Report
 // @namespace    http://tampermonkey.net/
-// @version      1.07
-// @description  Enhance Sankey information into Trend format
+// @version      1.08
+// @description  Trend Report
 // @author       Robert
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
@@ -12,7 +12,7 @@
 let r_Init = false;
 let SaveLocationPathName = "";
 let TrendActive = false;
-let TrendIsCompressed=0;
+let TrendIsCollapsed=0;
 let TrendButton = null;
 let TrendButtonP = null;
 let TrendButtonA = null;
@@ -231,7 +231,7 @@ function Sankey_Trends(InExec) {
         }
         div = document.createElement('div');
         div.setAttribute('class', css_grid);
-        if(TrendIsCompressed == 1) {
+        if(TrendIsCollapsed == 1) {
             div.style.display = 'none';
         }
         elx = InRow.appendChild(div);
@@ -422,23 +422,23 @@ function Sankey_UpdateTrendControls(InReport,InControls) {
 
 function Sankey_ExpandText() {
 
-    if (TrendIsCompressed == 0) {
-        TrendButtonE.textContent = 'Compress';}
+    if (TrendIsCollapsed == 0) {
+        TrendButtonE.textContent = 'Collapse';}
     else {
         TrendButtonE.textContent = '  Expand  ';}
 }
 
 function Sankey_Expand() {
 
-    if (TrendIsCompressed == 1) {
+    if (TrendIsCollapsed == 1) {
         Sankey_FlexItems('div.TrendGrid','');
-        TrendIsCompressed = 0;
+        TrendIsCollapsed = 0;
     } else {
         Sankey_FlexItems('div.TrendGrid','none');
-        TrendIsCompressed = 1;
+        TrendIsCollapsed = 1;
     }
     Sankey_ExpandText();
-    setCookie('Trend_ExpandButton',TrendIsCompressed);
+    setCookie('Trend_ExpandButton',TrendIsCollapsed);
 
 }
 
@@ -477,7 +477,7 @@ function Sankey_LoadStyles() {
 
 function Init() {
 
-    TrendIsCompressed = getCookie('Trend_ExpandButton');
+    TrendIsCollapsed = getCookie('Trend_ExpandButton');
     r_Init = true;
 
 }
@@ -505,6 +505,7 @@ function getCookie(cname) {
 }
 
 (function() {
+
     setInterval(() => {
         if(r_Init == false) {
             Init();
@@ -517,6 +518,7 @@ function getCookie(cname) {
         }
         if(window.location.pathname != SaveLocationPathName) {
             TrendActive = false;
+
             if(SaveLocationPathName == '/reports/sankey') {
                 Sankey_UpdateChartControls("");
                 Sankey_UpdateTrendControls("none","none");
