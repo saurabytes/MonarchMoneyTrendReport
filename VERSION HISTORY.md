@@ -2,6 +2,10 @@
 Here are a list of Open Issues, Unreleased changes and past changes:
 
 
+**Versions 1.11:**
+
+• NEW:  Bells and Whistles to the Budget Forecast screen.
+
 **Versions 1.10:**
 
 • FIX:  Splits did not always work (Change in MM class).
