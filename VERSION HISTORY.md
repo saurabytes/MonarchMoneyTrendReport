@@ -2,9 +2,9 @@
 Here are a list of Open Issues, Unreleased changes and past changes:
 
 
-**Versions 1.11: (beta)**
+**Versions 1.11:**
 
-• NEW:  Bells and Whistles to the Budget Forecast screen.
+• NEW:  Added option to show YTD Actual total and Projected Total in Budget / Forecast / Monthly
 
 • CHANGE:  Menu and source clean-up 
 
