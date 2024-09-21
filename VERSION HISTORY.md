@@ -6,6 +6,8 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 • NEW:  Added option to show YTD Actual total and Projected Total in Budget / Forecast / Monthly
 
+• NEW:  Added option to export Budget / Forecast / Monthly to CSV.
+
 • CHANGE:  Menu and source clean-up 
 
 
