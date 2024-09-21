@@ -16,7 +16,7 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
   
 * Turn ON/OFF menu items
 
-* Ability to show Actual YTD totals and Projected in Budget / Forecast / Monthly
+* Ability to show "Actual YTD" and "Projected" totals in Budget / Forecast / Monthly
 
 * Save and Restore different Report Datasets (Save/Restore all settings on Reports page)
 
