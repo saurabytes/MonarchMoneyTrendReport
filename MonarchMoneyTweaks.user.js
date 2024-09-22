@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.11
+// @version      1.12
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -61,6 +61,12 @@ function MM_Init() {
     GM_addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster")) + ';}');
     GM_addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff")) + ';}');
     GM_addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph")) + ';}');
+
+    if(getCookie('MT_PlanCompressed') == 1) {
+        GM_addStyle('.sTiBE {height: 69px;}');
+        GM_addStyle('.jWyZIM {height: 45px;}');
+        GM_addStyle('.fAcQtX {margin-bottom: 2px;}');
+    }
 
     if(getCookie('MT_PendingIsRed') == 1) {
         GM_addStyle('.cxLoFP {color:red;}');
@@ -559,6 +565,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Reports - Add Drill-Down functionality to Reports Income/Spending','MT_ReportsDrilldown','checkbox');
             MenuDisplay_Input('Reports - Hide Chart Tooltip difference amount','MT_HideTipDiff','checkbox');
             MenuDisplay_Input('Budget - Add YTD Total & Projected to Forecast Monthly & Export','MT_PlanYTD','checkbox');
+            MenuDisplay_Input('Budget - Panel is smaller compressed grid (Requires refresh page)','MT_PlanCompressed','checkbox');
         }
     }
 }
@@ -683,6 +690,17 @@ function MenuPlanUpdate() {
         }
     }
 
+    if(getCookie("MT_Goals") == 1) {
+        let div = document.querySelectorAll('[class*="PlanSectionHeader__Root"]');
+        if(div.length > 2) {
+            div[2].style = 'display: ' + getDisplay(1);
+            div = div[2].nextSibling;
+            div.style = 'display: ' + getDisplay(1);
+            div = div.nextSibling;
+            div.style = 'display: ' + getDisplay(1);
+        }
+    }
+
     // turn off buttons (assume off)
     if(r_ooPl) {r_ooPl.style = 'display: ' + getDisplay(1)};
     if(r_ooPl2) {r_ooPl2.style = 'display: ' + getDisplay(1)};
@@ -774,7 +792,7 @@ function MenuPlanUpdate() {
                 }
             }
             // check half page load
-            if(useValue == null || useValue == '-') {
+            if(useValue == null) {
                 r_PlanGridActive = pending;
                 return;
             }
