@@ -33,6 +33,8 @@ let accountGroups = [];
 let SaveLocationHRefName = "";
 let SaveLocationPathName = "";
 
+let DebugForecast = false;
+
 function MM_Init() {
 
     let a1 = 'background-color: rgb(13, 44, 92); color: #FFFFFF;';
@@ -114,6 +116,7 @@ const MM_BodyCallback = (mutationList, observer2) => {
     if(r_PlanGridActive == pending) {
         if (r_PlanYear != '') {
             if(mutationList.length < 49) {
+                if(DebugForecast == true) {console.log('MM_BodyCallback',mutationList.length);};
                 r_PlanGridActive = true;
             }
         }
@@ -748,6 +751,8 @@ function MenuPlanUpdate() {
         return;
     }
 
+    if(DebugForecast == true) {console.log('MenuPlanUpdate',month,r_PlanYear,elements.length,r_PlanGridActive);};
+
     if(month > 0) {
         // insert header
         month-=1;
@@ -791,6 +796,7 @@ function MenuPlanUpdate() {
         }
 
         for (let el of elements) {
+
             useValue = el.innerText;
             if(!useValue) {
                 if(el.lastChild != null) {
@@ -801,15 +807,17 @@ function MenuPlanUpdate() {
                 }
             }
             // check half page load
-            if(useValue == null) {
+            if(useValue == null ) {
                 r_PlanGridActive = pending;
-                console.log('useValue is null');
+                if(DebugForecast == true) {console.log('MenuPlanUpdate','useValue is Null');};
                 return;
             }
-            if(useValue.startsWith('$') || useValue.startsWith('-')) {
+
+            if(useValue.startsWith('$') || useValue.startsWith('-') || useValue == '') {
                 cellValue = getCleanValue(useValue);
                 pivotCount+=1;
                 rowValue += cellValue;
+                 if(DebugForecast == true) {console.log('MenuPlanUpdate',pivotCount,useValue);};
 
                 // clone first column
                 if(pivotCount == 1) {
@@ -838,7 +846,7 @@ function MenuPlanUpdate() {
                     pivotCount = 0;
                     rowValue = 0;
                 };
-            }
+            } else {if(DebugForecast == true) {console.log('MenuPlanUpdate Skip',pivotCount,useValue);};};
         }
     }
 
@@ -925,7 +933,6 @@ function MenuCheckSpawnProcess() {
             if(SaveLocationHRefName != window.location.href) {
                 // reload plan
                 SaveLocationHRefName = window.location.href;
-                console.log('her');
                 r_PlanGridActive = true;
             }
             break;
