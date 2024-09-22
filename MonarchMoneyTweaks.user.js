@@ -657,6 +657,7 @@ function MenuPlanUpdate() {
     let hed = document.querySelector('[class*="PlanHeaderControls__SettingsButton"]');
     if(!hed) {
         r_PlanYear = '';
+        console.log('1');
         r_PlanGridActive = pending;
         return;
     }
@@ -754,13 +755,9 @@ function MenuPlanUpdate() {
         let elements = document.querySelectorAll('[class*="PlanGrid__PlanGridColumn"]');
 
         // check for finished page loading
-        let count = elements.length;
-        if(count) {
-            count -= 12;
-            if(elements[count].innerText == '-') {
-                r_PlanGridActive = pending;
-                return;
-            }
+        let elCnt = elements.length;
+        if(elCnt) {
+            elCnt -= 12; // January final
         }
 
         for (let el of elements) {
@@ -796,14 +793,17 @@ function MenuPlanUpdate() {
         for (let el of elements) {
             useValue = el.innerText;
             if(!useValue) {
-                let x = el.lastChild.childNodes[0];
-                if(x) {
-                    useValue = x.defaultValue;
+                if(el.lastChild != null) {
+                    let x = el.lastChild.childNodes[0];
+                    if(x) {
+                        useValue = x.defaultValue;
+                    }
                 }
             }
             // check half page load
             if(useValue == null) {
                 r_PlanGridActive = pending;
+                console.log('useValue is null');
                 return;
             }
             if(useValue.startsWith('$') || useValue.startsWith('-')) {
@@ -925,6 +925,7 @@ function MenuCheckSpawnProcess() {
             if(SaveLocationHRefName != window.location.href) {
                 // reload plan
                 SaveLocationHRefName = window.location.href;
+                console.log('her');
                 r_PlanGridActive = true;
             }
             break;
