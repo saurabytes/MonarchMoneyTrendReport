@@ -1,11 +1,15 @@
 # Monarch Money Tweaks - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
-**Versions 1.12:**
+** (Upcoming) :**
 
 • NEW:  Added option to compress/make smaller Forecast grid
 
-• NEW:  If Menu Hide Goals, then Goals will be hidden from Forecast 
+• NEW:  If Menu Hide Goals, then Goals will be hidden from Forecast
+
+• NEW:  Trends report 
+
+
 
 **Versions 1.11:**
 
