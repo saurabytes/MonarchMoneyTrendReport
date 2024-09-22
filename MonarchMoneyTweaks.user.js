@@ -753,6 +753,16 @@ function MenuPlanUpdate() {
         let currentPeriod = getMonthName(month,true) + ' ' + year;
         let elements = document.querySelectorAll('[class*="PlanGrid__PlanGridColumn"]');
 
+        // check for finished page loading
+        let count = elements.length;
+        if(count) {
+            count -= 12;
+            if(elements[count].innerText == '-') {
+                r_PlanGridActive = pending;
+                return;
+            }
+        }
+
         for (let el of elements) {
             if(el.innerText == currentPeriod) {
                 let clonedNode = el.cloneNode(true);
