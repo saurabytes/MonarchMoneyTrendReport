@@ -869,6 +869,10 @@ function MenuPlanExport(Year) {
     const data2 = [];
 
     let useValue = '';
+    var i = 0;
+    var ii = 0;
+    var iir = 0;
+    let FullRow = r_PlanYear;
 
     // Headers
     spans.forEach(span => {
@@ -879,20 +883,28 @@ function MenuPlanExport(Year) {
             data.push(span.innerText);
         }
     });
+
     // Cell Amounts
     const storedStyle = spans2[0].className;
     spans2.forEach(span => {
-        if(span.className == storedStyle) {
-            useValue = span.innerText;
+        i+=1;
+        if(ii > 0 || (i == 1 && span.className == storedStyle)) {
+            ii+=1;
+            if(span.value) {
+                useValue = span.value;
+            }
+            else
+            {
+                useValue = span.innerText;
+            }
             useValue = getCleanValue(useValue);
             data2.push(useValue);
         }
+        if(i == 12) {
+            i =0 ;
+            ii = 0;
+        }
     });
-
-    var i = 0;
-    var ii = 0;
-    var iir = 0;
-    let FullRow = r_PlanYear;
 
     for (i = 0; i < 12; i++) {
         FullRow = FullRow + ',' + getMonthName(i,true);
