@@ -33,7 +33,7 @@ let accountGroups = [];
 let SaveLocationHRefName = "";
 let SaveLocationPathName = "";
 
-let DebugForecast = true;
+let DebugForecast = false;
 
 function MM_Init() {
 
@@ -807,6 +807,7 @@ function MenuPlanUpdate() {
                 cellValue = getCleanValue(useValue);
                 pivotCount+=1;
 
+                // check totals finished
                 if(pivotCount == 1) {
                     JanValue = useValue;
                 }
