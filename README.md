@@ -10,7 +10,9 @@ Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweak
 
 # Monarch Money Tweaks
 
-* Compressed / Smaller Transactions grid to show more items
+* Compressed & Smaller Transactions grid to show more items
+
+* Compressed & Smaller Budget / Forecast grid to show more items
 
 * Breadcrumbs on reports Income & Spending allow staying on the Reports page instead of going to Transactions and connecting Groups to Categories
   
