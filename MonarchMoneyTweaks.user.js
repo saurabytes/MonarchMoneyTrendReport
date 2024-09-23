@@ -671,7 +671,6 @@ function MenuPlanUpdate() {
     let hed = document.querySelector('[class*="PlanHeaderControls__SettingsButton"]');
     if(!hed) {
         r_PlanYear = '';
-        console.log('1');
         r_PlanGridActive = pending;
         return;
     }
