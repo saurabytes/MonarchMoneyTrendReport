@@ -101,12 +101,14 @@ function MM_hideElement(InList,InValue) {
 
 function MM_SetupCallbacks() {
 
-    let useTarget=document.querySelector('body');
-    if(useTarget != null) {
-        const observer2 = new MutationObserver(MM_BodyCallback);
-        const config = { attributes: true, childList: true, subtree: true, };
-        observer2.observe(useTarget, config);
-        r_oo2 = useTarget;
+    if(!r_oo2) {
+        let useTarget=document.querySelector('body');
+        if(useTarget != null) {
+            const observer2 = new MutationObserver(MM_BodyCallback);
+            const config = { attributes: true, childList: true, subtree: true, };
+            observer2.observe(useTarget, config);
+            r_oo2 = useTarget;
+        }
     }
 }
 
