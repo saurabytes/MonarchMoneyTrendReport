@@ -14,6 +14,8 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 • CHANGE:  Menu and source clean-up 
 
+• FIX: On/Off menu items did not update immediately if using a Login screen 
+
 
 **Versions 1.10:**
 
