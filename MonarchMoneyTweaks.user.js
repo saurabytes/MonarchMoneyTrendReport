@@ -579,7 +579,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Reports - Add Drill-Down functionality to Reports Income/Spending','MT_ReportsDrilldown','checkbox');
             MenuDisplay_Input('Reports - Hide Chart Tooltip difference amount','MT_HideTipDiff','checkbox');
             MenuDisplay_Input('Budget - Add YTD Total & Projected to Forecast Monthly & Export','MT_PlanYTD','checkbox');
-            MenuDisplay_Input('Budget - Panel is smaller compressed grid (Requires refresh page)','MT_PlanCompressed','checkbox');
+            MenuDisplay_Input('Budget - Panel has smaller compressed grid (Requires refresh page)','MT_PlanCompressed','checkbox');
         }
     }
 }
