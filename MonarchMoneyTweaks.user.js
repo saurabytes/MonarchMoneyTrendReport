@@ -33,7 +33,7 @@ let accountGroups = [];
 let SaveLocationHRefName = "";
 let SaveLocationPathName = "";
 
-let DebugForecast = false;
+let DebugForecast = true;
 
 function MM_Init() {
 
@@ -759,12 +759,6 @@ function MenuPlanUpdate() {
         let currentPeriod = getMonthName(month,true) + ' ' + year;
         let elements = document.querySelectorAll('[class*="PlanGrid__PlanGridColumn"]');
 
-        // check for finished page loading
-        let elCnt = elements.length;
-        if(elCnt) {
-            elCnt -= 12; // January final
-        }
-
         for (let el of elements) {
             if(el.innerText == currentPeriod) {
                 let clonedNode = el.cloneNode(true);
@@ -786,6 +780,7 @@ function MenuPlanUpdate() {
         var cellValue = 0;
         var rowValue = 0;
         let useValue = '';
+        let JanValue = '';
         let clonedNodeYTD = null;
         let clonedNodeProj = null;
 
@@ -806,16 +801,23 @@ function MenuPlanUpdate() {
                     }
                 }
             }
-            // check half page load
-            if(useValue == null ) {
-                r_PlanGridActive = pending;
-                if(DebugForecast == true) {console.log('MenuPlanUpdate','useValue is Null');};
-                return;
-            }
 
             if(useValue.startsWith('$') || useValue.startsWith('-') || useValue == '') {
+
                 cellValue = getCleanValue(useValue);
                 pivotCount+=1;
+
+                if(pivotCount == 1) {
+                    JanValue = useValue;
+                }
+                if(pivotCount == month) {
+                    if(useValue.startsWith('$') && JanValue == '-') {
+                        if(DebugForecast == true) {console.log('MenuPlanUpdate','Waiting',JanValue,useValue);};
+                        r_PlanGridActive = pending;
+                        return;
+                    }
+                }
+
                 rowValue += cellValue;
                  if(DebugForecast == true) {console.log('MenuPlanUpdate',pivotCount,useValue);};
 
