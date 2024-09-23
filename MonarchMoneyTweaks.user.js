@@ -544,6 +544,15 @@ function MenuTransactions(OnFocus) {
     }
 }
 
+function MenuLogin(OnFocus) {
+
+    if (SaveLocationPathName.startsWith('/login')) {
+        if(OnFocus == false) {
+            MM_Init();
+        }
+    }
+}
+
 function MenuDisplay(OnFocus) {
 
     if (SaveLocationPathName.startsWith('/settings/display')) {
@@ -1178,6 +1187,7 @@ function downloadFile(inTitle,inData) {
 
                 // Lose Focus on a page
                 if(SaveLocationPathName) {
+                    MenuLogin(false);
                     MenuReports(false);
                     MenuDisplay(false);
                     MenuTransactions(false);
