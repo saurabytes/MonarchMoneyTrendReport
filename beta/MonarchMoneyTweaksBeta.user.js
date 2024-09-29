@@ -13,7 +13,7 @@
 const css_currency = 'USD';
 const pending = 2;
 const graphql = 'https://api.monarchmoney.com/graphql';
-const css_green = '#489d8c';
+const css_green = 'rgb(72, 157, 140)';
 const css_red = '#ed5987;';
 let css_bgColor = '';
 
@@ -61,6 +61,7 @@ function MM_Init() {
     GM_addStyle('.MTTrendsContainer {display:block; padding-bottom: 0px;}');
     GM_addStyle('.MTFlexContainer {margin: 0px; gap: 20px; display: flex;}');
     GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_bgColor + ';}');
+    GM_addStyle('.MTTrendCell {color:rgb(30, 31, 34); text-align: right;}');
     GM_addStyle('.MTTrendBig {font-size: 18px; font-weight: 500; padding-top: 8px;}');
     GM_addStyle('.MTTrendSmall {font-size: 12px;font-weight: 600; padding-top: 8px; color: #919cb4; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
 
@@ -320,6 +321,7 @@ async function MenuReportsTrendsGo() {
     if(TrendFullPeriod == 1) {
         day2 = daysInMonth(month2,year2);
         higherDate.setDate(day2);
+        TrendQueueCol[0] = TrendQueueCol[0] + ' *';
     }
     TrendQueueCol[2] = 'Difference';
     await BuildTrendData('lm',lowerDate,higherDate);
@@ -547,13 +549,13 @@ function MenuReportsTrendsDraw() {
             }
         }
 
-        let elx = Trend_Table1W(el,inTitle,'width: 16%;'+ useStyle[0]);
-        elx = Trend_Table1W(el,a,'text-align: right; width: 14%;');
-        elx = Trend_Table1W(el,b,'text-align: right; width: 14%;');
-        elx = Trend_Table1W(el,c,'text-align: right; width: 11%;' + useStyle[1]);
-        elx = Trend_Table1W(el,d,'text-align: right; width: 18%;');
-        elx = Trend_Table1W(el,e,'text-align: right; width: 14%;');
-        elx = Trend_Table1W(el,f,'text-align: right; width: 11%;' + useStyle[2]);
+        let elx = Trend_Table1W(el,inTitle,'text-align: left; width: 16%;'+ useStyle[0]);
+        elx = Trend_Table1W(el,a,'width: 14%;');
+        elx = Trend_Table1W(el,b,'width: 14%;');
+        elx = Trend_Table1W(el,c,'width: 11%;' + useStyle[1]);
+        elx = Trend_Table1W(el,d,'width: 18%;');
+        elx = Trend_Table1W(el,e,'width: 14%;');
+        elx = Trend_Table1W(el,f,'width: 11%;' + useStyle[2]);
 
         if(inType == 1 || inType == 2) {
             return cec('div',css_grid,InRow);
@@ -585,7 +587,7 @@ function MenuReportsTrendsDraw() {
 
     function Trend_Table1W(InRow,abcd,InStyle) {
 
-        return cec('span','MTTrendCellAmount',InRow,abcd,'','style',InStyle);
+        return cec('span','MTTrendCell',InRow,abcd,'','style',InStyle);
 
     }
 
