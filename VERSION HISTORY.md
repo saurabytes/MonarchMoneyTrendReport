@@ -1,6 +1,8 @@
 # Monarch Money Tweaks - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
 
+Email any issues directly:  robert @ paresi.net
+
 
 **Versions 1.11/1.12:**
 
