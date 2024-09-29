@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.20.01
+// @version      1.20.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -23,10 +23,9 @@ let r_PlanGridActive = false;
 let r_TrendsActiveReady = false;
 let r_FilterD = false;
 let r_spawn = 0;
-let r_eventListener = false;
+let r_eventListener = null;
 let r_oo = null;
 let r_oo2 = null;
-let r_ooPO = null;
 let r_ooPl = null;
 let r_ooPl2 = null;
 let r_PlanYear = '';
@@ -139,7 +138,7 @@ const MM_BodyCallback = (mutationList, observer2) => {
             }
         }
     }
-}
+};
 
 // [ Reports Menu ]
 function MenuReports(OnFocus) {
@@ -149,8 +148,8 @@ function MenuReports(OnFocus) {
             const pn = window.location.pathname;
             if(pn.startsWith('/reports/') == false) {
                 r_oo = null;
-            };
-        };
+            }
+        }
        if(OnFocus == true) {
            MenuReportsDataset();
            MenuReportBreadcrumbListener();
@@ -162,7 +161,7 @@ function MenuReports(OnFocus) {
 
 function MenuReportsDataset() {
 
-    const isFilter = document.querySelector('button.MT_FilterRestore')
+    const isFilter = document.querySelector('button.MT_FilterRestore');
     if(isFilter == null) {
         const elements=document.querySelectorAll('div.WithIndicatorContainer__Root-sc-1gqsonh-0');
         if(elements) {
@@ -185,9 +184,7 @@ function MenuReportsDataset() {
                     fb2.setAttribute('id','MTDropdown');
                     div.appendChild(fb2);
 
-                    fbr.addEventListener('click', () => {
-                        MenuFilter();
-                    });
+                    fbr.addEventListener('click', MenuFilter,false);
                 }
             }
         }
@@ -202,7 +199,7 @@ function MenuReportsTrends() {
         const div = document.querySelector('[class*="ReportsHeaderTabs__Root"]');
         if(div) {
             r_TrendsActive = cec('a','MTTrendsMenu ' + div.lastChild.className,div,'Trends','/reports/trends');
-        };
+        }
     }
 
     if(SaveLocationPathName.endsWith('/reports/trends')) {
@@ -219,9 +216,9 @@ function MenuReportsTrends() {
 function MenuReportsTrendsPanels(inType) {
 
     let div = document.querySelector("div.MTdropdown");
-    if(div) {div.parentNode.style=inType};
+    if(div) {div.parentNode.style=inType;}
     div = document.querySelector('[class*="Grid__GridStyled-"]');
-    if(div) {div.style=inType};
+    if(div) {div.style=inType;}
 }
 
 async function MenuReportsTrendsGo() {
@@ -230,6 +227,7 @@ async function MenuReportsTrendsGo() {
 
     TrendQueueByGroup = getCookie('MTTrendGroup',true);
     TrendQueueByPeriod = getCookie('MTTrendPeriod',true);
+    let TrendFullPeriod = getCookie('MT_TrendFullPeriod',true);
 
     await BuildCategoryGroups();
 
@@ -249,8 +247,6 @@ async function MenuReportsTrendsGo() {
     let month2 = higherDate.getMonth();
     let day2 = higherDate.getDate();
     let year2 = higherDate.getFullYear();
-
-    let TrendFullPeriod = getCookie('MT_TrendFullPeriod');
 
     TrendQueueTitle = getMonthName(month,true) + ' ' + day + ', ' + year + ' - ' + getMonthName(month2,true) + ' ' + day2 + ', ' + year2;
 
@@ -279,6 +275,10 @@ async function MenuReportsTrendsGo() {
         lowerDate.setMonth(month);
         TrendQueueCol[1] = getMonthName(month,true) + ' - ';
     }
+    if(TrendFullPeriod == 1) {
+        day2 = daysInMonth(month2,year2);
+        higherDate.setDate(day2);
+    }
 
     TrendQueueCol[1] = TrendQueueCol[1] + getMonthName(month2,true) + ' ' + year;
     await BuildTrendData('cm',lowerDate,higherDate);
@@ -290,16 +290,14 @@ async function MenuReportsTrendsGo() {
         if(month < 0) {
             month = 11;
             year = year - 1;
-        };
+        }
         month2 = month;
         year2 = year;
         lowerDate.setFullYear(year,month,1);
         higherDate.setFullYear(year2,month2,1);
 
         let x = daysInMonth(month,year);
-        if(TrendFullPeriod == 1 || day2 > x) {
-            day2 = x;
-        }
+        if(day2 > x) {day2 = x;}
         higherDate.setDate(day2);
         TrendQueueShortTitle = 'Last Month';
         TrendQueueCol[0] = getMonthName(month2,true) + ' ' + year;
@@ -308,9 +306,6 @@ async function MenuReportsTrendsGo() {
         year-=1;
         lowerDate.setFullYear(year,month,1);
         higherDate.setFullYear(year,month,1);
-        if(TrendFullPeriod == 1) {
-            day2 = daysInMonth(month,year);
-        }
         higherDate.setDate(day2);
         TrendQueueShortTitle = 'Last ' + getMonthName(month);
         TrendQueueCol[0] = getMonthName(month,true) + ' ' + year;
@@ -321,6 +316,10 @@ async function MenuReportsTrendsGo() {
         higherDate.setFullYear(year);
         TrendQueueCol[0] = getMonthName(month,true) + ' - ' + getMonthName(month2,true) + ' ' + year;
         TrendQueueShortTitle = TrendQueueCol[0];
+    }
+    if(TrendFullPeriod == 1) {
+        day2 = daysInMonth(month2,year2);
+        higherDate.setDate(day2);
     }
     TrendQueueCol[2] = 'Difference';
     await BuildTrendData('lm',lowerDate,higherDate);
@@ -493,9 +492,7 @@ function MenuReportsTrendsDraw() {
             div2.textContent = 'Export';
             div2.className = 'MTTrendExport ' + css_button;
             tbs.appendChild(div2);
-            div2.addEventListener('click', () => {
-                MenuReportsTrendExport();
-            });
+            div2.addEventListener('click',MenuReportsTrendExport,false);
 
             div2 = document.createElement('button');
             let tl = ['By Last Month','By Month', 'By Quarter'];
@@ -590,7 +587,7 @@ function MenuReportsTrendsDraw() {
 
         return cec('span','MTTrendCellAmount',InRow,abcd,'','style',InStyle);
 
-    };
+    }
 
     function Trend_DumpTotal(inRow,inType,inGroup,inTitle) {
 
@@ -670,7 +667,6 @@ function MenuReportsTrendsDraw() {
 
         for (let i = 0; i < TrendQueue.length; i++) {
             if(TrendQueue[i].TYPE == inGroup) {
-                let DescStr = decodeURIComponent(TrendQueue[i].DESC);
                 row = Trend_TableGrid(row,3,inGroup,TrendQueue[i].DESC,TrendQueue[i].N_LASTM,TrendQueue[i].N_CURRENTM,TrendQueue[i].N_DIFFM,TrendQueue[i].N_LAST,TrendQueue[i].N_CURRENT,TrendQueue[i].N_DIFF);
             }
         }
@@ -681,28 +677,28 @@ function MenuReportsTrendsDraw() {
 
         let useStyle = '';
         if(inGroup == 'income' || inGroup == 'savings') {
-            if(inAmount >= 0) { useStyle = 'color: ' + css_green; };
+            if(inAmount >= 0) { useStyle = 'color: ' + css_green; }
         } else {
-            if(inAmount <= 0) { useStyle = 'color: ' + css_green; };
+            if(inAmount <= 0) { useStyle = 'color: ' + css_green; }
         }
-        if(useStyle == '' && inRed == true) {useStyle = 'color: ' + css_red};
+        if(useStyle == '' && inRed == true) {useStyle = 'color: ' + css_red;}
         return useStyle;
     }
 
     function Trend_LoadStyles() {
 
         let element=document.querySelector('div.Grid__GridItem-s9hcqo-1');
-        if(element) { css_table0 = 'Trend_' + element.className; };
+        if(element) { css_table0 = 'Trend_' + element.className; }
         element=document.querySelector('div.Card__CardRoot-sc-1pcxvk9-0');
-        if(element) { css_table1 = 'Trend_' + element.className; };
+        if(element) { css_table1 = 'Trend_' + element.className; }
         element=document.querySelector('div.CardHeader__Root-r0eoe3-0');
-        if(element) { css_table2 = 'Trend_' + element.className; };
+        if(element) { css_table2 = 'Trend_' + element.className; }
         element=document.querySelector('div.TransactionsSummaryCard__CardInner-sc-10q11ba-1');
-        if(element) { css_grid = 'TrendGrid ' + element.className; };
+        if(element) { css_grid = 'TrendGrid ' + element.className; }
         element=document.querySelector('div.TransactionsSummaryCard__CardItem-sc-10q11ba-0');
-        if(element) { css_items = 'Trend_' + element.className; };
+        if(element) { css_items = 'Trend_' + element.className; }
         element = findButton('','');
-        if(element) { css_button = element.className;};
+        if(element) { css_button = element.className;}
 
     }
 
@@ -714,7 +710,7 @@ function MenuReportsTrendsDraw() {
 
         csvContent = csvContent + 'Trends Report - ' + getDates('Today') + c + TrendQueueCol.join(c) + CRLF;
 
-        let types = ['income','expense']
+        let types = ['income','expense'];
         for (const i in types) {
             csvContent = csvContent + types[i].toUpperCase() + c;
             if(i == 0) {
@@ -765,7 +761,7 @@ function MenuFilter() {
         if(lc) {
             MenuFilter_AddItem(eID,'a','href','#MTF_#','Update "' + lc.substring(4) + '"');
             MenuFilter_AddItem(eID,'a','href','#MTF_$','Delete "' + lc.substring(4) + '"');
-        };
+        }
         MenuFilter_AddItem(eID,'div','','','|');
         for (var i = 0; i < rnames.length; i++) {
             MenuFilter_AddItem(eID,'a','href','#' + rnames[i],rnames[i].substring(4));
@@ -774,14 +770,14 @@ function MenuFilter() {
     } else
     {
         r_FilterD = false;
-    };
+    }
 }
 
 function MenuFilter_AddItem(p,a,b,c,d) {
 
     let divI = document.createElement(a);
-    if(b) {divI.setAttribute(b,c)};
-    if(d) {divI.innerText = d};
+    if(b) {divI.setAttribute(b,c);}
+    if(d) {divI.innerText = d;}
     p.appendChild(divI);
 }
 
@@ -847,7 +843,7 @@ function MM_FixCalendarYears() {
 function MM_FixCalendarDropdown(InList) {
 
     let ii = parseInt(getCookie("MT_LowCalendarYear"));
-    if(ii < 2000) {ii = 2000};
+    if(ii < 2000) {ii = 2000;}
     ii -= 2000;
     for (let i = 0; i < ii; i++) {
         InList.removeChild(InList.firstChild);
@@ -856,7 +852,7 @@ function MM_FixCalendarDropdown(InList) {
 
 const MM_FixCalendarCallback = (mutationList, observer) => {
 
-    r_DatePickerActive = r_DatePickerActive? false : true
+    r_DatePickerActive = r_DatePickerActive? false : true;
 
     if (r_DatePickerActive == true) {
         let li = document.querySelectorAll('div.DateRangePickerShortcuts__StyledMenuItem-jr6842-1');
@@ -873,7 +869,7 @@ const MM_FixCalendarCallback = (mutationList, observer) => {
                 if(sb) {
                     focus(sb);
                     sb.click();
-                };
+                }
             });
             div = document.createElement('div');
             div.className = useClass;
@@ -897,7 +893,7 @@ const MM_FixCalendarCallback = (mutationList, observer) => {
                 if(sb) {
                     focus(sb);
                     sb.click();
-                };
+                }
             });
         }
     }
@@ -907,25 +903,24 @@ const MM_FixCalendarCallback = (mutationList, observer) => {
 function MenuReportBreadcrumbListener() {
 
     if (SaveLocationPathName.endsWith('/income') || SaveLocationPathName.endsWith('/spending')) {
-        if(r_eventListener == false) {
+        if(r_eventListener == null) {
             if(getCookie("MT_ReportsDrilldown") == 1) {
-                window.addEventListener("click", event => {
+                r_eventListener = window.addEventListener('click', event => {
                     const cl = event.target.parentNode;
                     if(cl) {
                         const CheckLegend = cl.attributes[0].value;
                         if(CheckLegend) {
                             if(CheckLegend.includes("PieChartWithLegend") == true) {
-                                const parentAsearch = cl.parentNode.parentNode.search;
-                                r_spawn = -1;
                                 event.stopImmediatePropagation();
                                 event.stopPropagation();
                                 event.preventDefault();
+                                const parentAsearch = cl.parentNode.parentNode.search;
+                                r_spawn = -1;
                                 MenuReportBreadcrumbGo(parentAsearch);
-                            };
+                            }
                         }
                     }
                 }, true);
-                r_eventListener = true;
             }
         }
         BuildCategoryGroups();
@@ -958,12 +953,12 @@ function MenuReportBreadcrumbGo(Parms) {
                 if(categorygroups) {
                     for (let i = 0; i < accountGroups.length; i++) {
                         if(accountGroups[i].GROUP == categorygroups) {
-                            if(bcl == '1') { newStoredStr = newStoredStr + ','};
+                            if(bcl == '1') { newStoredStr = newStoredStr + ',';}
                             bcl = '1';
                             newStoredStr = newStoredStr + '\\"' + accountGroups[i].ID + '\\"';
                             groupName = accountGroups[i].GROUPNAME;
                             groupId = accountGroups[i].GROUP;
-                        };
+                        }
                     }
                 } else
                 {
@@ -1161,7 +1156,7 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
             e2 = document.createElement('input');
             e2.type = inType;
             e2.className = 'MTCheckboxClass';
-            if(OldValue == 1) {e2.checked = 'checked'};
+            if(OldValue == 1) {e2.checked = 'checked';}
             e1.appendChild(e2);
             e2.addEventListener('change', () => {
                 flipCookie(inCookie,1);
@@ -1169,7 +1164,7 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
             });
             e3 = document.createTextNode('  ' + inValue);
             e2.parentNode.insertBefore(e3, e2.nextSibling);
-        };
+        }
         if(inType == 'number') {
             cec('div','',e1,inValue,'','style','font-size: 14px; font-weight: 500;');
             e2 = document.createElement('input');
@@ -1186,7 +1181,7 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
     }
 }
 
-// [ Plan & Budget ] 
+// [ Plan & Budget ]
 function MenuPlan(OnFocus) {
 
     if (SaveLocationPathName.startsWith('/plan')) {
@@ -1242,9 +1237,7 @@ function MenuPlanUpdate() {
             r_ooPl2.textContent = 'Export';
             r_ooPl2.style = 'display: ' + getDisplay(1);
             hed2.prepend(r_ooPl2);
-            r_ooPl2.addEventListener('click', () => {
-                MenuPlanExport();
-            });
+            r_ooPl2.addEventListener('click', MenuPlanExport, false);
         }
     }
 
@@ -1260,8 +1253,8 @@ function MenuPlanUpdate() {
     }
 
     // turn off buttons (assume off)
-    if(r_ooPl) {r_ooPl.style = 'display: ' + getDisplay(1)};
-    if(r_ooPl2) {r_ooPl2.style = 'display: ' + getDisplay(1)};
+    if(r_ooPl) {r_ooPl.style = 'display: ' + getDisplay(1);}
+    if(r_ooPl2) {r_ooPl2.style = 'display: ' + getDisplay(1);}
 
     // remove all tweaked columns
     removeAllSections('.MTPlanHeader');
@@ -1291,7 +1284,7 @@ function MenuPlanUpdate() {
         return;
     }
 
-    if(r_ooPl2) {r_ooPl2.style = 'display: ' + getDisplay(0)};
+    if(r_ooPl2) {r_ooPl2.style = 'display: ' + getDisplay(0);}
 
     // only tweak this year's forecast
     const d = new Date();
@@ -1349,7 +1342,7 @@ function MenuPlanUpdate() {
 
             if(useValue.startsWith('$') || useValue.startsWith('-') || useValue == '') {
 
-                cellValue = getCleanValue(useValue);
+                cellValue = getCleanValue(useValue,0);
                 pivotCount+=1;
 
                 // check totals finished
@@ -1371,33 +1364,33 @@ function MenuPlanUpdate() {
                     clonedNodeYTD.className = clonedNodeYTD.className + ' MTPlanDetail';
                     clonedNodeProj = el.cloneNode(true);
                     clonedNodeProj.className = clonedNodeProj.className + ' MTPlanDetail';
-                };
+                }
 
                 if(pivotCount == month) {
                     if(isNaN(rowValue)) {
                         clonedNodeYTD.innerText = '-';
                     } else {
                         clonedNodeYTD.innerText = getDollarValue(rowValue);
-                    };
+                    }
                     el.insertAdjacentElement('afterend', clonedNodeYTD);
-                };
+                }
 
                 if(pivotCount == 12) {
                     if(isNaN(rowValue)) {
                         clonedNodeProj.innerText = '-';
                     } else {
                         clonedNodeProj.innerText = getDollarValue(rowValue);
-                    };
+                    }
                     el.insertAdjacentElement('afterend', clonedNodeProj);
                     pivotCount = 0;
                     rowValue = 0;
-                };
+                }
             }
         }
     }
 
-    if(r_ooPl) {r_ooPl.style = 'display: ' + getDisplay(0)};
-    if(r_ooPl2) {r_ooPl2.style = 'display: ' + getDisplay(0)};
+    if(r_ooPl) {r_ooPl.style = 'display: ' + getDisplay(0);}
+    if(r_ooPl2) {r_ooPl2.style = 'display: ' + getDisplay(0);}
 
     r_PlanGridActive = pending;
 }
@@ -1440,7 +1433,7 @@ function MenuPlanExport(Year) {
             {
                 useValue = span.innerText;
             }
-            useValue = getCleanValue(useValue);
+            useValue = getCleanValue(useValue,0);
             data2.push(useValue);
         }
         if(i == 12) {
@@ -1459,7 +1452,7 @@ function MenuPlanExport(Year) {
         if(iir == 0) {
             if(data[ii] == 'Goals') {
                 break;
-            };
+            }
             FullRow = '"' + data[ii] + '"' ;
             ii+=1;
         }
@@ -1471,7 +1464,7 @@ function MenuPlanExport(Year) {
             iir = 0;
            csvContent = csvContent + FullRow + CRLF;
         }
-    };
+    }
 
     downloadFile('Forecast Plan',csvContent);
 
@@ -1539,14 +1532,14 @@ window.onclick = function(event) {
                             setCookie("MT_LastFilter","");
                             break;
                         default:
-                            MenuFilter_Restore(cn)
+                            MenuFilter_Restore(cn);
                             break;
                     }
                 }
             }
         }
     }
-}
+};
 
 function removeAllSections(inDiv) {
 
@@ -1576,7 +1569,7 @@ function getCleanValue(inValue,inDec) {
     if(inValue) {
         const AmtStr = inValue.replace(/[$,]+/g,"");
         let Amt = parseInt(AmtStr);
-        if(inDec) { Amt = parseFloat(AmtStr).toFixed(inDec); };
+        Amt = parseFloat(AmtStr).toFixed(inDec);
         return Amt;
     }
     else {
@@ -1644,16 +1637,16 @@ function getDates(InValue) {
         }
     }
     if(InValue == 'ThisQTRs') {
-        if(month < 3) {month = 0};
-        if(month == 4 || month == 5) {month = 3};
-        if(month == 7 || month == 8) {month = 6};
-        if(month == 10 || month == 11) {month = 9};
+        if(month < 3) {month = 0;}
+        if(month == 4 || month == 5) {month = 3;}
+        if(month == 7 || month == 8) {month = 6;}
+        if(month == 10 || month == 11) {month = 9;}
     }
     if(InValue == 'ThisQTRe') {
-        if(month < 2) {month = 2};
-        if(month == 3 || month == 4) {month = 5};
-        if(month == 6 || month == 7) {month = 8};
-        if(month == 9 || month == 10) {month = 11};
+        if(month < 2) {month = 2;}
+        if(month == 3 || month == 4) {month = 5;}
+        if(month == 6 || month == 7) {month = 8;}
+        if(month == 9 || month == 10) {month = 11;}
         day = daysInMonth(month,year);
      }
     month+=1;
@@ -1699,7 +1692,7 @@ function getCookie(cname,isNum) {
             return c.substring(name.length, c.length);
         }
     }
-    if(isNum == true) {return 0};
+    if(isNum == true) {return 0;}
     return '';
 }
 
@@ -1725,11 +1718,11 @@ function findButton(inValue,inName) {
 function cec(e,c,r,it,hr,a1,a2,b1,b2) {
 
     let div = document.createElement(e);
-    if(c) {div.className = c};
-    if(it) {div.innerText = it};
-    if(hr) {div.href = hr};
-    if(a1) {div.setAttribute(a1,a2)};
-    if(b1) {div.setAttribute(b1,b2)};
+    if(c) {div.className = c;}
+    if(it) {div.innerText = it;}
+    if(hr) {div.href = hr;}
+    if(a1) {div.setAttribute(a1,a2);}
+    if(b1) {div.setAttribute(b1,b2);}
     const x = r.appendChild(div);
     return x;
 }
@@ -1738,12 +1731,12 @@ function getStyle() {
 
     const cssObj = window.getComputedStyle(document.querySelector('[class*=Page__Root]'), null);
     const bgColor = cssObj.getPropertyValue('background-color');
-    if (bgColor === 'rgb(8, 32, 67)') { css_bgColor = '#0d2c5c';return 'dark'; } else {css_bgColor = '#ffffff';return 'light'};
+    if (bgColor === 'rgb(8, 32, 67)') { css_bgColor = '#0d2c5c';return 'dark'; } else {css_bgColor = '#ffffff';return 'light';}
 
 }
 
 function getDisplay(InA) {
-    if(InA == 1) {return 'none;'} else {return 'block;'};
+    if(InA == 1) {return 'none;';} else {return 'block;';}
 }
 
 function downloadFile(inTitle,inData) {
@@ -1774,7 +1767,7 @@ function downloadFile(inTitle,inData) {
                     MenuDisplay(false);
                     MenuTransactions(false);
                     MenuPlan(false);
-                };
+                }
 
                 SaveLocationPathName = window.location.pathname;
                 SaveLocationHRefName = window.location.href;
@@ -1878,4 +1871,3 @@ function GetCategoryGroup(InId) {
 
     return [null,null,null, null];
 }
-
