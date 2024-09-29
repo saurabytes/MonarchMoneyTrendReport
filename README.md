@@ -16,7 +16,7 @@ Enjoy!
 
 # Monarch Money Tweaks
 
-* Trends Report - Compare to last month, last month last  year, same quarter and YTD.
+* Trends Report (in Beta) - Compare to last month, last month last  year, same quarter and YTD.
 
 * Ability to show "Actual YTD" and "Projected" totals in Budget / Forecast / Monthly
 
