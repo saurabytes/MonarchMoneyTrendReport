@@ -6,27 +6,29 @@ I found there were opportunities to enhance the Monarch Money web application wi
 
 https://www.tampermonkey.net/
 
-Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweaks.user.js** above and it will automatically install.
+Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweaks.user.js** above and it will automatically install.  Refresh/Reload the Monarch Money webpage and select **Settings / Display** in Monarch to configuration the following enhancemnets:
 
 # Monarch Money Tweaks
 
-* Compressed & Smaller Transactions grid to show more items
-
-* Compressed & Smaller Budget / Forecast grid to show more items
-
-* Breadcrumbs on reports Income & Spending allow staying on the Reports page instead of going to Transactions and connecting Groups to Categories
-  
-* Turn ON/OFF menu items
+* Trends Report - Compare to last month, last month last  year, same quarter and YTD.
 
 * Ability to show "Actual YTD" and "Projected" totals in Budget / Forecast / Monthly
 
 * Ability to export Budget / Forecast / Monthly
 
-* Save and Restore different Report Datasets (Save/Restore all settings on Reports page)
+* Breadcrumbs on reports Income & Spending allows staying on Reports page instead of going to Transactions connecting _All Categories > Groups > Categories_ 
 
-* Hide Report Tooltip "Difference Amount" in Reports
+* Save and Restore unlimited Report Datasets (Save your filters, page and other report options)
 
-* Hide Create Rule Popup in Transactions
+* Compressed & Smaller Transactions grid to show more items
+
+* Compressed & Smaller Budget / Forecast grid to show more items
+  
+* Turn ON/OFF (hide) menu items
+
+* Hide Report Tooltip "Difference Amount" in graphs
+
+* Hide Create Rule Popup when add/changing transactions
 
 * Quickly split a transaction 50/50 by auto-filling the amounts
 
