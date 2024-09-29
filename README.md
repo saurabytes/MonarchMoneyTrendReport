@@ -2,11 +2,17 @@ Hello!
 
 I use **Monarch Money**.  
 
-I found there were opportunities to enhance the Monarch Money web application with more functionality and configuration options using Tampermonkey.  Tampermonkey is a browser extension for Chrome, Microsoft Edge, Safari, Opera Next, and Firefox.  You can install it by going to the following link.
+I found there were opportunities to enhance the Monarch Money web application with more functionality and configuration options using Tampermonkey.  Tampermonkey is a browser extension for Chrome, Microsoft Edge, Safari, Opera Next, and Firefox.  
 
-https://www.tampermonkey.net/
+You can install it by going to the following link: https://www.tampermonkey.net/
 
-Once Tampermonkey is installed, you can next click on **Update MonarchMoneyTweaks.user.js** above and it will automatically install.  Refresh/Reload the Monarch Money webpage and select **Settings / Display** in Monarch to configuration the following enhancemnets:
+Once Tampermonkey is installed, click on **Update MonarchMoneyTweaks.user.js** above to automatically install it.
+
+Finally, Refresh/Reload the Monarch Money webpage and select **Settings / Display** in Monarch to configure the Tweaks.
+
+Please read each option carefully before turning it on/off to fully understand what it does.
+
+Enjoy!
 
 # Monarch Money Tweaks
 
