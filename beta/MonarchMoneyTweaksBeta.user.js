@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.20.03
+// @version      1.20.04
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -35,7 +35,6 @@ let TrendQueueTitle = '';
 let TrendQueueShortTitle = '';
 let TrendQueueCol = [];
 let TrendQueueRow = null;
-let TrendQueueSort = null;
 let TrendQueueByGroup = 0;
 let TrendQueueByPeriod = 0;
 let SaveLocationHRefName = '';
@@ -53,9 +52,11 @@ function MM_Init() {
 
     let a1 = 'background-color: rgb(13, 44, 92); color: #FFFFFF;';
     let a2 = 'background-color: #14457a; color: #FFFFFF;';
+    let a3 = 'rgb(38, 61, 95)';
     if(getStyle() == 'light') {
         a1 = 'background-color: #ffffff; color: rgb(8, 40, 100);';
         a2 = 'background-color: #eaf6fd; color: rgb(61, 146, 222);';
+        a3 = 'rgb(228, 233, 240)';
     }
 
     GM_addStyle('.MTPlanHeader {font-weight: 900; align-content: inherit; padding: 0px 0px 15px;}');
@@ -66,16 +67,16 @@ function MM_Init() {
 
     GM_addStyle('.MTTrendButtons {display: flex; gap: 20px;}');
     GM_addStyle('.MTCheckboxClass {width: 20px; height: 20px;}');
-    GM_addStyle('.MTSpacerClass {padding: 5px 5px 5px 5px; border-bottom: 1px solid rgb(240, 244, 248);}');
+    GM_addStyle('.MTSpacerClass {padding: 5px 5px 5px 5px; border-bottom: 1px solid ' + a3 +';}');
 
-    GM_addStyle('.MThRefClass {cursor:pointer; text-align: right; color: #000000;}');
+    GM_addStyle('.MThRefClass {cursor:pointer; text-align: right; ' + + a1 + '}');
     GM_addStyle('.MThRefClass:hover {cursor:pointer; color: rgb(50, 170, 240);}');
 
     GM_addStyle('.MTTrendsContainer {display:block; padding-bottom: 0px;}');
     GM_addStyle('.MTFlexContainer {margin: 0px; gap: 20px; display: flex;}');
     GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_bgColor + ';}');
-    GM_addStyle('.MTTrendCell {color:rgb(30, 31, 34); text-align: right;}');
-    GM_addStyle('.MTTrendBig {font-sizte: 18px; font-weight: 500; padding-top: 8px;}');
+    GM_addStyle('.MTTrendCell {' + a1 + ' text-align: right;}');
+    GM_addStyle('.MTTrendBig {font-size: 18px; font-weight: 500; padding-top: 8px;}');
     GM_addStyle('.MTTrendSmall {font-size: 12px;font-weight: 600; padding-top: 8px; color: #919cb4; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
 
     GM_addStyle('.dropbtn {' + a1 + '; border: none; cursor: pointer;}');
@@ -367,7 +368,7 @@ async function CleanupTrendData() {
 
     for (let i = 0; i < TrendQueue.length; i += 1) {
         retGroup = await GetCategoryGroup(TrendQueue[i].ID);
-        TrendQueue[i].DESC = retGroup[TrendQueueByGroup];
+        TrendQueue[i].DESC = retGroup[4] + ' ' + retGroup[TrendQueueByGroup];
         TrendQueue[i].TYPE = retGroup[3];
 
         if(retGroup[3] == 'expense') {
@@ -465,12 +466,12 @@ function MenuReportsTrendsDraw(inRedraw) {
         removeAllSections('div.MTTrendsContainer');
         Hrow = Trend_TableContainer();
         TrendQueueRow = Trend_TableGrid(Hrow,1,'header','',TrendQueueCol[0],TrendQueueCol[1],TrendQueueCol[2],TrendQueueCol[3],TrendQueueCol[4],TrendQueueCol[5]);
-        Trend_TableSort(4);
+        Trend_TableSort();
         Trend_TableDetails();
         Trend_TableCards();
     } else {
         removeAllSections('div.MTTrendData');
-        Trend_TableSort(inRedraw);
+        Trend_TableSort();
         Trend_TableDetails();
     }
 
@@ -484,26 +485,25 @@ function MenuReportsTrendsDraw(inRedraw) {
         row = Trend_DumpTotal(Hrow,2,'savings','Savings');
     }
 
-    function Trend_TableSort(inSort) {
+    function Trend_TableSort() {
 
-        if(TrendQueueSort == inSort) {
-            if(inSort == 0) { TrendQueue.sort((a, b) => a.N_LASTM - b.N_LASTM);}
-            if(inSort == 1) { TrendQueue.sort((a, b) => a.N_CURRENTM - b.N_CURRENTM);}
-            if(inSort == 2) { TrendQueue.sort((a, b) => a.N_DIFFM - b.N_DIFFM);}
-            if(inSort == 3) { TrendQueue.sort((a, b) => a.N_LAST - b.N_LAST);}
-            if(inSort == 4) { TrendQueue.sort((a, b) => a.N_CURRENT - b.N_CURRENT);}
-            if(inSort == 5) { TrendQueue.sort((a, b) => a.N_DIFF - b.N_DIFF);}
-            TrendQueueSort = null;
-        } else
-        {
-            if(inSort == 0) { TrendQueue.sort((a, b) => b.N_LASTM - a.N_LASTM);}
-            if(inSort == 1) { TrendQueue.sort((a, b) => b.N_CURRENTM - a.N_CURRENTM);}
-            if(inSort == 2) { TrendQueue.sort((a, b) => b.N_DIFFM - a.N_DIFFM);}
-            if(inSort == 3) { TrendQueue.sort((a, b) => b.N_LAST - a.N_LAST);}
-            if(inSort == 4) { TrendQueue.sort((a, b) => b.N_CURRENT - a.N_CURRENT);}
-            if(inSort == 5) { TrendQueue.sort((a, b) => b.N_DIFF - a.N_DIFF);}
-            TrendQueueSort = inSort;
-        }
+        let inSort = getCookie('MTTrendSort',true)
+        if(inSort == 0) {inSort = -5;}
+
+        if(inSort == 1) { TrendQueue.sort((a, b) => a.N_LASTM - b.N_LASTM);}
+        if(inSort == 2) { TrendQueue.sort((a, b) => a.N_CURRENTM - b.N_CURRENTM);}
+        if(inSort == 3) { TrendQueue.sort((a, b) => a.N_DIFFM - b.N_DIFFM);}
+        if(inSort == 4) { TrendQueue.sort((a, b) => a.N_LAST - b.N_LAST);}
+        if(inSort == 5) { TrendQueue.sort((a, b) => a.N_CURRENT - b.N_CURRENT);}
+        if(inSort == 6) { TrendQueue.sort((a, b) => a.N_DIFF - b.N_DIFF);}
+        if(inSort == -1) { TrendQueue.sort((a, b) => b.N_LASTM - a.N_LASTM);}
+        if(inSort == -2) { TrendQueue.sort((a, b) => b.N_CURRENTM - a.N_CURRENTM);}
+        if(inSort == -3) { TrendQueue.sort((a, b) => b.N_DIFFM - a.N_DIFFM);}
+        if(inSort == -4) { TrendQueue.sort((a, b) => b.N_LAST - a.N_LAST);}
+        if(inSort == -5) { TrendQueue.sort((a, b) => b.N_CURRENT - a.N_CURRENT);}
+        if(inSort == -6) { TrendQueue.sort((a, b) => b.N_DIFF - a.N_DIFF);}
+
+        setCookie('MTTrendSort',inSort);
     }
 
     function Trend_TableCards() {
@@ -543,7 +543,10 @@ function MenuReportsTrendsDraw(inRedraw) {
             div = cec('div','FlexContainer__Root jEeSYR fKLqRU',div);
 
             div2 = cec('span','MTTrendSmall',div,'Net Income Trend Report');
-            div = cec('span','MTTrendBig',div,TrendQueueTitle);
+            div2 = cec('span','MTTrendBig',div,TrendQueueTitle);
+            if(getCookie('MT_TrendFullPeriod') == 1) {
+                div2 = cec('span','MTTrendSmall',div,'* Comparing Full ' + ['Month','Month','Quarter'][TrendQueueByPeriod],'','style','font-size: 10px;');
+            }
 
             let tbs = cec('span','MTTrendButtons',cht);
 
@@ -602,12 +605,9 @@ function MenuReportsTrendsDraw(inRedraw) {
             e = getDollarValue(e) + ee;
             f = getDollarValue(f);
         } else {
-            if(getCookie('MT_TrendFullPeriod') == 1) {
-                inTitle = '* Comparing Full ' + ['Month','Month','Quarter'][TrendQueueByPeriod];
-                useStyle[0] = 'font-size: 11px;';
-            }
             for (let i = 0; i < 6; i++) {
-                useHref[i] = '{Trend:' + i.toString();
+                let j = i + 1;
+                useHref[i] = '{Trend:' + j.toString();
             }
         }
 
@@ -681,11 +681,11 @@ function MenuReportsTrendsDraw(inRedraw) {
                     wv = TrendQueue[i].N_CURRENTM - TrendQueue[i].N_LASTM;
                     if((CD_V[0] == 0 && wv < 0) || wv < CD_V[0]) {
                         CD_V[0] = wv;
-                        CD_T[0]= TrendQueue[i].DESC;
+                        CD_T[0]= TrendQueue[i].DESC.substring(2);
                     }
                     if((CD_V[1] == 0 && wv > 0) || wv > CD_V[1]) {
                         CD_V[1] = wv;
-                        CD_T[1]= TrendQueue[i].DESC;
+                        CD_T[1]= TrendQueue[i].DESC.substring(2);
                     }
                 }
             }
@@ -926,7 +926,7 @@ const MM_FixCalendarCallback = (mutationList, observer) => {
                 if(sb) {
                     focus(sb);
                     sb.click();
-                };
+                }
             });
             div = document.createElement('div');
             div.className = useClass;
@@ -981,6 +981,7 @@ function MenuReportBreadcrumbGo(Parms) {
     let groupName = '';
     let catName = '';
     let catType = '';
+    let catIcon = '';
 
     if(Parms) {
         const params = new URLSearchParams(Parms);
@@ -1011,7 +1012,7 @@ function MenuReportBreadcrumbGo(Parms) {
                 {
                     newStoredStr = newStoredStr + '\\"' + categories + '\\"';
                     bcl = '2';
-                    [groupName,catName,groupId,catType] = GetCategoryGroup(categories);
+                    [groupName,catName,groupId,catType,catIcon] = GetCategoryGroup(categories);
                 }
 
                 newStoredStr = newStoredStr + ']' + storedStr.substring(x);
@@ -1763,10 +1764,9 @@ function findButton(inValue,inName) {
     return useTarget;
 }
 
-function cec(e,c,r,it,hr,a1,a2,b1,b2) {
+function cec(e,c,r,it,hr,a1,a2) {
 
     let el = '';
-
     let div = document.createElement(e);
 
     if(it) {div.innerText = it;}
@@ -1780,10 +1780,9 @@ function cec(e,c,r,it,hr,a1,a2,b1,b2) {
     }
     if(c) {div.className = c;}
     if(a1) {div.setAttribute(a1,a2);}
-    if(b1) {div.setAttribute(b1,b2);}
     const x = r.appendChild(div);
     if(el) {
-        div.addEventListener("click", function () { cecHandler(el);});
+        div.addEventListener("click", function () { cecHandler(el); });
     }
     return x;
 }
@@ -1791,11 +1790,15 @@ function cec(e,c,r,it,hr,a1,a2,b1,b2) {
 function cecHandler(el) {
 
     if(el.startsWith('Trend:') == true) {
-        el = el.substring(6);
-        MenuReportsTrendsDraw(el);
+        let elSelected = el.substring(6);
+        let elCurrent = getCookie('MTTrendSort',true);
+        if(Math.abs(elCurrent) == Math.abs(elSelected)) {
+            elSelected = elCurrent * -1;
+        }
+        setCookie('MTTrendSort',elSelected);
+        MenuReportsTrendsDraw(true);
     }
 }
-
 
 function getStyle() {
 
@@ -1816,7 +1819,6 @@ function downloadFile(inTitle,inData) {
     link.click();
     document.body.removeChild(link);
 }
-
 
 (function() {
 
@@ -1847,7 +1849,7 @@ function downloadFile(inTitle,inData) {
                 MenuDisplay(true);
                 MenuTransactions(true);
                 MenuPlan(true);
-            };
+            }
 
             MenuCheckSpawnProcess();
         }
@@ -1935,9 +1937,9 @@ function GetCategoryGroup(InId) {
 
   for (let i = 0; i < accountGroups.length; i++) {
       if(accountGroups[i].ID == InId || accountGroups[i].GROUP == InId) {
-          return [accountGroups[i].GROUPNAME,accountGroups[i].NAME,accountGroups[i].GROUP,accountGroups[i].TYPE];
+          return [accountGroups[i].GROUPNAME,accountGroups[i].NAME,accountGroups[i].GROUP,accountGroups[i].TYPE,accountGroups[i].ICON];
       }
   }
 
-    return [null,null,null, null];
+    return [null,null,null, null,null];
 }
