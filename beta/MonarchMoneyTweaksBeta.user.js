@@ -1386,7 +1386,6 @@ function MenuPlanUpdate() {
                     }
                 }
             }
-            console.log(useValue);
 
             if(useValue.startsWith('$') || useValue.startsWith('-') || useValue == '') {
 
@@ -1918,7 +1917,7 @@ async function getCategoryData() {
         .then((data) => {
         return data.data;
     }).catch((error) => {
-        console.error(error);
+        console.error(GM_info.script.version,error);
     });
 }
 
