@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.20.05
+// @version      1.20.06
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -26,8 +26,6 @@ let r_spawn = 0;
 let r_eventListener = null;
 let r_oo = null;
 let r_oo2 = null;
-let r_ooPl = null;
-let r_ooPl2 = null;
 let r_PlanYear = '';
 let accountGroups = [];
 let TrendQueue = [];
@@ -82,12 +80,12 @@ function MM_Init() {
     GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_bgColor + ';}');
     GM_addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right;}');
     GM_addStyle('.MTTrendCell:hover {cursor:pointer; color: rgb(50, 170, 240);}');
-    GM_addStyle('.MTTrendCellArrow {border-style: none; font-size: 18px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 32px; position: relative; transform: scale(1);  border-radius: 100%;  margin-left: 10px;}');
+    GM_addStyle('.MTTrendCellArrow {border-style: none; font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 32px; transform: scale(1); cursor: pointer; border-radius: 100%;  margin-left: 10px;}');
 
     GM_addStyle('.MTSideDrawerRoot {position: absolute;  inset: 0px;  display: flex;  -moz-box-pack: end;  justify-content: flex-end;}');
-    GM_addStyle('.MTSideDrawerContainer {overflow: hidden; padding: 24px; width: 580px; -moz-box-pack: end; ' + a4 + ' justify-content: flex-end;  position: relative;}');
+    GM_addStyle('.MTSideDrawerContainer {overflow: hidden; padding: 12px; width: 580px; -moz-box-pack: end; ' + a4 + ' justify-content: flex-end;  position: relative;}');
     GM_addStyle('.MTSideDrawerMotion {display: flex; flex-direction: column; transform:none;}');
-    GM_addStyle('.MTSideDrawerHeader { ' + a5 + ' padding: 20px; }');
+    GM_addStyle('.MTSideDrawerHeader { ' + a5 + ' padding: 16px; }');
     GM_addStyle('.MTSideDrawerDetail { ' + a5 + ' width: 24%; text-align: right; font-size: 13px; }');
 
     GM_addStyle('.MTTrendBig {font-size: 18px; font-weight: 500; padding-top: 8px;}');
@@ -507,9 +505,13 @@ function MenuReportsTrendsDraw(inRedraw) {
 
         Hrow = cec('div','MTTrendData',TrendQueueRow);
         row = Trend_DumpTotal(Hrow,2,'income','Income');
-        row = Trend_DumpData(row,3,'income');
+        if(getCookie('MTTrendCell_Income',1) == 0) {
+            row = Trend_DumpData(row,3,'income');
+        }
         row = Trend_DumpTotal(Hrow,2,'expense','Spending');
-        row = Trend_DumpData(row,3,'expense');
+        if(getCookie('MTTrendCell_Spending',1) == 0) {
+            row = Trend_DumpData(row,3,'expense');
+        }
         row = Trend_DumpTotal(Hrow,2,'savings','Savings');
     }
 
@@ -582,7 +584,7 @@ function MenuReportsTrendsDraw(inRedraw) {
             div2.textContent = 'Export';
             div2.className = 'MTTrendExport ' + css_button;
             tbs.appendChild(div2);
-            div2.addEventListener('click',MenuReportsTrendExport,false);
+          //  div2.addEventListener('click',MenuReportsTrendExport,false);
 
             div2 = document.createElement('button');
             let tl = ['By Last Month','By Month', 'By Quarter'];
@@ -646,7 +648,7 @@ function MenuReportsTrendsDraw(inRedraw) {
         elx = cec('span','MTTrendCell2',el,d,useHref[4],'style','width: 18%;');
         elx = cec('span','MTTrendCell2',el,e,useHref[5],'style','width: 14%;');
         elx = cec('span','MTTrendCell2',el,f,useHref[6],'style','width: 11%;'+ useStyle[2]);
-        elx = cec('button','MTTrendCellArrow cKLDus fs-drawer-toggle',el,'',useHref[7],'','');
+        elx = cec('button','MTTrendCellArrow',el,'',useHref[7],'','');
         if(inType == 3) { elx = cec('span','',elx,'','','','');}
         if(inType == 2) {
             return cec('div',css_grid,InRow);
@@ -1177,7 +1179,7 @@ function MenuDisplay(OnFocus) {
         }
         if(OnFocus == true) {
             MenuDisplay_Input(GM_info.script.name + ' - ' + GM_info.script.version,'','header');
-            MenuDisplay_Input('Lowest Calendar year','MT_LowCalendarYear','number');
+            MenuDisplay_Input('Lowest Calendar/Data year','MT_LowCalendarYear','number');
             MenuDisplay_Input('','','spacer');
             MenuDisplay_Input('Menu - Hide Budget','MT_Budget','checkbox');
             MenuDisplay_Input('Menu - Hide Recurring','MT_Recurring','checkbox');
@@ -1194,7 +1196,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Reports - Add Drill-Down functionality to Reports Income/Spending','MT_ReportsDrilldown','checkbox');
             MenuDisplay_Input('Reports - Trends previous period always includes full period (end of month/quarter)','MT_TrendFullPeriod','checkbox');
             MenuDisplay_Input('Reports - Hide Chart Tooltip difference amount','MT_HideTipDiff','checkbox');
-            MenuDisplay_Input('Budget - Add YTD Total & Projected to Forecast Monthly & Export','MT_PlanYTD','checkbox');
+            MenuDisplay_Input('Budget - Add YTD Total & Projected to Forecast Monthly','MT_PlanYTD','checkbox');
             MenuDisplay_Input('Budget - Panel has smaller compressed grid (Requires refresh page)','MT_PlanCompressed','checkbox');
         }
     }
@@ -1266,14 +1268,6 @@ function MenuPlan(OnFocus) {
         if(getCookie("MT_PlanYTD") == 1) {
             if(OnFocus == false) {
                 r_PlanGridActive = false;
-                if(r_ooPl) {
-                    r_ooPl.remove();
-                    r_ooPl = null;
-                }
-                if(r_ooPl2) {
-                    r_ooPl2.remove();
-                    r_ooPl2 = null;
-                }
             }
             if(OnFocus == true) { r_PlanGridActive = true; }
         }
@@ -1290,32 +1284,6 @@ function MenuPlanUpdate() {
         return;
     }
 
-    // Create buttons if needed
-    if(r_ooPl == null) {
-        let hed2 = document.querySelector('[class*="PlanHeaderControls__Root"]');
-        if(hed2) {
-            r_ooPl = document.createElement('button');
-            r_ooPl.className = "MT_PlanRecalc " + hed.className;
-            r_ooPl.textContent = 'Recalculate';
-            r_ooPl.style = 'display: ' + getDisplay(1);
-            hed2.prepend(r_ooPl);
-            r_ooPl.addEventListener('click', () => {
-                r_PlanGridActive = true;
-            });
-
-            let divI = document.createElement('div');
-            divI.setAttribute('class','PlanHeaderControls__Divider cwyGMK');
-            hed2.prepend(divI);
-
-            r_ooPl2 = document.createElement('button');
-            r_ooPl2.className = "MT_PlanExport " + hed.className;
-            r_ooPl2.textContent = 'Export';
-            r_ooPl2.style = 'display: ' + getDisplay(1);
-            hed2.prepend(r_ooPl2);
-            r_ooPl2.addEventListener('click', MenuPlanExport, false);
-        }
-    }
-
     if(getCookie("MT_Goals") == 1) {
         let div = document.querySelectorAll('[class*="PlanSectionHeader__Root"]');
         if(div.length > 2) {
@@ -1326,10 +1294,6 @@ function MenuPlanUpdate() {
             div.style = 'display: ' + getDisplay(1);
         }
     }
-
-    // turn off buttons (assume off)
-    if(r_ooPl) {r_ooPl.style = 'display: ' + getDisplay(1);}
-    if(r_ooPl2) {r_ooPl2.style = 'display: ' + getDisplay(1);}
 
     // remove all tweaked columns
     removeAllSections('.MTPlanHeader');
@@ -1358,8 +1322,6 @@ function MenuPlanUpdate() {
         r_PlanGridActive = true;
         return;
     }
-
-    if(r_ooPl2) {r_ooPl2.style = 'display: ' + getDisplay(0);}
 
     // only tweak this year's forecast
     const d = new Date();
@@ -1462,82 +1424,9 @@ function MenuPlanUpdate() {
         }
     }
 
-    if(r_ooPl) {r_ooPl.style = 'display: ' + getDisplay(0);}
-    if(r_ooPl2) {r_ooPl2.style = 'display: ' + getDisplay(0);}
-
     r_PlanGridActive = pending;
 }
 
-function MenuPlanExport(Year) {
-
-    const CRLF = String.fromCharCode(13,10);
-
-    const spans = document.querySelectorAll('[class*="PlanRowTitle__Title"]');
-    const data = [];
-    const spans2 = document.querySelectorAll('[class*="PlanCellAmount"], [class*="PlanCell__Amount"]');
-    const data2 = [];
-
-    let useValue = '';
-    var i = 0;
-    var ii = 0;
-    var iir = 0;
-    let FullRow = r_PlanYear;
-
-    // Headers
-    spans.forEach(span => {
-        if(span.firstChild.title || span.innerText.startsWith('Show ') || span.innerText.startsWith('Collapse ')) {
-           // hide data
-        } else
-        {
-            data.push(span.innerText);
-        }
-    });
-
-    // Cell Amounts
-    const storedStyle = spans2[0].className;
-    spans2.forEach(span => {
-        i+=1;
-        if(ii > 0 || (i == 1 && span.className == storedStyle)) {
-            ii+=1;
-            if(span.value) { useValue = span.value; }
-            else
-            { useValue = span.innerText; }
-            useValue = getCleanValue(useValue,0);
-            data2.push(useValue);
-        }
-        if(i == 12) {
-            i = 0;
-            ii = 0;
-        }
-    });
-
-    for (i = 0; i < 12; i++) {
-        FullRow = FullRow + ',' + getMonthName(i,true);
-    }
-
-    let csvContent = FullRow + CRLF;
-
-    for (i = 0; i < data2.length; i++) {
-        if(iir == 0) {
-            if(data[ii] == 'Goals') {
-                break;
-            }
-            FullRow = '"' + data[ii] + '"' ;
-            ii+=1;
-        }
-
-        iir+=1;
-        FullRow = FullRow + ',' + data2[i];
-
-        if(iir == 12) {
-            iir = 0;
-           csvContent = csvContent + FullRow + CRLF;
-        }
-    }
-
-    downloadFile('Forecast Plan',csvContent);
-
-}
 function MenuReportsHistory(inParms) {
 
     MenuReportsTrendsStyles();
@@ -1549,25 +1438,27 @@ function MenuReportsHistory(inParms) {
         const higherDate = new Date();
 
         topDiv = topDiv.childNodes[0];
-        let div = cec('div','',topDiv,'','','id','side-drawer-root');
+        let div = cec('div','',topDiv,'','','','');
         let div2 = cec('div','MTSideDrawerRoot',div,'','','tabindex','0');
         let div3 = cec('div','MTSideDrawerContainer',div2,'','','','');
         let div4 = cec('div','MTSideDrawerMotion',div3,'','','','');
 
-        div = cec('div','MTSideDrawerHeader aMVqz',div4,'','','','');
-        div2 = cec('span','MTTrendBig',div,'Month Summary');
-        div2 = cec('button','cKLDus fHmeUx bIbbOL',div,'','','','');
+        div = cec('span','MTSideDrawerHeader',div4,'','','','');
+        div2 = cec('button','MTTrendCellArrow',div,'','','style','float:right;');
+        div2 = cec('div','MTTrendBig',div,'Month Summary');
 
         let retGroups = GetCategoryGroup(parmsA[2]);
         let inGroup = 1;
 
+        div = cec('span','MTSideDrawerHeader',div4,'','','','');
+        div2 = cec('div','MTTrendSmall',div, retGroups[3],'','style','float:right;');
+
         if(parmsA[1] == 'category-groups') {
-            div2 = cec('span','',div,retGroups[4] + ' ' + retGroups[0] ,'','','' );
+            div2 = cec('div','',div,retGroups[4] + ' ' + retGroups[0] ,'','','' );
             inGroup = 0;
         } else {
-            div2 = cec('span','',div,retGroups[4] + ' ' + retGroups[0] + ' / ' + retGroups[1],'','','' );
+            div2 = cec('div','',div,retGroups[4] + ' ' + retGroups[0] + ' / ' + retGroups[1],'','','' );
         }
-        div2 = cec('span','MTTrendSmall',div, retGroups[3],'','style','text-align: right;');
 
         TrendQueue2 = [];
         BuildTrendData('hs',inGroup,'month',lowerDate,higherDate,parmsA[2]);
@@ -1581,6 +1472,10 @@ function MenuReportsHistoryDraw() {
     const os = 'width: 4%; text-align:left; font-weight: 600;'
     const os2 = 'font-weight: 600;'
     const startYear = Number(getDates('StartYear'));
+    const curYear = Number(getDates('CurYear'));
+    const curMonth = Number(getDates('CurMonth'));
+    let curYears = 1;
+    let skiprow = false;
 
     let topDiv = document.querySelector('div.MTSideDrawerMotion')
     if(topDiv) {
@@ -1589,41 +1484,56 @@ function MenuReportsHistoryDraw() {
         for (let i = 0; i < 12; i++) {
             sumQue.push({"MONTH": i,"YR1": MTHistoryDraw(i+1,startYear),"YR2": MTHistoryDraw(i+1,startYear + 1),"YR3": MTHistoryDraw(i+1,startYear + 2)});
         }
+        if(startYear < getCookie('MT_LowCalendarYear')) {skiprow = true;}
 
         let div2 = cec('div',css_items,div,'','','style',os2);
-
         let div3 = cec('span','MTSideDrawerDetail',div2,'Month','','style',os);
-        div3 = cec('span','MTSideDrawerDetail',div2,startYear,'','','');
-        div3 = cec('span','MTSideDrawerDetail',div2,(startYear + 1),'','','');
-        div3 = cec('span','MTSideDrawerDetail',div2,(startYear + 2),'','','');
+        for (let j = startYear; j <= curYear; j++) {
+            if(skiprow == false || j > startYear) {
+                div3 = cec('span','MTSideDrawerDetail',div2,j,'','','');
+            }
+        }
         div3 = cec('span','MTSideDrawerDetail',div2,'Average','','','');
-
         div2 = cec('div',css_items,div,'','','style',os2);
         div3 = cec('span','MTSpacerClass',div2,'','','','');
 
         let T = ['Total',0,0,0,0];
 
         for (let i = 0; i < 12; i++) {
+            if(i > 0 && i == curMonth) {
+                div2 = cec('div',css_items,div,'','','style',os2);
+                div3 = cec('span','MTSpacerClass',div2,'','','','');
+            }
             div2 = cec('div',css_items,div,'','','','');
+            if(sumQue[i].YR1 != 0) {curYears = 3;}
+            if(curYears < 3) {
+                if(sumQue[i].YR2 != 0) {curYears = 2;}
+            }
             div3 = cec('span','MTSideDrawerDetail',div2,getMonthName(i,true),'','style',os);
-            div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR1),'','','');
+            if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR1),'','','')};
             div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR2),'','','');
             div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR3),'','','');
-            div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue((sumQue[i].YR1+sumQue[i].YR2+sumQue[i].YR3)/3),'','','');
+            if(i < curMonth) {
+                div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue((sumQue[i].YR1 + sumQue[i].YR2 + sumQue[i].YR3) / curYears),'','','');
+            } else {
+                div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue((sumQue[i].YR1 + sumQue[i].YR2)/(curYears-1)),'','','');
+            }
             T[1] = T[1] + sumQue[i].YR1;
             T[2] = T[2] + sumQue[i].YR2;
             T[3] = T[3] + sumQue[i].YR3;
         }
         let tot = T[1]+T[2]+T[3];
-        if(tot != 0) { T[4] = tot / 3; }
+        if(tot != 0) { T[4] = tot / curYears; }
 
         div2 = cec('div',css_items,div,'','','style',os2);
         div3 = cec('span','MTSpacerClass',div2,'','','');
         div2 = cec('div',css_items,div,'','','style',os2);
+
         div3 = cec('span','MTSideDrawerDetail',div2,T[0],'','style',os);
         for (let i = 1; i < 5; i++) {
-            T[i] = getDollarValue(T[i]);
-            div3 = cec('span','MTSideDrawerDetail',div2,T[i],'','','');
+            if(skiprow == false || i > 1) {
+                div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(T[i]),'','','');
+            }
         }
     }
 
@@ -1682,9 +1592,17 @@ function MenuCheckSpawnProcess() {
 
 window.onclick = function(event) {
 
-    console.log(event.target);
-    if(event.target.className == 'MTSideDrawerRoot') {
+    const cn = event.target.className;
+    const pcn = event.target.parentNode.className;
+
+    //console.log(cn,pcn,event.target,event.target.parentNode);
+
+    if(cn == 'MTSideDrawerRoot' || (cn == 'MTTrendCellArrow' && pcn == 'MTSideDrawerHeader') ) {
         removeAllSections('div.MTSideDrawerRoot');
+    }
+    if(cn == 'MTTrendCell') {
+        flipCookie(cn + '_' + event.target.innerText,1);
+        MenuReportsTrendsDraw(true);
     }
 
     if(r_FilterD == true) {
@@ -1798,9 +1716,13 @@ function getDates(InValue) {
 
     if(InValue == 'StartYear') {
         year = year - 2;
-        month = getCookie('MT_LowCalendarYear',true);
-        if(month > year) {year = month;}
-        return month;
+        return year;
+    }
+    if(InValue == 'CurYear') {
+        return(year);
+    }
+    if(InValue == 'CurMonth') {
+        return(month);
     }
     if(InValue == 'LastYTDs') {
         year-=1;
