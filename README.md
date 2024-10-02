@@ -45,5 +45,5 @@ Enjoy!
 
 * Hide Accounts Net Worth Graph Panel
 
-* Show Pending Transactions in Red when S**ettings / Preferences** / "Allow Edits to Pending Transactions" is set to "Off".
+* Show Pending Transactions in Red when **Settings / Preferences / Allow Edits to Pending Transactions** is set to "Off".
 
