@@ -49,21 +49,21 @@ let css_button = '';
 
 function MM_Init() {
 
-    let a1 = 'background-color: rgb(13, 44, 92);';
+    let a1 = 'background-color: #0d2c5c;';
     let a2 = 'background-color: #14457a;';
-    let a3 = 'rgb(38, 61, 95)';
+    let a3 = '	#263d5f';
     let a4 = 'background: #082043;';
     let a5 = 'color: #FFFFFF;';
     if(getStyle() == 'light') {
         a1 = 'background-color: #ffffff;';
         a2 = 'background-color: #eaf6fd;';
-        a3 = 'rgb(228, 233, 240)';
+        a3 = '#e4e9f0';
         a4 = 'background: aliceblue;';
-        a5 = 'color: rgb(8, 40, 100);';
+        a5 = 'color: #082864;';
     }
 
     GM_addStyle('.MTPlanHeader {font-weight: 900; align-content: inherit; padding: 0px 0px 15px;}');
-    GM_addStyle('.MTPlanDetail {color: rgb(72, 157, 140);font-size: 16px; font-weight: 500;}');
+    GM_addStyle('.MTPlanDetail {color: ' + css_green + ';font-size: 16px; font-weight: 500;}');
 
     GM_addStyle('.MTlink {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
     GM_addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
@@ -584,7 +584,7 @@ function MenuReportsTrendsDraw(inRedraw) {
             div2.textContent = 'Export';
             div2.className = 'MTTrendExport ' + css_button;
             tbs.appendChild(div2);
-          //  div2.addEventListener('click',MenuReportsTrendExport,false);
+            div2.addEventListener('click',MenuReportsTrendExport,false);
 
             div2 = document.createElement('button');
             let tl = ['By Last Month','By Month', 'By Quarter'];
