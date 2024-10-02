@@ -1,3 +1,6 @@
+
+# Monarch Money Tweaks
+
 Hello!
 
 I use **Monarch Money**.  
@@ -14,7 +17,7 @@ Please read each option carefully before turning it on/off to fully understand w
 
 Enjoy!
 
-# Monarch Money Tweaks
+# Features:
 
 * Trends Report (in Beta) - Compare to last month, last month last  year, same quarter and YTD.
 
