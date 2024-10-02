@@ -20,8 +20,6 @@ Enjoy!
 
 * Ability to show "Actual YTD" and "Projected" totals in Budget / Forecast / Monthly
 
-* Ability to export Budget / Forecast / Monthly
-
 * Breadcrumbs on reports Income & Spending allows staying on Reports page instead of going to Transactions connecting _All Categories > Groups > Categories_ 
 
 * Save and Restore unlimited Report Datasets (Save your filters, page and other report options)
