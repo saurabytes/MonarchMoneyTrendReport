@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.20.04
+// @version      1.20.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -31,6 +31,7 @@ let r_ooPl2 = null;
 let r_PlanYear = '';
 let accountGroups = [];
 let TrendQueue = [];
+let TrendQueue2 = [];
 let TrendQueueTitle = '';
 let TrendQueueShortTitle = '';
 let TrendQueueCol = [];
@@ -50,13 +51,17 @@ let css_button = '';
 
 function MM_Init() {
 
-    let a1 = 'background-color: rgb(13, 44, 92); color: #FFFFFF;';
-    let a2 = 'background-color: #14457a; color: #FFFFFF;';
+    let a1 = 'background-color: rgb(13, 44, 92);';
+    let a2 = 'background-color: #14457a;';
     let a3 = 'rgb(38, 61, 95)';
+    let a4 = 'background: #082043;';
+    let a5 = 'color: #FFFFFF;';
     if(getStyle() == 'light') {
-        a1 = 'background-color: #ffffff; color: rgb(8, 40, 100);';
-        a2 = 'background-color: #eaf6fd; color: rgb(61, 146, 222);';
+        a1 = 'background-color: #ffffff;';
+        a2 = 'background-color: #eaf6fd;';
         a3 = 'rgb(228, 233, 240)';
+        a4 = 'background: aliceblue;';
+        a5 = 'color: rgb(8, 40, 100);';
     }
 
     GM_addStyle('.MTPlanHeader {font-weight: 900; align-content: inherit; padding: 0px 0px 15px;}');
@@ -67,24 +72,33 @@ function MM_Init() {
 
     GM_addStyle('.MTTrendButtons {display: flex; gap: 20px;}');
     GM_addStyle('.MTCheckboxClass {width: 20px; height: 20px;}');
-    GM_addStyle('.MTSpacerClass {padding: 5px 5px 5px 5px; border-bottom: 1px solid ' + a3 +';}');
+    GM_addStyle('.MTSpacerClass {padding: 3px 3px 3px 3px; width: 100%; border-bottom: 1px solid ' + a3 +';}');
 
-    GM_addStyle('.MThRefClass {cursor:pointer; text-align: right; ' + + a1 + '}');
+    GM_addStyle('.MThRefClass {cursor:pointer; text-align: right; ' + a1 + a5 + '}');
     GM_addStyle('.MThRefClass:hover {cursor:pointer; color: rgb(50, 170, 240);}');
 
     GM_addStyle('.MTTrendsContainer {display:block; padding-bottom: 0px;}');
     GM_addStyle('.MTFlexContainer {margin: 0px; gap: 20px; display: flex;}');
     GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_bgColor + ';}');
-    GM_addStyle('.MTTrendCell {' + a1 + ' text-align: right;}');
+    GM_addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right;}');
+    GM_addStyle('.MTTrendCell:hover {cursor:pointer; color: rgb(50, 170, 240);}');
+    GM_addStyle('.MTTrendCellArrow {border-style: none; font-size: 18px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 32px; position: relative; transform: scale(1);  border-radius: 100%;  margin-left: 10px;}');
+
+    GM_addStyle('.MTSideDrawerRoot {position: absolute;  inset: 0px;  display: flex;  -moz-box-pack: end;  justify-content: flex-end;}');
+    GM_addStyle('.MTSideDrawerContainer {overflow: hidden; padding: 24px; width: 580px; -moz-box-pack: end; ' + a4 + ' justify-content: flex-end;  position: relative;}');
+    GM_addStyle('.MTSideDrawerMotion {display: flex; flex-direction: column; transform:none;}');
+    GM_addStyle('.MTSideDrawerHeader { ' + a5 + ' padding: 20px; }');
+    GM_addStyle('.MTSideDrawerDetail { ' + a5 + ' width: 24%; text-align: right; font-size: 13px; }');
+
     GM_addStyle('.MTTrendBig {font-size: 18px; font-weight: 500; padding-top: 8px;}');
     GM_addStyle('.MTTrendSmall {font-size: 12px;font-weight: 600; padding-top: 8px; color: #919cb4; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
 
-    GM_addStyle('.dropbtn {' + a1 + '; border: none; cursor: pointer;}');
+    GM_addStyle('.dropbtn {' + a1 + a5 + '; border: none; cursor: pointer;}');
     GM_addStyle('.dropbtn:hover, .dropbtn:focus {' + a2 + '}');
     GM_addStyle('.MTdropdown {float: right;  position: relative; display: inline-block; font-weight: 200;}');
     GM_addStyle('.MTdropdown-content div {font-size: 0px; line-height: 2px; background-color: #ff7369;}');
-    GM_addStyle('.MTdropdown-content {' + a1 + ';display:none; position: absolute; min-width: 300px; overflow: auto; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0; z-index: 1;}');
-    GM_addStyle('.MTdropdown-content a {' + a1 + ';font-size: 15px; padding: 10px 10px; display: block;}');
+    GM_addStyle('.MTdropdown-content {' + a1 + a5 + ';display:none; position: absolute; min-width: 300px; overflow: auto; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0; z-index: 1;}');
+    GM_addStyle('.MTdropdown-content a {' + a1 + a5 + ';font-size: 15px; padding: 10px 10px; display: block;}');
     GM_addStyle('.MTdropdown a:hover {' + a2 + ' }');
     GM_addStyle('.show {display: block;}');
 
@@ -184,7 +198,6 @@ function MenuReportsDataset() {
                 if(li.innerText == '\uf11e\nFilters') {
 
                     const cn = li.childNodes[0].className;
-
                     const div = document.createElement('div');
                     div.className = 'MTdropdown';
                     li.after(div);
@@ -198,7 +211,6 @@ function MenuReportsDataset() {
                     fb2.className = 'MTdropdown-content';
                     fb2.setAttribute('id','MTDropdown');
                     div.appendChild(fb2);
-
                     fbr.addEventListener('click', MenuFilter,false);
                 }
             }
@@ -216,7 +228,6 @@ function MenuReportsTrends() {
             r_TrendsActive = cec('a','MTTrendsMenu ' + div.lastChild.className,div,'Trends','/reports/trends');
         }
     }
-
     if(SaveLocationPathName.endsWith('/reports/trends')) {
         r_TrendsActive.className = r_TrendsActive.className + ' tab-nav-item-active';
         MenuReportsTrendsPanels('display:none;');
@@ -237,7 +248,7 @@ function MenuReportsTrendsStyles() {
     element=document.querySelector('div.CardHeader__Root-r0eoe3-0');
     if(element) { css_table2 = 'Trend_' + element.className; }
     element=document.querySelector('div.TransactionsSummaryCard__CardInner-sc-10q11ba-1');
-    if(element) { css_grid = 'TrendGrid ' + element.className; }
+    if(element) { css_grid = 'Trend_' + element.className; }
     element=document.querySelector('div.TransactionsSummaryCard__CardItem-sc-10q11ba-0');
     if(element) { css_items = 'Trend_' + element.className; }
     element = findButton('','');
@@ -283,7 +294,7 @@ async function MenuReportsTrendsGo() {
 
     // this year
     TrendQueueCol[4] = 'YTD ' + year;
-    await BuildTrendData('cp',lowerDate,higherDate);
+    await BuildTrendData('cp',TrendQueueByGroup,'year',lowerDate,higherDate,'');
 
     // last year
     year-=1;
@@ -291,7 +302,7 @@ async function MenuReportsTrendsGo() {
     higherDate.setFullYear(year);
     TrendQueueCol[3] = 'YTD ' + year;
     TrendQueueCol[5] = 'Difference';
-    await BuildTrendData('lp',lowerDate,higherDate);
+    await BuildTrendData('lp',TrendQueueByGroup,'year',lowerDate,higherDate,'');
 
     // This Period
     TrendQueueCol[1] = '';
@@ -312,7 +323,7 @@ async function MenuReportsTrendsGo() {
     }
 
     TrendQueueCol[1] = TrendQueueCol[1] + getMonthName(month2,true) + ' ' + year;
-    await BuildTrendData('cm',lowerDate,higherDate);
+    await BuildTrendData('cm',TrendQueueByGroup,'year',lowerDate,higherDate,'');
 
     // Last Period --------------
     TrendQueueCol[0] = '';
@@ -354,10 +365,8 @@ async function MenuReportsTrendsGo() {
         TrendQueueCol[0] = TrendQueueCol[0] + ' *';
     }
     TrendQueueCol[2] = 'Difference';
-    await BuildTrendData('lm',lowerDate,higherDate);
-
+    await BuildTrendData('lm',TrendQueueByGroup,'year',lowerDate,higherDate,'');
     await CleanupTrendData();
-
     r_TrendsActiveReady = true;
     document.body.style.cursor = '';
 }
@@ -385,7 +394,7 @@ async function CleanupTrendData() {
     }
 }
 
-async function BuildTrendData (inCol,lowerDate,higherDate) {
+async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,inID) {
 
     const firstDate = formatQueryDate(lowerDate);
     const lastDate = formatQueryDate(higherDate);
@@ -393,23 +402,42 @@ async function BuildTrendData (inCol,lowerDate,higherDate) {
     let useID = '';
     let useAmount = '';
     let snapshotData = null;
+    let mm = '';
+    let yy = '';
+    let inIDType = ''
+    if(inID) {
+        inIDType = GetCategoryGroup(inID)[3];
+    }
 
-    if(TrendQueueByGroup == 0) {
-        snapshotData = await getMonthlySnapshotData(firstDate,lastDate);
+    if(inGrouping == 0) {
+        snapshotData = await getMonthlySnapshotData(firstDate,lastDate,inPeriod);
     } else {
-        snapshotData = await getMonthlySnapshotData2(firstDate,lastDate);
+        snapshotData = await getMonthlySnapshotData2(firstDate,lastDate,inPeriod);
     }
 
     for (let i = 0; i < snapshotData.aggregates.length; i += 1) {
-        if(TrendQueueByGroup == 0) {
+        if(inGrouping == 0) {
             useID = snapshotData.aggregates[i].groupBy.categoryGroup.id;
         } else {
             useID = snapshotData.aggregates[i].groupBy.category.id;
         }
-        useAmount = Number(snapshotData.aggregates[i].summary.sum);
-        Trend_UpdateQueue(useID,useAmount,inCol);
+        if(inID == '' || inID == useID) {
+            useAmount = Number(snapshotData.aggregates[i].summary.sum);
+            if(inID) {
+                let useDate = snapshotData.aggregates[i].groupBy.month;
+                yy = useDate.substring(0,4);
+                mm = useDate.substring(5,7);
+                if(inIDType == 'expense') {
+                    useAmount = useAmount * -1;
+                }
+                TrendQueue2.push({"YEAR": yy, "MONTH": mm,"AMOUNT": useAmount});
+            } else {
+                Trend_UpdateQueue(useID,useAmount,inCol);
+            }
+        }
     }
-    console.log(GM_info.script.version,firstDate,lastDate,TrendQueueByGroup,TrendQueueByPeriod,snapshotData.aggregates.length);
+    console.log(GM_info.script.version,firstDate,lastDate,inGrouping,inPeriod,inID,'Data Len: ' + snapshotData.aggregates.length,'Queue Len: ' + TrendQueue.length);
+    if(inCol == 'hs') {r_TrendsActiveReady = 2;}
 }
 
 function Trend_UpdateQueue(useID,useAmount,inCol) {
@@ -465,7 +493,7 @@ function MenuReportsTrendsDraw(inRedraw) {
     if(inRedraw == null) {
         removeAllSections('div.MTTrendsContainer');
         Hrow = Trend_TableContainer();
-        TrendQueueRow = Trend_TableGrid(Hrow,1,'header','',TrendQueueCol[0],TrendQueueCol[1],TrendQueueCol[2],TrendQueueCol[3],TrendQueueCol[4],TrendQueueCol[5]);
+        TrendQueueRow = Trend_TableGrid(Hrow,1,'header','',TrendQueueCol[0],TrendQueueCol[1],TrendQueueCol[2],TrendQueueCol[3],TrendQueueCol[4],TrendQueueCol[5],'','');
         Trend_TableSort();
         Trend_TableDetails();
         Trend_TableCards();
@@ -578,10 +606,11 @@ function MenuReportsTrendsDraw(inRedraw) {
         }
     }
 
-    function Trend_TableGrid(InRow,inType,inGroup,inTitle,a,b,c,d,e,f) {
+    function Trend_TableGrid(InRow,inType,inGroup,inTitle,a,b,c,d,e,f,inRef,InRef2) {
 
         let useStyle = ['','',''];
-        let useHref = ['','','','','',''];
+        let useDiv = '';
+        let useHref = [inRef,'','','','','','',InRef2];
 
         let el = null;
 
@@ -605,20 +634,20 @@ function MenuReportsTrendsDraw(inRedraw) {
             e = getDollarValue(e) + ee;
             f = getDollarValue(f);
         } else {
-            for (let i = 0; i < 6; i++) {
-                let j = i + 1;
-                useHref[i] = '{Trend:' + j.toString();
+            for (let i = 1; i < 7; i++) {
+                useHref[i] = '{Trend:' + i.toString();
             }
         }
-
-        let elx = cec('span','MTTrendCell',el,inTitle,'','style','text-align: left; width: 16%;'+ useStyle[0]);
-        elx = cec('span','MTTrendCell',el,a,useHref[0],'style','width: 14%;');
-        elx = cec('span','MTTrendCell',el,b,useHref[1],'style','width: 14%;');
-        elx = cec('span','MTTrendCell',el,c,useHref[2],'style','width: 11%;'+ useStyle[1]);
-        elx = cec('span','MTTrendCell',el,d,useHref[3],'style','width: 18%;');
-        elx = cec('span','MTTrendCell',el,e,useHref[4],'style','width: 14%;');
-        elx = cec('span','MTTrendCell',el,f,useHref[5],'style','width: 11%;'+ useStyle[2]);
-
+        if(useHref[0]) {useDiv = 'a'} else {useDiv = 'span';}
+        let elx = cec(useDiv,'MTTrendCell',el,inTitle,useHref[0],'style','text-align: left; width: 16%;'+ useStyle[0]);
+        elx = cec('span','MTTrendCell2',el,a,useHref[1],'style','width: 14%;');
+        elx = cec('span','MTTrendCell2',el,b,useHref[2],'style','width: 14%;');
+        elx = cec('span','MTTrendCell2',el,c,useHref[3],'style','width: 11%;'+ useStyle[1]);
+        elx = cec('span','MTTrendCell2',el,d,useHref[4],'style','width: 18%;');
+        elx = cec('span','MTTrendCell2',el,e,useHref[5],'style','width: 14%;');
+        elx = cec('span','MTTrendCell2',el,f,useHref[6],'style','width: 11%;'+ useStyle[2]);
+        elx = cec('button','MTTrendCellArrow cKLDus fs-drawer-toggle',el,'',useHref[7],'','');
+        if(inType == 3) { elx = cec('span','',elx,'','','','');}
         if(inType == 2) {
             return cec('div',css_grid,InRow);
         }
@@ -720,16 +749,17 @@ function MenuReportsTrendsDraw(inRedraw) {
             SM[i] = SM[i].toFixed(2);
             SM[i] = Number(SM[i]);
         }
-        return Trend_TableGrid(inRow,inType,inGroup,inTitle,SM[0],SM[1],SM[4],SM[2],SM[3],SM[5]);
+        return Trend_TableGrid(inRow,inType,inGroup,inTitle,SM[0],SM[1],SM[4],SM[2],SM[3],SM[5],'','');
     }
 
     function Trend_DumpData(inRow,inType,inGroup) {
 
         let row = inRow;
-
+        let tp = ['month','month','quarter'][TrendQueueByPeriod];
+        let hr = ['category-groups','categories'][TrendQueueByGroup];
         for (let i = 0; i < TrendQueue.length; i++) {
             if(TrendQueue[i].TYPE == inGroup) {
-                row = Trend_TableGrid(row,3,inGroup,TrendQueue[i].DESC,TrendQueue[i].N_LASTM,TrendQueue[i].N_CURRENTM,TrendQueue[i].N_DIFFM,TrendQueue[i].N_LAST,TrendQueue[i].N_CURRENT,TrendQueue[i].N_DIFF);
+                row = Trend_TableGrid(row,3,inGroup,TrendQueue[i].DESC,TrendQueue[i].N_LASTM,TrendQueue[i].N_CURRENTM,TrendQueue[i].N_DIFFM,TrendQueue[i].N_LAST,TrendQueue[i].N_CURRENT,TrendQueue[i].N_DIFF,'/' + hr + '/' + TrendQueue[i].ID + '?timeframe='+tp,'{Hstry/' + hr + '/' + TrendQueue[i].ID);
             }
         }
         return row;
@@ -1245,9 +1275,7 @@ function MenuPlan(OnFocus) {
                     r_ooPl2 = null;
                 }
             }
-            if(OnFocus == true) {
-                r_PlanGridActive = true;
-            }
+            if(OnFocus == true) { r_PlanGridActive = true; }
         }
     }
 }
@@ -1266,7 +1294,6 @@ function MenuPlanUpdate() {
     if(r_ooPl == null) {
         let hed2 = document.querySelector('[class*="PlanHeaderControls__Root"]');
         if(hed2) {
-
             r_ooPl = document.createElement('button');
             r_ooPl.className = "MT_PlanRecalc " + hed.className;
             r_ooPl.textContent = 'Recalculate';
@@ -1394,9 +1421,7 @@ function MenuPlanUpdate() {
                 pivotCount+=1;
 
                 // check totals finished
-                if(pivotCount == 1) {
-                    JanValue = useValue;
-                }
+                if(pivotCount == 1) { JanValue = useValue; }
                 if(pivotCount == month) {
                     if(useValue.startsWith('$') && JanValue == '-') {
                         r_PlanGridActive = pending;
@@ -1474,13 +1499,9 @@ function MenuPlanExport(Year) {
         i+=1;
         if(ii > 0 || (i == 1 && span.className == storedStyle)) {
             ii+=1;
-            if(span.value) {
-                useValue = span.value;
-            }
+            if(span.value) { useValue = span.value; }
             else
-            {
-                useValue = span.innerText;
-            }
+            { useValue = span.innerText; }
             useValue = getCleanValue(useValue,0);
             data2.push(useValue);
         }
@@ -1517,6 +1538,109 @@ function MenuPlanExport(Year) {
     downloadFile('Forecast Plan',csvContent);
 
 }
+function MenuReportsHistory(inParms) {
+
+    MenuReportsTrendsStyles();
+    let topDiv = document.getElementById('root');
+    if(topDiv) {
+
+        const parmsA = inParms.split("/");
+        const lowerDate = new Date("2022-01-01");
+        const higherDate = new Date();
+
+        topDiv = topDiv.childNodes[0];
+        let div = cec('div','',topDiv,'','','id','side-drawer-root');
+        let div2 = cec('div','MTSideDrawerRoot',div,'','','tabindex','0');
+        let div3 = cec('div','MTSideDrawerContainer',div2,'','','','');
+        let div4 = cec('div','MTSideDrawerMotion',div3,'','','','');
+
+        div = cec('div','MTSideDrawerHeader aMVqz',div4,'','','','');
+        div2 = cec('span','MTTrendBig',div,'Month Summary');
+        div2 = cec('button','cKLDus fHmeUx bIbbOL',div,'','','','');
+
+        let retGroups = GetCategoryGroup(parmsA[2]);
+        let inGroup = 1;
+
+        if(parmsA[1] == 'category-groups') {
+            div2 = cec('span','',div,retGroups[4] + ' ' + retGroups[0] ,'','','' );
+            inGroup = 0;
+        } else {
+            div2 = cec('span','',div,retGroups[4] + ' ' + retGroups[0] + ' / ' + retGroups[1],'','','' );
+        }
+        div2 = cec('span','MTTrendSmall',div, retGroups[3],'','style','text-align: right;');
+
+        TrendQueue2 = [];
+        BuildTrendData('hs',inGroup,'month',lowerDate,higherDate,parmsA[2]);
+
+    }
+}
+
+function MenuReportsHistoryDraw() {
+
+    let sumQue = [];
+    const os = 'width: 4%; text-align:left; font-weight: 600;'
+    const os2 = 'font-weight: 600;'
+    const startYear = Number(getDates('StartYear'));
+
+    let topDiv = document.querySelector('div.MTSideDrawerMotion')
+    if(topDiv) {
+        let div = cec('div','MTSideDrawerHeader',topDiv,'','','','');
+
+        for (let i = 0; i < 12; i++) {
+            sumQue.push({"MONTH": i,"YR1": MTHistoryDraw(i+1,startYear),"YR2": MTHistoryDraw(i+1,startYear + 1),"YR3": MTHistoryDraw(i+1,startYear + 2)});
+        }
+
+        let div2 = cec('div',css_items,div,'','','style',os2);
+
+        let div3 = cec('span','MTSideDrawerDetail',div2,'Month','','style',os);
+        div3 = cec('span','MTSideDrawerDetail',div2,startYear,'','','');
+        div3 = cec('span','MTSideDrawerDetail',div2,(startYear + 1),'','','');
+        div3 = cec('span','MTSideDrawerDetail',div2,(startYear + 2),'','','');
+        div3 = cec('span','MTSideDrawerDetail',div2,'Average','','','');
+
+        div2 = cec('div',css_items,div,'','','style',os2);
+        div3 = cec('span','MTSpacerClass',div2,'','','','');
+
+        let T = ['Total',0,0,0,0];
+
+        for (let i = 0; i < 12; i++) {
+            div2 = cec('div',css_items,div,'','','','');
+            div3 = cec('span','MTSideDrawerDetail',div2,getMonthName(i,true),'','style',os);
+            div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR1),'','','');
+            div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR2),'','','');
+            div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR3),'','','');
+            div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue((sumQue[i].YR1+sumQue[i].YR2+sumQue[i].YR3)/3),'','','');
+            T[1] = T[1] + sumQue[i].YR1;
+            T[2] = T[2] + sumQue[i].YR2;
+            T[3] = T[3] + sumQue[i].YR3;
+        }
+        let tot = T[1]+T[2]+T[3];
+        if(tot != 0) { T[4] = tot / 3; }
+
+        div2 = cec('div',css_items,div,'','','style',os2);
+        div3 = cec('span','MTSpacerClass',div2,'','','');
+        div2 = cec('div',css_items,div,'','','style',os2);
+        div3 = cec('span','MTSideDrawerDetail',div2,T[0],'','style',os);
+        for (let i = 1; i < 5; i++) {
+            T[i] = getDollarValue(T[i]);
+            div3 = cec('span','MTSideDrawerDetail',div2,T[i],'','','');
+        }
+    }
+
+    function MTHistoryDraw(inMonth,inYear) {
+
+        let ms = '0' + inMonth.toString();
+        ms = ms.slice(-2);
+        let ys = inYear.toString();
+
+        for (let i = 0; i < TrendQueue2.length; i++) {
+            if(TrendQueue2[i].MONTH == ms && TrendQueue2[i].YEAR == ys) {
+                return TrendQueue2[i].AMOUNT;
+            }
+        }
+        return 0;
+    }
+}
 
 function MenuCheckSpawnProcess() {
 
@@ -1525,8 +1649,12 @@ function MenuCheckSpawnProcess() {
     }
 
     if(r_TrendsActiveReady == true) {
-        MenuReportsTrendsDraw(null);
         r_TrendsActiveReady = false;
+        MenuReportsTrendsDraw(null);
+    }
+    if(r_TrendsActiveReady == 2) {
+        r_TrendsActiveReady = false;
+        MenuReportsHistoryDraw();
     }
 
     switch (r_PlanGridActive) {
@@ -1553,6 +1681,11 @@ function MenuCheckSpawnProcess() {
 }
 
 window.onclick = function(event) {
+
+    console.log(event.target);
+    if(event.target.className == 'MTSideDrawerRoot') {
+        removeAllSections('div.MTSideDrawerRoot');
+    }
 
     if(r_FilterD == true) {
         if (!event.target.matches('.MT_FilterRestore')) {
@@ -1663,6 +1796,12 @@ function getDates(InValue) {
     let day = 1;
     let year = d.getFullYear();
 
+    if(InValue == 'StartYear') {
+        year = year - 2;
+        month = getCookie('MT_LowCalendarYear',true);
+        if(month > year) {year = month;}
+        return month;
+    }
     if(InValue == 'LastYTDs') {
         year-=1;
         month = 0;
@@ -1773,7 +1912,7 @@ function cec(e,c,r,it,hr,a1,a2) {
     if(hr) {
         if(hr[0] == '{') {
             el = hr.substring(1);
-            c = 'MThRefClass';
+            if(el.startsWith('Trend:')) {c = 'MThRefClass';}
         } else {
             div.href = hr;
         }
@@ -1797,6 +1936,9 @@ function cecHandler(el) {
         }
         setCookie('MTTrendSort',elSelected);
         MenuReportsTrendsDraw(true);
+    }
+    if(el.startsWith('Hstry/') == true) {
+        MenuReportsHistory(el);
     }
 }
 
@@ -1875,11 +2017,11 @@ function callGraphQL(data) {
   };
 }
 
-async function getMonthlySnapshotData2(startDate, endDate) {
+async function getMonthlySnapshotData2(startDate, endDate,groupingType) {
   const options = callGraphQL({
     operationName: 'GetAggregatesGraph',
     variables: {startDate: startDate, endDate: endDate, },
-      query: "query GetAggregatesGraph($startDate: Date, $endDate: Date) {\n    aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"category\", \"year\"]\n  fillEmptyValues: false\n ) {\n groupBy {\n category {\n id\n }\n year\n }\n summary {\n sum\n }\n }\n }\n"
+      query: "query GetAggregatesGraph($startDate: Date, $endDate: Date) {\n    aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"category\", \"" + groupingType + "\"]\n  fillEmptyValues: false\n ) {\n groupBy {\n category {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
       });
 
   return fetch(graphql, options)
@@ -1891,11 +2033,11 @@ async function getMonthlySnapshotData2(startDate, endDate) {
     });
 }
 
-async function getMonthlySnapshotData(startDate, endDate) {
-  const options = callGraphQL({
+async function getMonthlySnapshotData(startDate, endDate, groupingType) {
+    const options = callGraphQL({
     operationName: 'GetAggregatesGraphCategoryGroup',
     variables: {startDate: startDate, endDate: endDate, },
-      query: "query GetAggregatesGraphCategoryGroup($startDate: Date, $endDate: Date) {\n aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"categoryGroup\", \"year\"]\n fillEmptyValues: false\n ) {\n groupBy {\n categoryGroup {\n id\n }\n year\n }\n summary {\n sum\n }\n }\n }\n"
+      query: "query GetAggregatesGraphCategoryGroup($startDate: Date, $endDate: Date) {\n aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"categoryGroup\", \"" + groupingType + "\"]\n fillEmptyValues: false\n ) {\n groupBy {\n categoryGroup {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
       });
 
   return fetch(graphql, options)
