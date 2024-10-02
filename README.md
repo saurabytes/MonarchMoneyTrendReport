@@ -21,15 +21,15 @@ Enjoy!
 
 * Trends Report (in Beta) - Compare to last month, last month last  year, same quarter and YTD.
 
-* Ability to show "Actual YTD" and "Projected" totals in Budget / Forecast / Monthly
+* Ability to show "Actual YTD" and "Projected" totals in **Budget / Forecast / Monthly**
 
-* Breadcrumbs on reports Income & Spending allows staying on Reports page instead of going to Transactions connecting _All Categories > Groups > Categories_ 
+* Breadcrumbs on **Reports / Income & Spending** allows staying on Reports page instead of going to Transactions connecting _All Categories > Groups > Categories_ 
 
 * Save and Restore unlimited Report Datasets (Save your filters, page and other report options)
 
 * Compressed & Smaller Transactions grid to show more items
 
-* Compressed & Smaller Budget / Forecast grid to show more items
+* Compressed & Smaller **Budget / Forecast** grid to show more items
   
 * Turn ON/OFF (hide) menu items
 
@@ -41,9 +41,9 @@ Enjoy!
 
 * Correct Calendar Year pull-down to only be years of data instead of since 2000
 
-* "Last year YTD", "Last 12 months" and "This quarter" to pop-up calendar
+* Added "Last year YTD", "Last 12 months" and "This quarter" to pop-up calendar
 
 * Hide Accounts Net Worth Graph Panel
 
-* Show Pending Transactions in Red when Settings / Preferences / "Allow Edits to Pending Transactions" is set to "Off".
+* Show Pending Transactions in Red when S**ettings / Preferences** / "Allow Edits to Pending Transactions" is set to "Off".
 
