@@ -19,7 +19,7 @@ Enjoy!
 
 # Features:
 
-* Trends Report (in Beta) - Compare to last month, last month last  year, same quarter and YTD.
+* **Report / Trends** (Beta) - Summarize your history and compare it to last month, same month last year or same quarter last year.  Drill down to the monthly totals for your categories and export your summarized data. 
 
 * Ability to show "Actual YTD" and "Projected" totals in **Budget / Forecast / Monthly**
 
