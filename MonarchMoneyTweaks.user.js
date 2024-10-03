@@ -1355,7 +1355,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Transactions - Show Pending Transactions in red (Preferences / "Allow Pending Edits" must be off)','MT_PendingIsRed','checkbox');
             MenuDisplay_Input('Transactions - Hide Create Rule pop-up','MT_HideToaster','checkbox');
             MenuDisplay_Input('Reports - Add drill-down & breadcrumbs for Groups to Categories in Income/Spending','MT_ReportsDrilldown','checkbox');
-            MenuDisplay_Input('Reports - Trends always Comparing to End of Month','MT_TrendFullPeriod','checkbox');
+            MenuDisplay_Input('Reports - Trends always compares to End of Month','MT_TrendFullPeriod','checkbox');
             MenuDisplay_Input('Reports - Hide chart tooltip Difference amount','MT_HideTipDiff','checkbox');
             MenuDisplay_Input('Budget - Add YTD Total & Projected Total to Forecast / Monthly','MT_PlanYTD','checkbox');
             MenuDisplay_Input('Budget - Panel has smaller compressed grid','MT_PlanCompressed','checkbox');
