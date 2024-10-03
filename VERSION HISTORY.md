@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 1.21: (Beta)**
 
-• NEW: **Reports / Trends** module initial release (Uses all data.  Future enhancements will be modify Start Date & Filters.
+• NEW: **Reports / Trends** module initial release (Uses all data / current date - Future enhancements should allow modifying end date & filters)
 
 • FIX: Returning to Reports Income when breadcrumb is Expense or vice versa will not clear the breadcrumb and no override.
 
