@@ -3,6 +3,10 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 1.22:**
+
+• FIX: Monthly Export would only work if two years of data but not three.
+
 **Version 1.21:**
 
 • NEW: **Reports / Trends** module initial release (Uses all data / current date - Future enhancements should allow modifying end date & filters)
