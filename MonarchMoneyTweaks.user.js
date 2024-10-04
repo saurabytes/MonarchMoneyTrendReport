@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.21
+// @version      1.22
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -942,7 +942,7 @@ function MenuReportsHistoryDraw() {
     }
 }
 
-function MenuReportsHistoryExport(inCols) {
+function MenuReportsHistoryExport() {
 
     const CRLF = String.fromCharCode(13,10);
     const c = ',';
@@ -950,15 +950,19 @@ function MenuReportsHistoryExport(inCols) {
 
     const spans = document.querySelectorAll('span.MTSideDrawerDetail');
     let j = 0;
+    let Cols = 0;
 
     spans.forEach(span => {
         j=j+1;
+        if(Cols == 0) {
+            if(span.innerText.startsWith('Average')) { Cols = j;}
+        }
         if(span.innerText.startsWith('$')) {
             csvContent = csvContent + getCleanValue(span.innerText);
         } else {
             csvContent = csvContent + span.innerText;
         }
-        if(j == inCols) {
+        if(j == Cols) {
             j=0;
             csvContent = csvContent + CRLF;
         } else {
@@ -1639,7 +1643,7 @@ window.onclick = function(event) {
         removeAllSections('div.MTSideDrawerRoot');
     }
     if(cn == 'MTlink' && pcn == 'MTSideDrawerHeader') {
-        MenuReportsHistoryExport(4);
+        MenuReportsHistoryExport();
     }
     if(cn == 'MTTrendCell') {
         setCookie('MTTrendSort',0);
