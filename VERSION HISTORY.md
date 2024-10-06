@@ -7,7 +7,7 @@ Email any issues directly:  robert @ paresi.net
 
 • FIX: Monthly Export would only work if two years of data but not three.
 
-• CHANGE: Added sticky header colummn when scrolling Trends container.
+• CHANGE: Added sticky header column when scrolling Trends container.
 
 • CHANGE: Added auto scrollbars to Monthly History container.
 
