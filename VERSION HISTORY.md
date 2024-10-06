@@ -3,9 +3,11 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 1.22:**
+**Version 1.22/1.23:**
 
 • FIX: Monthly Export would only work if two years of data but not three.
+• CHANGE: Added stickey header colummn when scrolling Trends container.
+• CHANGE: Added auto scrollbars to Monthly History container.
 
 **Version 1.21:**
 
