@@ -1641,7 +1641,7 @@ window.onclick = function(event) {
     const pcn = event.target.parentNode.className;
 
     // ======================================================
-    console.log(cn,pcn,event.target,event.target.parentNode);
+    // console.log(cn,pcn,event.target,event.target.parentNode);
 
     switch (cn) {
         case 'MTSideDrawerRoot':
