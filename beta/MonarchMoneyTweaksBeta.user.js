@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.21
+// @version      1.23
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -73,10 +73,10 @@ function MM_Init() {
     GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_bgColor + ';}');
     GM_addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right;}');
     GM_addStyle('.MTTrendCell:hover {cursor:pointer; color: rgb(50, 170, 240);}');
-    GM_addStyle('.MTTrendCellArrow {border-style: none; font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 32px; transform: scale(1); cursor: pointer; border-radius: 100%;  margin-left: 10px;}');
+    GM_addStyle('.MTTrendCellArrow {border-style: none; font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 32px; cursor: pointer; border-radius: 100%;  margin-left: 10px;}');
 
     GM_addStyle('.MTSideDrawerRoot {position: absolute;  inset: 0px;  display: flex;  -moz-box-pack: end;  justify-content: flex-end;}');
-    GM_addStyle('.MTSideDrawerContainer {overflow: hidden; padding: 12px; width: 580px; -moz-box-pack: end; ' + a4 + ' justify-content: flex-end;  position: relative;}');
+    GM_addStyle('.MTSideDrawerContainer {overflow: hidden; padding: 12px; width: 580px; -moz-box-pack: end; ' + a4 + ' position: relative; overflow:auto;}');
     GM_addStyle('.MTSideDrawerMotion {display: flex; flex-direction: column; transform:none;}');
     GM_addStyle('.MTSideDrawerHeader { ' + a5 + ' padding: 12px; }');
     GM_addStyle('.MTSideDrawerDetail { ' + a5 + ' width: 24%; text-align: right; font-size: 13px; }');
@@ -477,14 +477,12 @@ function MenuReportsTrendsDraw(inRedraw) {
     let CE = [0,0,0,0];
     let CD_T = ['','','','',''];
     let CD_V = [0,0,0,0,0];
-
-    MenuReportsTrendsStyles();
-
     let Hrow = null;
     let row = null;
 
     if(inRedraw == null) {
         removeAllSections('div.MTTrendsContainer');
+        MenuReportsTrendsStyles();
         Hrow = Trend_TableContainer();
         TrendQueueRow = Trend_TableGrid(Hrow,1,'header','',TrendQueueCol[0],TrendQueueCol[1],TrendQueueCol[2],TrendQueueCol[3],TrendQueueCol[4],TrendQueueCol[5],'','');
         Trend_TableSort();
@@ -617,10 +615,16 @@ function MenuReportsTrendsDraw(inRedraw) {
 
         let el = null;
 
-        if(inType == 1 || inType == 2) {
-            el = cec('div',css_table2,InRow,'','','style','font-size: 16px; font-weight:500;');
-        } else {
-            el = cec('div',css_items,InRow);
+        switch (inType) {
+            case 1:
+                el = cec('div',css_table2,InRow,'','','style','font-size: 16px; font-weight:500;position: sticky; top: 0; background-color:' + css_bgColor);
+                break;
+            case 2:
+                el = cec('div',css_table2,InRow,'','','style','font-size: 16px; font-weight:500;');
+                break;
+            default:
+                el = cec('div',css_items,InRow);
+                break;
         }
 
         if(inType > 1) {
@@ -649,9 +653,9 @@ function MenuReportsTrendsDraw(inRedraw) {
         elx = cec('span','MTTrendCell2',el,d,useHref[4],'style','width: 18%;');
         elx = cec('span','MTTrendCell2',el,e,useHref[5],'style','width: 14%;');
         elx = cec('span','MTTrendCell2',el,f,useHref[6],'style','width: 11%;'+ useStyle[2]);
-        elx = cec('button','MTTrendCellArrow',el,'',useHref[7],'','');
-        if(inType == 3) { elx = cec('span','',elx,'','','','');}
-        if(inType == 2) { return cec('div',css_grid,InRow);}
+         elx = cec('button','MTTrendCellArrow',el,'',useHref[7],'','');
+         if(inType == 3) { elx = cec('span','',elx,'','','','');}
+         if(inType == 2) { return cec('div',css_grid,InRow);}
         return InRow;
     }
 
@@ -817,7 +821,6 @@ function MenuReportsTrendsDraw(inRedraw) {
 
 function MenuReportsHistory(inParms) {
 
-    MenuReportsTrendsStyles();
     let topDiv = document.getElementById('root');
     if(topDiv) {
 
@@ -942,7 +945,7 @@ function MenuReportsHistoryDraw() {
     }
 }
 
-function MenuReportsHistoryExport(inCols) {
+function MenuReportsHistoryExport() {
 
     const CRLF = String.fromCharCode(13,10);
     const c = ',';
@@ -950,15 +953,19 @@ function MenuReportsHistoryExport(inCols) {
 
     const spans = document.querySelectorAll('span.MTSideDrawerDetail');
     let j = 0;
+    let Cols = 0;
 
     spans.forEach(span => {
         j=j+1;
+        if(Cols == 0) {
+            if(span.innerText.startsWith('Average')) { Cols = j;}
+        }
         if(span.innerText.startsWith('$')) {
             csvContent = csvContent + getCleanValue(span.innerText);
         } else {
             csvContent = csvContent + span.innerText;
         }
-        if(j == inCols) {
+        if(j == Cols) {
             j=0;
             csvContent = csvContent + CRLF;
         } else {
@@ -1355,7 +1362,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Transactions - Show Pending Transactions in red (Preferences / "Allow Pending Edits" must be off)','MT_PendingIsRed','checkbox');
             MenuDisplay_Input('Transactions - Hide Create Rule pop-up','MT_HideToaster','checkbox');
             MenuDisplay_Input('Reports - Add drill-down & breadcrumbs for Groups to Categories in Income/Spending','MT_ReportsDrilldown','checkbox');
-            MenuDisplay_Input('Reports - Trends always Comparing to End of Month','MT_TrendFullPeriod','checkbox');
+            MenuDisplay_Input('Reports - Trends always compares to End of Month','MT_TrendFullPeriod','checkbox');
             MenuDisplay_Input('Reports - Hide chart tooltip Difference amount','MT_HideTipDiff','checkbox');
             MenuDisplay_Input('Budget - Add YTD Total & Projected Total to Forecast / Monthly','MT_PlanYTD','checkbox');
             MenuDisplay_Input('Budget - Panel has smaller compressed grid','MT_PlanCompressed','checkbox');
@@ -1633,17 +1640,25 @@ window.onclick = function(event) {
     const cn = event.target.className;
     const pcn = event.target.parentNode.className;
 
-    // console.log(cn,pcn,event.target,event.target.parentNode);
+    // ======================================================
+    console.log(cn,pcn,event.target,event.target.parentNode);
 
-    if(cn == 'MTSideDrawerRoot' || (cn == 'MTTrendCellArrow' && pcn == 'MTSideDrawerHeader') ) {
-        removeAllSections('div.MTSideDrawerRoot');
-    }
-    if(cn == 'MTlink' && pcn == 'MTSideDrawerHeader') {
-        MenuReportsHistoryExport(4);
-    }
-    if(cn == 'MTTrendCell') {
-        setCookie('MTTrendSort',0);
-        MenuReportsTrendsDraw(true);
+    switch (cn) {
+        case 'MTSideDrawerRoot':
+            removeAllSections('div.MTSideDrawerRoot');
+            break;
+        case 'MTTrendCellArrow':
+            if(pcn == 'MTSideDrawerHeader') {removeAllSections('div.MTSideDrawerRoot');}
+            break;
+        case 'MTlink':
+            if(pcn == 'MTSideDrawerHeader') {MenuReportsHistoryExport();}
+            break;
+        case 'MTTrendCell':
+            if(pcn.startsWith('Trend_CardHeader')) {
+                setCookie('MTTrendSort',0);
+                MenuReportsTrendsDraw(true);
+            }
+            break;
     }
 
     if(r_FilterD == true) {
