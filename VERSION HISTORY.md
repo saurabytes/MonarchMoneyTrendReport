@@ -3,7 +3,9 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 1.22/1.23:**
+**Version 1.22/1.23/1.24:**
+
+• NEW: Expanding Monthly History of Group show category details.
 
 • FIX: Monthly Export would only work if two years of data but not three.
 
