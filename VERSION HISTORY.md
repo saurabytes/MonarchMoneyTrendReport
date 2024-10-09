@@ -7,6 +7,8 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Green/Red arrows to Monthly Summary.
 
+• FIX: Repetitive "Clear Categories" link.
+
 
 **Version 1.22/1.23/1.24:**
 
