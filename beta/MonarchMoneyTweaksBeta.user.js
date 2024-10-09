@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.25.01
+// @version      1.25.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -915,10 +915,14 @@ function MenuReportsHistoryDraw() {
                 div2 = cec('div',css_styles[5],div,'','','style',os2);
                 div3 = cec('span','MTSpacerClass',div2,'','','','');
             }
-            if(i >= curMonth) {
-                useArrow = 2;
-            } else {
-                 if(sumQue[i].YR3 > sumQue[i].YR2) {useArrow = 0;} else {useArrow = 1;}
+            if(sumQue[i].YR2 == sumQue[i].YR3){
+                useArrow = 2;}
+            else {
+                if(i >= curMonth) {
+                    if(sumQue[i].YR3 > sumQue[i].YR2) {useArrow = 0;} else {useArrow = 2;}
+                } else {
+                    if(sumQue[i].YR3 > sumQue[i].YR2) {useArrow = 0;} else {useArrow = 1;}
+                }
             }
             div2 = cec('div',css_styles[5],div,'','','','');
             if(sumQue[i].YR1 != 0) {curYears = 3;}
