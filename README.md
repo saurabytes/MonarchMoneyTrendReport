@@ -55,13 +55,13 @@ Enjoy!
 
 
 **Monarch Money Tweaks Display/Settings panel**
-![Settings](/docs/assets/MM_Settings.png)
+![Settings](/images/MM_Settings.png)
 
 **Monarch Money Tweaks Reports/Trends panel**
-![Trends](/docs/assets/MM_Trends.png)
+![Trends](/images/MM_Trends.png)
 
 **Monarch Money Tweaks Reports/Trends/Monthly History panel**
-![Trends Monthly History](/docs/assets/MM+Month_History.png)
+![Trends Monthly History](/images/MM+Month_History.png)
 
 
 
