@@ -12,7 +12,7 @@ You can install it by going to the following link:
 https://www.tampermonkey.net/
 
 
-Once Tampermonkey is installed, install the Monarch Money Tweaks extension:
+Once Tampermonkey is installed, install or update the Monarch Money Tweaks extension:
 
 https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
 
