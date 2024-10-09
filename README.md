@@ -67,4 +67,8 @@ Enjoy!
 ![Trends Monthly History](/images/MM_Month_History.png)
 
 
+**Monarch Money Tweaks Reports / Trends / Monthly History panel**
+![Trends Monthly History](/images/MM_Month_History2.png)
+
+
 
