@@ -3,6 +3,11 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 1.25 (beta):**
+
+• NEW: Green/Red arrows to Monthly Summary.
+
+
 **Version 1.22/1.23/1.24:**
 
 • NEW: Expanding Monthly History of Group now shows category details.
