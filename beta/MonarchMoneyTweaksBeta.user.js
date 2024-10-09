@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.24
+// @version      1.25.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -74,6 +74,7 @@ function MM_Init() {
     GM_addStyle('.MTSideDrawerHeader { ' + a5 + ' padding: 12px; }');
     GM_addStyle('.MTSideDrawerDetail { ' + a5 + ' width: 24%; text-align: right; font-size: 13px; }');
     GM_addStyle('.MTSideDrawerDetail2 { ' + a5 + ' width: 24%; text-align: right; font-size: 12px; }');
+    GM_addStyle('.MTSideDrawerDetail3 { ' + a5 + ' width: 13px; text-align: center; font-size: 13px; font-family: MonarchIcons, sans-serif !important; }');
 
     GM_addStyle('.MTTrendBig {font-size: 18px; font-weight: 500; padding-top: 8px;}');
     GM_addStyle('.MTTrendSmall {font-size: 12px;font-weight: 600; padding-top: 8px; color: #919cb4; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
@@ -249,7 +250,7 @@ async function MenuReportsTrendsGo() {
     TrendQueueByPeriod = getCookie('MTTrendPeriod',true);
     let TrendFullPeriod = getCookie('MT_TrendFullPeriod',true);
 
-    await BuildCategoryGroups();
+    await buildCategoryGroups();
 
     TrendQueue = [];
 
@@ -358,12 +359,12 @@ async function CleanupTrendData() {
     let retGroup = [];
 
     for (let i = 0; i < TrendQueue.length; i += 1) {
-        retGroup = await GetCategoryGroup(TrendQueue[i].ID);
+        retGroup = await getCategoryGroup(TrendQueue[i].ID);
         TrendQueue[i].DESC = retGroup[TrendQueueByGroup];
-        TrendQueue[i].TYPE = retGroup[3];
-        TrendQueue[i].ICON = retGroup[4];
+        TrendQueue[i].TYPE = retGroup[4];
+        TrendQueue[i].ICON = retGroup[5];
 
-        if(retGroup[3] == 'expense') {
+        if(retGroup[4] == 'expense') {
             TrendQueue[i].N_CURRENT = TrendQueue[i].N_CURRENT * -1;
             TrendQueue[i].N_LAST = TrendQueue[i].N_LAST * -1;
             TrendQueue[i].N_CURRENTM = TrendQueue[i].N_CURRENTM * -1;
@@ -392,7 +393,7 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
     let inIDType = ''
     let retGroups = [];
 
-    if(inID) { inIDType = GetCategoryGroup(inID)[3]; }
+    if(inID) { inIDType = getCategoryGroup(inID)[4]; }
     inGrouping = Number(inGrouping);
 
     if(inGrouping == 0) {
@@ -411,7 +412,7 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
                 break;
             case 2:
                 useID = snapshotData.aggregates[i].groupBy.category.id;
-                retGroups = GetCategoryGroup(useID);
+                retGroups = getCategoryGroup(useID);
                 useID = retGroups[2];
                 useDesc = retGroups[1];
                 break;
@@ -848,17 +849,17 @@ function MenuReportsHistory(inParms) {
         }
         div2 = cec('div','MTTrendBig',div,'Monthly Summary');
 
-        let retGroups = GetCategoryGroup(parmsA[2]);
+        let retGroups = getCategoryGroup(parmsA[2]);
         let inGroup = 1;
 
         div = cec('span','MTSideDrawerHeader',div4,'','','','');
-        div2 = cec('div','MTTrendSmall',div, retGroups[3],'','style','float:right;');
+        div2 = cec('div','MTTrendSmall',div, retGroups[4],'','style','float:right;');
 
         if(parmsA[1] == 'category-groups') {
-            div2 = cec('div','',div,retGroups[4] + ' ' + retGroups[0] ,'','','' );
+            div2 = cec('div','',div,retGroups[5] + ' ' + retGroups[0] ,'','','' );
             inGroup = 2;
         } else {
-            div2 = cec('div','',div,retGroups[4] + ' ' + retGroups[0] + ' / ' + retGroups[1],'','','' );
+            div2 = cec('div','',div,retGroups[5] + ' ' + retGroups[0] + ' / ' + retGroups[1],'','','' );
         }
 
         TrendQueue2 = [];
@@ -881,6 +882,7 @@ function MenuReportsHistoryDraw() {
     let curYears = 1;
     let skiprow = false;
     let inGroup = 1;
+    let useArrow = 0;
 
     let topDiv = document.querySelector('div.MTSideDrawerMotion')
     if(topDiv) {
@@ -900,6 +902,8 @@ function MenuReportsHistoryDraw() {
                 div3 = cec('span','MTSideDrawerDetail',div2,j,'','','');
             }
         }
+
+        div3 = cec('span','MTSideDrawerDetail3',div2,'','','','');
         div3 = cec('span','MTSideDrawerDetail',div2,'Average for Month','','','');
         div2 = cec('div',css_styles[5],div,'','','style',os2);
         div3 = cec('span','MTSpacerClass',div2,'','','','');
@@ -911,6 +915,11 @@ function MenuReportsHistoryDraw() {
                 div2 = cec('div',css_styles[5],div,'','','style',os2);
                 div3 = cec('span','MTSpacerClass',div2,'','','','');
             }
+            if(i >= curMonth) {
+                useArrow = 2;
+            } else {
+                 if(sumQue[i].YR3 > sumQue[i].YR2) {useArrow = 0;} else {useArrow = 1;}
+            }
             div2 = cec('div',css_styles[5],div,'','','','');
             if(sumQue[i].YR1 != 0) {curYears = 3;}
             if(curYears < 3) {
@@ -920,6 +929,8 @@ function MenuReportsHistoryDraw() {
             if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR1),'','','');}
             div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR2),'','','');
             div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR3),'','','');
+            div3 = cec('span','MTSideDrawerDetail3',div2,['','',' '][useArrow],'','style','color: ' + ['red','green'][useArrow]);
+
             if(i < curMonth) {
                 div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue((sumQue[i].YR1 + sumQue[i].YR2 + sumQue[i].YR3) / curYears),'','','');
             } else {
@@ -981,16 +992,17 @@ function MenuReportsHistoryDraw() {
         detailQue.sort((a, b) => b.YR3 - a.YR3 || b.YR2 - a.YR2);
 
         for (let i = 0; i < detailQue.length; i++) {
-                let div2 = cec('div','TrendHistoryDetail ' + css_styles[5],inDiv,'','','style',os4);
-                let div3 = cec('span','MTSideDrawerDetail2',div2,' ' + detailQue[i].DESC,'','style',os3);
-                if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR1),'','','');}
-                div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR2),'','','');
-                div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR3),'','','');
-                if(i < curMonth) {
-                    div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue((detailQue[i].YR1 + detailQue[i].YR2 + detailQue[i].YR3) / curYears),'','','');
-                } else {
-                    div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue((detailQue[i].YR1 + detailQue[i].YR2)/(curYears-1)),'','','');
-                }
+            let div2 = cec('div','TrendHistoryDetail ' + css_styles[5],inDiv,'','','style',os4);
+            let div3 = cec('span','MTSideDrawerDetail2',div2,' ' + detailQue[i].DESC,'','style',os3);
+            if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR1),'','','');}
+            div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR2),'','','');
+            div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR3),'','','');
+            div3 = cec('span','MTSideDrawerDetail3',div2,'','','','');
+            if(i < curMonth) {
+                div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue((detailQue[i].YR1 + detailQue[i].YR2 + detailQue[i].YR3) / curYears),'','','');
+            } else {
+                div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue((detailQue[i].YR1 + detailQue[i].YR2)/(curYears-1)),'','','');
+            }
         }
         let div2 = cec('div','TrendHistoryDetail ' + css_styles[5],inDiv,'','','style',os4);
     }
@@ -1229,7 +1241,7 @@ function MenuReportBreadcrumbListener() {
             }
         }
     }
-    BuildCategoryGroups();
+    buildCategoryGroups();
 }
 
 function MenuReportBreadcrumbGo(Parms) {
@@ -1240,6 +1252,7 @@ function MenuReportBreadcrumbGo(Parms) {
     let groupId = '';
     let groupName = '';
     let catName = '';
+    let catId = '';
     let catType = '';
     let catIcon = '';
 
@@ -1266,6 +1279,7 @@ function MenuReportBreadcrumbGo(Parms) {
                             newStoredStr = newStoredStr + '\\"' + accountGroups[i].ID + '\\"';
                             groupName = accountGroups[i].GROUPNAME;
                             groupId = accountGroups[i].GROUP;
+                            catId = accountGroups[i].ID
                             catType = accountGroups[i].TYPE;
                         }
                     }
@@ -1273,7 +1287,7 @@ function MenuReportBreadcrumbGo(Parms) {
                 {
                     newStoredStr = newStoredStr + '\\"' + categories + '\\"';
                     bcl = '2';
-                    [groupName,catName,groupId,catType,catIcon] = GetCategoryGroup(categories);
+                    [groupName,catName,groupId,catId,catType,catIcon] = getCategoryGroup(categories);
                 }
 
                 newStoredStr = newStoredStr + ']' + storedStr.substring(x);
@@ -2055,7 +2069,7 @@ async function getMonthlySnapshotData2(startDate, endDate,groupingType) {
   const options = callGraphQL({
     operationName: 'GetAggregatesGraph',
     variables: {startDate: startDate, endDate: endDate, },
-      query: "query GetAggregatesGraph($startDate: Date, $endDate: Date) {\n    aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"category\", \"" + groupingType + "\"]\n  fillEmptyValues: false\n ) {\n groupBy {\n category {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
+      query: "query GetAggregatesGraph($startDate: Date, $endDate: Date) {\n aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"category\", \"" + groupingType + "\"]\n  fillEmptyValues: false\n ) {\n groupBy {\n category {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
       });
 
   return fetch(graphql, options)
@@ -2093,7 +2107,7 @@ async function getCategoryData() {
     }).catch((error) => { console.error(GM_info.script.version,error); });
 }
 
-async function BuildCategoryGroups() {
+async function buildCategoryGroups() {
 
     if(accountGroups.length == 0) {
         const categoryData = await getCategoryData();
@@ -2103,14 +2117,14 @@ async function BuildCategoryGroups() {
     }
 }
 
-function GetCategoryGroup(InId) {
+function getCategoryGroup(InId) {
 
-  // [0]Group Desc, [1]Category Desc, [2]Group ID, [3]Type, [4]Icon
+  // [0]Group Desc, [1]Category Desc, [2]Group ID, [3]]Category ID [4]Type, [5]Icon
   for (let i = 0; i < accountGroups.length; i++) {
       if(accountGroups[i].ID == InId || accountGroups[i].GROUP == InId) {
-          return [accountGroups[i].GROUPNAME,accountGroups[i].NAME,accountGroups[i].GROUP,accountGroups[i].TYPE,accountGroups[i].ICON];
+          return [accountGroups[i].GROUPNAME,accountGroups[i].NAME,accountGroups[i].GROUP,accountGroups[i].ID,accountGroups[i].TYPE,accountGroups[i].ICON];
       }
   }
 
-    return [null,null,null, null,null];
+    return [null,null,null,null,null, null];
 }
