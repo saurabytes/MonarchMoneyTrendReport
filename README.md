@@ -53,5 +53,5 @@ Enjoy!
 
 * Show Pending Transactions in Red when **Settings / Preferences / Allow Edits to Pending Transactions** is set to "Off".
 
-![Monthly History](/lMonarchMoneyTrendsReport/assets/image/MM_Monthly_History.png)
+![Monthly History](/lMonarchMoneyTrendsReport/docs/assets/MM_Month_History.png)
 
