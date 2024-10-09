@@ -54,14 +54,17 @@ Enjoy!
 * Show Pending Transactions in Red when **Settings / Preferences / Allow Edits to Pending Transactions** is set to "Off".
 
 
-**Monarch Money Tweaks Display/Settings panel**
+
+**Monarch Money Tweaks Display / Settings panel**
 ![Settings](/images/MM_Settings.png)
 
-**Monarch Money Tweaks Reports/Trends panel**
+
+**Monarch Money Tweaks Reports / Trends panel**
 ![Trends](/images/MM_Trends.png)
 
-**Monarch Money Tweaks Reports/Trends/Monthly History panel**
-![Trends Monthly History](/images/MM+Month_History.png)
+
+**Monarch Money Tweaks Reports / Trends / Monthly History panel**
+![Trends Monthly History](/images/MM_Month_History.png)
 
 
 
