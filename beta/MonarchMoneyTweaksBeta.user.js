@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.25.04
+// @version      1.25.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -858,10 +858,10 @@ function MenuReportsHistory(inParms) {
         div2 = cec('div','MTTrendSmall',div, retGroups[4],'','style','float:right;');
 
         if(parmsA[1] == 'category-groups') {
-            div2 = cec('div','',div,retGroups[5] + ' ' + retGroups[0] ,'','','' );
+            div2 = cec('a','',div,retGroups[5] + ' ' + retGroups[0] ,'/' + parmsA[1] + '/' + retGroups[2] ,'','' );
             inGroup = 2;
         } else {
-            div2 = cec('div','',div,retGroups[5] + ' ' + retGroups[0] + ' / ' + retGroups[1],'','','' );
+            div2 = cec('a','',div,retGroups[5] + ' ' + retGroups[0] + ' / ' + retGroups[1],'/' + parmsA[1] + '/' + retGroups[3],'','' );
         }
 
         TrendQueue2 = [];
