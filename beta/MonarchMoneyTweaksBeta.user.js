@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.25.03
+// @version      1.25.04
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -839,22 +839,21 @@ function MenuReportsHistory(inParms) {
         const lowerDate = new Date("2022-01-01");
         const higherDate = new Date();
 
+        let retGroups = getCategoryGroup(parmsA[2]);
+        let inGroup = 1;
+
         topDiv = topDiv.childNodes[0];
         let div = cec('div','MTHistoryPanel',topDiv,'','','','');
         let div2 = cec('div','MTSideDrawerRoot',div,'','','tabindex','0');
         let div3 = cec('div','MTSideDrawerContainer',div2,'','','','');
         let div4 = cec('div','MTSideDrawerMotion',div3,'','','grouptype',parmsA[1]);
-
+        div4.setAttribute('cattype',retGroups[4]);
         div = cec('span','MTSideDrawerHeader',div4,'','','','');
         div2 = cec('button','MTTrendCellArrow',div,'','','style','float:right;');
         if(parmsA[1] == 'category-groups') {
             div2 = cec('button','MTTrendCellArrow2',div,['',''][getCookie('MTC_div.TrendHistoryDetail',true)],'','style','float:right;');
         }
         div2 = cec('div','MTTrendBig',div,'Monthly Summary');
-
-        let retGroups = getCategoryGroup(parmsA[2]);
-        let inGroup = 1;
-
         div = cec('span','MTSideDrawerHeader',div4,'','','','');
         div2 = cec('div','MTTrendSmall',div, retGroups[4],'','style','float:right;');
 
@@ -886,10 +885,13 @@ function MenuReportsHistoryDraw() {
     let skiprow = false;
     let inGroup = 1;
     let useArrow = 0;
+    let c_r = 'red';
+    let c_g = 'green';
 
     let topDiv = document.querySelector('div.MTSideDrawerMotion')
     if(topDiv) {
         if(topDiv.getAttribute("grouptype") == 'category-groups') { inGroup = 2;}
+        if(topDiv.getAttribute("cattype") == 'income') { c_g = 'red'; c_r = 'green'; }
         let div = cec('div','MTSideDrawerHeader',topDiv,'','','','');
 
         for (let i = 0; i < 12; i++) {
@@ -936,7 +938,7 @@ function MenuReportsHistoryDraw() {
             if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR1),'','','');}
             div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR2),'','','');
             div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR3),'','','');
-            div3 = cec('span','MTSideDrawerDetail3',div2,['','',' '][useArrow],'','style','color: ' + ['red','green'][useArrow]);
+            div3 = cec('span','MTSideDrawerDetail3',div2,['','',' '][useArrow],'','style','color: ' + [c_r,c_g][useArrow]);
 
             if(i < curMonth) {
                 div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue((sumQue[i].YR1 + sumQue[i].YR2 + sumQue[i].YR3) / curYears),'','','');
