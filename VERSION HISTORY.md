@@ -7,6 +7,8 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Green/Red arrows to Monthly Summary.
 
+• NEW: Monthly History now has clickable header.
+
 • FIX: Repetitive "Clear Categories" link.
 
 
