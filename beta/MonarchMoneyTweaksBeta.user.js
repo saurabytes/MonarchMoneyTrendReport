@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.25.02
+// @version      1.25.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -51,7 +51,7 @@ function MM_Init() {
     GM_addStyle('.MTPlanHeader {font-weight: 900; align-content: inherit; padding: 0px 0px 15px;}');
     GM_addStyle('.MTPlanDetail {' + css_green + 'font-size: 16px; font-weight: 500;}');
 
-    GM_addStyle('.MTlink {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
+    GM_addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
     GM_addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
 
     GM_addStyle('.MTTrendButtons {display: flex; gap: 20px;}');
@@ -620,6 +620,7 @@ function MenuReportsTrendsDraw(inRedraw) {
         let useStyle = ['','',''];
         let useDiv = '';
         let useHref = [inRef,'','','','','','',InRef2];
+        let useCss = '';
 
         let el = null;
 
@@ -648,19 +649,21 @@ function MenuReportsTrendsDraw(inRedraw) {
             d = getDollarValue(d) + dd;
             e = getDollarValue(e) + ee;
             f = getDollarValue(f);
+            useCss = 'MTTrendCell2';
         } else {
             for (let i = 1; i < 7; i++) {
                 useHref[i] = '{Trend:' + i.toString();
             }
+            useCss = 'MThRefClass';
         }
         if(useHref[0]) {useDiv = 'a';} else {useDiv = 'span';}
         let elx = cec(useDiv,'MTTrendCell',el,inTitle,useHref[0],'style','text-align: left; width: 16%;'+ useStyle[0]);
-        elx = cec('span','MTTrendCell2',el,a,useHref[1],'style','width: 14%;');
-        elx = cec('span','MTTrendCell2',el,b,useHref[2],'style','width: 14%;');
-        elx = cec('span','MTTrendCell2',el,c,useHref[3],'style','width: 11%;'+ useStyle[1]);
-        elx = cec('span','MTTrendCell2',el,d,useHref[4],'style','width: 18%;');
-        elx = cec('span','MTTrendCell2',el,e,useHref[5],'style','width: 14%;');
-        elx = cec('span','MTTrendCell2',el,f,useHref[6],'style','width: 11%;'+ useStyle[2]);
+        elx = cec('span',useCss,el,a,useHref[1],'style','width: 14%;');
+        elx = cec('span',useCss,el,b,useHref[2],'style','width: 14%;');
+        elx = cec('span',useCss,el,c,useHref[3],'style','width: 11%;'+ useStyle[1]);
+        elx = cec('span',useCss,el,d,useHref[4],'style','width: 18%;');
+        elx = cec('span',useCss,el,e,useHref[5],'style','width: 14%;');
+        elx = cec('span',useCss,el,f,useHref[6],'style','width: 11%;'+ useStyle[2]);
          elx = cec('button','MTTrendCellArrow',el,'',useHref[7],'','');
          if(inType == 3) { elx = cec('span','',elx,'','','','');}
          if(inType == 2) { return cec('div',css_styles[4],InRow);}
@@ -1340,18 +1343,20 @@ function MenuReportBreadcrumbGo(Parms) {
                 }
             }
 
-            let bc3 = document.createElement('button');
-            bc3.className = 'MTlink';
-            bc3.innerText = 'Clear Categories »';
-            div.prepend(bc3);
-            bc3.addEventListener('click', () => {
-                const storedStr = localStorage.getItem('persist:reports');
-                let newStoredStr = removeAllEncompass(storedStr,',\\"categories\\":','\"]');
-                newStoredStr = newStoredStr.replace('"\\"category\\""','"\\"category_group\\""');
-                localStorage.setItem('persist:reports',newStoredStr);
-                localStorage.removeItem('persist:breadcrumb');
-                window.location.replace(SaveLocationPathName);
-            });
+            if(document.querySelector('button.MTlink3') == null) {
+                let bc3 = document.createElement('button');
+                bc3.className = 'MTlink3';
+                bc3.innerText = 'Clear Categories »';
+                div.prepend(bc3);
+                bc3.addEventListener('click', () => {
+                    const storedStr = localStorage.getItem('persist:reports');
+                    let newStoredStr = removeAllEncompass(storedStr,',\\"categories\\":','\"]');
+                    newStoredStr = newStoredStr.replace('"\\"category\\""','"\\"category_group\\""');
+                    localStorage.setItem('persist:reports',newStoredStr);
+                    localStorage.removeItem('persist:breadcrumb');
+                    window.location.replace(SaveLocationPathName);
+                });
+            }
         }
     }
 }
@@ -1790,7 +1795,6 @@ function cec(e,c,r,it,hr,a1,a2) {
     if(hr) {
         if(hr[0] == '{') {
             el = hr.substring(1);
-            if(el.startsWith('Trend:')) {c = 'MThRefClass';}
         } else {
             div.href = hr;
         }
