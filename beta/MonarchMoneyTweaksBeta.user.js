@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.25.05
+// @version      1.25.06
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -973,7 +973,7 @@ function MenuReportsHistoryDraw() {
         let ms = '0' + inMonth.toString();
         ms = ms.slice(-2);
         let ys = inYear.toString();
-        let amt = 0.00;
+        let amt = 0.00
 
         for (let i = 0; i < TrendQueue2.length; i++) {
             if(TrendQueue2[i].MONTH == ms && TrendQueue2[i].YEAR == ys) {
@@ -1044,11 +1044,7 @@ function MenuReportsHistoryExport() {
         if(Cols == 0) {
             if(span.innerText.startsWith('Average')) { Cols = j;}
         }
-        if(span.innerText.startsWith('$')) {
-            csvContent = csvContent + getCleanValue(span.innerText);
-        } else {
-            csvContent = csvContent + span.innerText;
-        }
+        csvContent = csvContent + getCleanValue(span.innerText,2);
         if(j == Cols) {
             j=0;
             csvContent = csvContent + CRLF;
@@ -1638,7 +1634,8 @@ function MenuPlanUpdate() {
 
             if(useValue.startsWith('$') || useValue.startsWith('-') || useValue == '') {
 
-                cellValue = getCleanValue(useValue,0);
+                if(useValue == '') {useValue = '$0';}
+                cellValue = Number(getCleanValue(useValue,0));
                 pivotCount+=1;
 
                 // check totals finished
@@ -1946,19 +1943,20 @@ function findButton(inValue,inName) {
 
 function getCleanValue(inValue,inDec) {
 
-    if(inValue) {
+    if(inValue.startsWith('$') || inValue.startsWith('-')) {
         const AmtStr = inValue.replace(/[$,]+/g,"");
         let Amt = Number(AmtStr);
+        if(inDec > 0) {Amt = Amt.toFixed(inDec);}
         return Amt;
     }
     else {
-        return null;
+        return inValue;
     }
 }
 
 function getDollarValue(InValue) {
 
-    if(InValue === -0) {InValue = 0;}
+    if(InValue === -0 || isNaN(InValue)) {InValue = 0;}
     return InValue.toLocaleString("en-US", {style:"currency", currency:css_currency});
 
 }
