@@ -7,20 +7,22 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Green/Red arrows to Monthly Summary.
 
-• NEW: Monthly History now has clickable header.
+• NEW: Monthly History now has clickable header
 
-• FIX: Repetitive "Clear Categories" link.
+• FIX: Repetitive "Clear Categories" link
+
+• FIX: Export issues with negative numbers and $NaN if less than one year of data
 
 
 **Version 1.22/1.23/1.24:**
 
-• NEW: Expanding Monthly History of Group now shows category details.
+• NEW: Expanding Monthly History of Group now shows category details
 
-• FIX: Monthly Export would only work if two years of data but not three.
+• FIX: Monthly Export would only work if two years of data but not three
 
-• CHANGE: Added sticky header column when scrolling Trends container.
+• CHANGE: Added sticky header column when scrolling Trends container
 
-• CHANGE: Added auto scrollbars to Monthly History container.
+• CHANGE: Added auto scrollbars to Monthly History container
 
 **Version 1.21:**
 
@@ -46,11 +48,11 @@ Email any issues directly:  robert @ paresi.net
 
 **Versions 1.10:**
 
-• FIX:  Splits did not always work (Change in MM class).
+• FIX:  Splits did not always work (Change in MM class)
 
 **Versions 1.09:**
 
-• FIX:  Corrected flicker to Transaction screen during Graphs Drill down.
+• FIX:  Corrected flicker to Transaction screen during Graphs Drill down
 
 **Versions 1.08:**
 
