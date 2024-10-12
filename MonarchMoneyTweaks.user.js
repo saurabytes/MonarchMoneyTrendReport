@@ -58,7 +58,7 @@ function MM_Init() {
     GM_addStyle('.MTCheckboxClass {width: 20px; height: 20px;}');
     GM_addStyle('.MTSpacerClass {padding: 1px 1px 1px 1px; width: 100%; line-height: 10px; border-bottom: 1px solid ' + a3 +';}');
 
-    GM_addStyle('.MThRefClass {cursor:pointer; text-align: right; ' + a1 + a5 + '}');
+    GM_addStyle('.MThRefClass {cursor:pointer; text-align: right; ' + a5 + '}');
     GM_addStyle('.MThRefClass:hover {cursor:pointer; color: rgb(50, 170, 240);}');
 
     GM_addStyle('.MTTrendsContainer {display:block; padding-bottom: 0px;}');
@@ -236,9 +236,9 @@ function MenuReportsTrendsStyles() {
     css_styles.item = MTgetStyle('TransactionsSummaryCard__CardItem','eqYSVV');
     css_styles.hidePercent1 = getCookie('MT_TrendHidePer1',true);
     css_styles.hidePercent2 = getCookie('MT_TrendHidePer2',true);
-    css_styles.color1 = 'background-color: #e68691';
-    css_styles.color2 = 'background-color: #ffc7ce';
-    css_styles.color3 = 'background-color: #fff3f4';
+    css_styles.color1 = 'background-color: #e68691;color: black;';
+    css_styles.color2 = 'background-color: #ffc7ce;color: black;';
+    css_styles.color3 = 'background-color: #fff3f4;color: black;';
 
     function MTgetStyle(inClass,inDefault) {
         let element=document.querySelector('[class*="' + inClass + '"]');
@@ -890,10 +890,10 @@ function MenuReportsHistory(inParms) {
         div2 = cec('div','MTTrendSmall',div, retGroups.TYPE,'','style','float:right;');
 
         if(parmsA[1] == 'category-groups') {
-            div2 = cec('a','',div,retGroups.ICON + ' ' + retGroups.GROUPNAME ,'/' + parmsA[1] + '/' + retGroups.GROUP ,'','' );
+            div2 = cec('a','MThRefClass',div,retGroups.ICON + ' ' + retGroups.GROUPNAME ,'/' + parmsA[1] + '/' + retGroups.GROUP ,'','' );
             inGroup = 2;
         } else {
-            div2 = cec('a','',div,retGroups.ICON + ' ' + retGroups.GROUPNAME + ' / ' + retGroups.NAME,'/' + parmsA[1] + '/' + retGroups.ID,'','' );
+            div2 = cec('a','MThRefClass',div,retGroups.ICON + ' ' + retGroups.GROUPNAME + ' / ' + retGroups.NAME,'/' + parmsA[1] + '/' + retGroups.ID,'','' );
         }
 
         TrendQueue2 = [];
