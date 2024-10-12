@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.25.08
+// @version      1.25.09
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -64,7 +64,7 @@ function MM_Init() {
     GM_addStyle('.MTTrendsContainer {display:block; padding-bottom: 0px;}');
     GM_addStyle('.MTFlexContainer {margin: 0px; gap: 20px; display: flex;}');
     GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_styles.background + ';}');
-    GM_addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right; font-size: 14px;}');
+    GM_addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right; font-size: 14px; padding-right: 5px;}');
     GM_addStyle('.MTTrendCell:hover {cursor:pointer; color: rgb(50, 170, 240);}');
     GM_addStyle('.MTTrendCellArrow, .MTTrendCellArrow2 {border-style: none; font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 32px; cursor: pointer; border-radius: 100%;  margin-left: 10px;}');
 
@@ -227,13 +227,13 @@ function MenuReportsTrends() {
 
 function MenuReportsTrendsStyles() {
 
+    const element = findButton('','');
+    if(element) { css_styles.button = element.className;}
     css_styles.items1 = MTgetStyle('Grid__GridItem','hvKFU0');
     css_styles.items2 = MTgetStyle('Card__CardRoot-sc-','jznQAl');
     css_styles.items3 = MTgetStyle('CardHeader__Root-','eGiVnj');
     css_styles.row = MTgetStyle('TransactionsSummaryCard__CardInner','jLxdcY');
     css_styles.item = MTgetStyle('TransactionsSummaryCard__CardItem','eqYSVV');
-    const element = findButton('','');
-    if(element) { css_styles.button = element.className;}
     css_styles.hidePercent1 = getCookie('MT_TrendHidePer1',true);
     css_styles.hidePercent2 = getCookie('MT_TrendHidePer2',true);
     css_styles.color1 = 'background-color: #e68691';
@@ -360,15 +360,13 @@ async function MenuReportsTrendsGo() {
 
 async function CleanupTrendData() {
 
-    let retGroup = [];
-
     for (let i = 0; i < TrendQueue.length; i += 1) {
-        retGroup = await getCategoryGroup(TrendQueue[i].ID);
-        TrendQueue[i].DESC = retGroup[TrendQueueByGroup];
-        TrendQueue[i].TYPE = retGroup[4];
-        TrendQueue[i].ICON = retGroup[5];
+        let retGroup = await getCategoryGroup(TrendQueue[i].ID);
+        if(TrendQueueByGroup == 0) {TrendQueue[i].DESC = retGroup.GROUPNAME;} else {TrendQueue[i].DESC = retGroup.NAME;}
+        TrendQueue[i].TYPE = retGroup.TYPE;
+        TrendQueue[i].ICON = retGroup.ICON;
 
-        if(retGroup[4] == 'expense') {
+        if(retGroup.TYPE == 'expense') {
             TrendQueue[i].N_CURRENT = TrendQueue[i].N_CURRENT * -1;
             TrendQueue[i].N_LAST = TrendQueue[i].N_LAST * -1;
             TrendQueue[i].N_CURRENTM = TrendQueue[i].N_CURRENTM * -1;
@@ -395,9 +393,9 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
     let mm = '';
     let yy = '';
     let inIDType = ''
-    let retGroups = [];
+    let retGroups = null;
 
-    if(inID) { inIDType = getCategoryGroup(inID)[4]; }
+    if(inID) { inIDType = getCategoryGroup(inID).TYPE; }
     inGrouping = Number(inGrouping);
 
     if(inGrouping == 0) {
@@ -417,8 +415,8 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
             case 2:
                 useID = snapshotData.aggregates[i].groupBy.category.id;
                 retGroups = getCategoryGroup(useID);
-                useID = retGroups[2];
-                useDesc = retGroups[1];
+                useID = retGroups.GROUP;
+                useDesc = retGroups.NAME;
                 break;
 
         }
@@ -882,7 +880,7 @@ function MenuReportsHistory(inParms) {
         let div2 = cec('div','MTSideDrawerRoot',div,'','','tabindex','0');
         let div3 = cec('div','MTSideDrawerContainer',div2,'','','','');
         let div4 = cec('div','MTSideDrawerMotion',div3,'','','grouptype',parmsA[1]);
-        div4.setAttribute('cattype',retGroups[4]);
+        div4.setAttribute('cattype',retGroups.TYPE);
         div = cec('span','MTSideDrawerHeader',div4,'','','','');
         div2 = cec('button','MTTrendCellArrow',div,'','','style','float:right;');
         if(parmsA[1] == 'category-groups') {
@@ -890,13 +888,13 @@ function MenuReportsHistory(inParms) {
         }
         div2 = cec('div','MTTrendBig',div,'Monthly Summary');
         div = cec('span','MTSideDrawerHeader',div4,'','','','');
-        div2 = cec('div','MTTrendSmall',div, retGroups[4],'','style','float:right;');
+        div2 = cec('div','MTTrendSmall',div, retGroups.TYPE,'','style','float:right;');
 
         if(parmsA[1] == 'category-groups') {
-            div2 = cec('a','',div,retGroups[5] + ' ' + retGroups[0] ,'/' + parmsA[1] + '/' + retGroups[2] ,'','' );
+            div2 = cec('a','',div,retGroups.ICON + ' ' + retGroups.GROUPNAME ,'/' + parmsA[1] + '/' + retGroups.GROUP ,'','' );
             inGroup = 2;
         } else {
-            div2 = cec('a','',div,retGroups[5] + ' ' + retGroups[0] + ' / ' + retGroups[1],'/' + parmsA[1] + '/' + retGroups[3],'','' );
+            div2 = cec('a','',div,retGroups.ICON + ' ' + retGroups.GROUPNAME + ' / ' + retGroups.NAME,'/' + parmsA[1] + '/' + retGroups.ID,'','' );
         }
 
         TrendQueue2 = [];
@@ -964,7 +962,7 @@ function MenuReportsHistoryDraw() {
                     if(sumQue[i].YR3 > sumQue[i].YR2) {useArrow = 0;} else {useArrow = 1;}
                 }
             }
-            div2 = cec('div',css_styles.row,div,'','','','');
+            div2 = cec('div',css_styles.item,div,'','','','');
             if(sumQue[i].YR1 != 0) {curYears = 3;}
             if(curYears < 3) {
                 if(sumQue[i].YR2 != 0) {curYears = 2;}
@@ -1289,12 +1287,7 @@ function MenuReportBreadcrumbGo(Parms) {
     if(getCookie("MT_ReportsDrilldown",true) == 0) {return;}
 
     let bcl = '';
-    let groupId = '';
-    let groupName = '';
-    let catName = '';
-    let catId = '';
-    let catType = '';
-    let catIcon = '';
+    let retGroups = null;
 
     if(Parms) {
         const params = new URLSearchParams(Parms);
@@ -1317,24 +1310,24 @@ function MenuReportBreadcrumbGo(Parms) {
                             if(bcl == '1') { newStoredStr = newStoredStr + ',';}
                             bcl = '1';
                             newStoredStr = newStoredStr + '\\"' + accountGroups[i].ID + '\\"';
-                            groupName = accountGroups[i].GROUPNAME;
-                            groupId = accountGroups[i].GROUP;
-                            catId = accountGroups[i].ID
-                            catType = accountGroups[i].TYPE;
+                            retGroups.GROUPNAME = accountGroups[i].GROUPNAME;
+                            retGroups.GROUP = accountGroups[i].GROUP;
+                            retGroups.ID = accountGroups[i].ID
+                            retGroups.TYPE = accountGroups[i].TYPE;
                         }
                     }
                 } else
                 {
                     newStoredStr = newStoredStr + '\\"' + categories + '\\"';
                     bcl = '2';
-                    [groupName,catName,groupId,catId,catType,catIcon] = getCategoryGroup(categories);
+                    retGroups = getCategoryGroup(categories);
                 }
 
                 newStoredStr = newStoredStr + ']' + storedStr.substring(x);
                 newStoredStr = newStoredStr.replace('"category_group','"category');
 
                 localStorage.setItem("persist:reports", newStoredStr);
-                localStorage.setItem("persist:breadcrumb",groupId + '/:/' + groupName + '/:/' + bcl + '/:/' + catName + '/:/' + catType );
+                localStorage.setItem("persist:breadcrumb",retGroups.GROUP + '/:/' + retGroups.GROUPNAME + '/:/' + bcl + '/:/' + retGroups.NAME + '/:/' + retGroups.TYPE );
 
                 // Redirect back to page
                 window.location.replace(SaveLocationPathName);
@@ -1348,30 +1341,30 @@ function MenuReportBreadcrumbGo(Parms) {
             let groupStoredStr = localStorage.getItem('persist:breadcrumb');
             if(groupStoredStr) {
                 const GroupStuff = groupStoredStr.split('/:/');
-                groupId = GroupStuff[0];
-                groupName = GroupStuff[1];
+                retGroups.ID = GroupStuff[0];
+                retGroups.GROUPNAME = GroupStuff[1];
                 bcl = GroupStuff[2];
-                catName = GroupStuff[3];
-                catType = GroupStuff[4];
-                if((catType == 'income' && SaveLocationPathName.includes("spending")) || (catType == 'expense' && SaveLocationPathName.includes("income")) ) {
+                retGroups.NAME = GroupStuff[3];
+                retGroups.TYPE = GroupStuff[4];
+                if((retGroups.TYPE == 'income' && SaveLocationPathName.includes("spending")) || (retGroups.TYPE == 'expense' && SaveLocationPathName.includes("income")) ) {
                     return;
                 }
             }
 
-            if(groupId) {
+            if(retGroups.ID) {
                 if(bcl == '2') {
                     let bc = document.createElement('button');
                     bc.className = 'MTlink';
-                    bc.innerText = groupName + ' »';
+                    bc.innerText = retGroups.GROUPNAME + ' »';
                     div.prepend(bc);
                     bc.addEventListener('click', () => {
-                        window.location.replace(SaveLocationPathName + '?categoryGroups=' + groupId);
+                        window.location.replace(SaveLocationPathName + '?categoryGroups=' + retGroups.GROUP);
                     });
                 } else
                 {
                     let bc = document.createElement('span');
                     bc.className = 'MTlink2';
-                    bc.innerText = '/ ' + groupName;
+                    bc.innerText = '/ ' + retGroups.GROUPNAME;
                     div.prepend(bc);
                 }
             }
@@ -2163,12 +2156,10 @@ async function buildCategoryGroups() {
 
 function getCategoryGroup(InId) {
 
-  // [0]Group Desc, [1]Category Desc, [2]Group ID, [3]Category ID [4]Type, [5]Icon
   for (let i = 0; i < accountGroups.length; i++) {
       if(accountGroups[i].ID == InId || accountGroups[i].GROUP == InId) {
-          return [accountGroups[i].GROUPNAME,accountGroups[i].NAME,accountGroups[i].GROUP,accountGroups[i].ID,accountGroups[i].TYPE,accountGroups[i].ICON];
+          return accountGroups[i]
       }
   }
-
-    return [null,null,null,null,null, null];
+    return [null];
 }
