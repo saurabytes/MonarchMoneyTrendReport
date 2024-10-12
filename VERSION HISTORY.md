@@ -5,17 +5,17 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 1.25 (beta):**
 
-• NEW: Green/Red arrows in Monthly Summary.
+• NEW: Trends - Green/Red arrows in Monthly Summary.
 
-• NEW: Monthly History now has clickable header
+• NEW: Trends - Monthly History now has clickable header
 
 • NEW: Trends - Added Percentage Difference Increase/Decrease 
 
 • NEW: Trends - Added ability in Setup to hide Percentages on Trends
 
-• FIX: Repetitive "Clear Categories" link
+• FIX: Reports - Repetitive "Clear Categories" link
 
-• FIX: Export issues with negative numbers and $NaN if less than one year of data
+• FIX: Trends - Export issues with negative numbers and $NaN if less than one year of data
 
 
 **Version 1.22/1.23/1.24:**
