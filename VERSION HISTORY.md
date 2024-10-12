@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 1.25 (beta):**
+**Version 1.25:**
 
 • NEW: Trends - Green/Red arrows in Monthly Summary.
 
