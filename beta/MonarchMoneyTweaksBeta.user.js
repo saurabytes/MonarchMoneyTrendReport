@@ -393,7 +393,7 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
     let mm = '';
     let yy = '';
     let inIDType = ''
-    let retGroups = null;
+    let retGroups = [];
 
     if(inID) { inIDType = getCategoryGroup(inID).TYPE; }
     inGrouping = Number(inGrouping);
@@ -1287,7 +1287,12 @@ function MenuReportBreadcrumbGo(Parms) {
     if(getCookie("MT_ReportsDrilldown",true) == 0) {return;}
 
     let bcl = '';
-    let retGroups = null;
+    let retGroups = [];
+
+    retGroups.GROUPNAME = '';
+    retGroups.GROUP = '';
+    retGroups.ID = '';
+    retGroups.TYPE = '';
 
     if(Parms) {
         const params = new URLSearchParams(Parms);
@@ -1341,7 +1346,7 @@ function MenuReportBreadcrumbGo(Parms) {
             let groupStoredStr = localStorage.getItem('persist:breadcrumb');
             if(groupStoredStr) {
                 const GroupStuff = groupStoredStr.split('/:/');
-                retGroups.ID = GroupStuff[0];
+                retGroups.GROUP = GroupStuff[0];
                 retGroups.GROUPNAME = GroupStuff[1];
                 bcl = GroupStuff[2];
                 retGroups.NAME = GroupStuff[3];
@@ -1351,7 +1356,7 @@ function MenuReportBreadcrumbGo(Parms) {
                 }
             }
 
-            if(retGroups.ID) {
+            if(retGroups.GROUP) {
                 if(bcl == '2') {
                     let bc = document.createElement('button');
                     bc.className = 'MTlink';
