@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.25.07
+// @version      1.25.08
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -63,7 +63,7 @@ function MM_Init() {
 
     GM_addStyle('.MTTrendsContainer {display:block; padding-bottom: 0px;}');
     GM_addStyle('.MTFlexContainer {margin: 0px; gap: 20px; display: flex;}');
-    GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_styles[0] + ';}');
+    GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_styles.background + ';}');
     GM_addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right; font-size: 14px;}');
     GM_addStyle('.MTTrendCell:hover {cursor:pointer; color: rgb(50, 170, 240);}');
     GM_addStyle('.MTTrendCellArrow, .MTTrendCellArrow2 {border-style: none; font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 32px; cursor: pointer; border-radius: 100%;  margin-left: 10px;}');
@@ -227,15 +227,18 @@ function MenuReportsTrends() {
 
 function MenuReportsTrendsStyles() {
 
-    css_styles[1] = MTgetStyle('Grid__GridItem','hvKFU0');
-    css_styles[2] = MTgetStyle('Card__CardRoot-sc-','jznQAl');
-    css_styles[3] = MTgetStyle('CardHeader__Root-','eGiVnj');
-    css_styles[4] = MTgetStyle('TransactionsSummaryCard__CardInner','jLxdcY');
-    css_styles[5] = MTgetStyle('TransactionsSummaryCard__CardItem','eqYSVV');
+    css_styles.items1 = MTgetStyle('Grid__GridItem','hvKFU0');
+    css_styles.items2 = MTgetStyle('Card__CardRoot-sc-','jznQAl');
+    css_styles.items3 = MTgetStyle('CardHeader__Root-','eGiVnj');
+    css_styles.row = MTgetStyle('TransactionsSummaryCard__CardInner','jLxdcY');
+    css_styles.item = MTgetStyle('TransactionsSummaryCard__CardItem','eqYSVV');
     const element = findButton('','');
-    if(element) { css_styles[6] = element.className;}
-    css_styles[7] = getCookie('MT_TrendHidePer1',true);
-    css_styles[8] = getCookie('MT_TrendHidePer2',true);
+    if(element) { css_styles.button = element.className;}
+    css_styles.hidePercent1 = getCookie('MT_TrendHidePer1',true);
+    css_styles.hidePercent2 = getCookie('MT_TrendHidePer2',true);
+    css_styles.color1 = 'background-color: #e68691';
+    css_styles.color2 = 'background-color: #ffc7ce';
+    css_styles.color3 = 'background-color: #fff3f4';
 
     function MTgetStyle(inClass,inDefault) {
         let element=document.querySelector('[class*="' + inClass + '"]');
@@ -474,23 +477,28 @@ function Trend_UpdateQueue(useID,useAmount,inCol) {
 
 function Trend_addCellPercent(inA,inB) {
 
-    if(css_styles[8] != '1') {
+    if(css_styles.hidePercent2 != '1') {
         if(isNaN(inA)) {inA = 0;}
         if(isNaN(inB)) {inB = 0;}
-        const diff = inB - inA;
-        let p = 0;
-
-        if(inA != 0) {
-            p = diff / inA;
-        } else {
-            p = 1;
-        }
-        p = p * 100;
-        if(inA == 0 && inB == 0) {p = ''} else {
-            p = ' (' + p.toFixed(1) + '%)';
+        let p = ['',''];
+        if(inA != 0 || inB != 0) {
+            if(inA != 0) {
+                p[0] = ((inB - inA) / inA);
+            } else {
+                p[0] = 1;
+            }
+            p[0] = p[0] * 100;
+            if(p[0] > 100) {
+                p[1] = css_styles.color1;
+            } else {
+                if(p[0] > 50) {p[1] = css_styles.color2;} else {
+                    if(p[0] > 25 ) {p[1] = css_styles.color3;}
+                }
+            }
+            p[0] = ' (' + p[0].toFixed(1) + '%)';
         }
         return(p);
-    } else {return '';}
+    } else {return ['',''];}
 }
 
 function MenuReportsTrendsPanels(inType) {
@@ -594,9 +602,9 @@ function MenuReportsTrendsDraw(inRedraw) {
             let div2 = document.createElement('div');
             div2.className = 'MTTrendsContainer aMVqz';
             topDiv.prepend(div2);
-            let div = cec('div',css_styles[1],div2);
-            let hed = cec('div',css_styles[2],div);
-            let cht = cec('div',css_styles[3],hed);
+            let div = cec('div',css_styles.items1,div2);
+            let hed = cec('div',css_styles.items2,div);
+            let cht = cec('div',css_styles.items3,hed);
 
             div = cec('div','CardHeader__Title hhcshL',cht);
             div = cec('div','FlexContainer__Root jEeSYR fKLqRU',div);
@@ -611,14 +619,14 @@ function MenuReportsTrendsDraw(inRedraw) {
 
             div2 = document.createElement('button');
             div2.textContent = 'Export';
-            div2.className = 'MTTrendExport ' + css_styles[6];
+            div2.className = 'MTTrendExport ' + css_styles.button;
             tbs.appendChild(div2);
             div2.addEventListener('click',MenuReportsTrendExport,false);
 
             div2 = document.createElement('button');
             let tl = ['By Last Month','By Same Month', 'By Same Quarter'];
             div2.textContent = tl[TrendQueueByPeriod];
-            div2.className = 'MTTrendPeriod ' + css_styles[6];
+            div2.className = 'MTTrendPeriod ' + css_styles.button;
             tbs.appendChild(div2);
             div2.addEventListener('click', () => {
                 flipCookie('MTTrendPeriod',2);
@@ -627,7 +635,7 @@ function MenuReportsTrendsDraw(inRedraw) {
             div2 = document.createElement('button');
             tl = ['By group','By category'];
             div2.textContent = tl[TrendQueueByGroup];
-            div2.className = 'MTTrendGroup ' + css_styles[6];
+            div2.className = 'MTTrendGroup ' + css_styles.button;
             tbs.appendChild(div2);
             div2.addEventListener('click', () => {
                 flipCookie('MTTrendGroup',1);
@@ -648,13 +656,13 @@ function MenuReportsTrendsDraw(inRedraw) {
 
         switch (inType) {
             case 1:
-                el = cec('div',css_styles[3],InRow,'','','style','font-size: 16px; font-weight:500; position: sticky; top: 0; background-color:' + css_styles[0]);
+                el = cec('div',css_styles.items3,InRow,'','','style','font-size: 16px; font-weight:500; position: sticky; top: 0; background-color:' + css_styles.background);
                 break;
             case 2:
-                el = cec('div',css_styles[3],InRow,'','','style','font-size: 16px; font-weight:500;');
+                el = cec('div',css_styles.items3,InRow,'','','style','font-size: 16px; font-weight:500;');
                 break;
             default:
-                el = cec('div',css_styles[5],InRow);
+                el = cec('div',css_styles.item,InRow);
                 break;
         }
 
@@ -669,11 +677,12 @@ function MenuReportsTrendsDraw(inRedraw) {
             let gg = Trend_addCellPercent(d,e);
             a = getDollarValue(a) + aa;
             b = getDollarValue(b) + bb;
-            c = getDollarValue(c) + ff;
+            c = getDollarValue(c) + ff[0];
             d = getDollarValue(d) + dd;
             e = getDollarValue(e) + ee;
-            f = getDollarValue(f) + gg;
+            f = getDollarValue(f) + gg[0];
             useCss = 'MTTrendCell2';
+            if(inGroup == 'expense') { useStyle[2] = useStyle[2] + gg[1];}
         } else {
             for (let i = 1; i < 7; i++) {
                 useHref[i] = '{Trend:' + i.toString();
@@ -688,16 +697,16 @@ function MenuReportsTrendsDraw(inRedraw) {
         elx = cec('span',useCss,el,d,useHref[4],'style','width: 13%;');
         elx = cec('span',useCss,el,e,useHref[5],'style','width: 13%;');
         elx = cec('span',useCss,el,f,useHref[6],'style','width: 14%;'+ useStyle[2]);
-         elx = cec('button','MTTrendCellArrow',el,'',useHref[7],'','');
-         if(inType == 3) { elx = cec('span','',elx,'','','','');}
-         if(inType == 2) { return cec('div',css_styles[4],InRow);}
+        elx = cec('button','MTTrendCellArrow',el,'',useHref[7],'','');
+        if(inType == 3) { elx = cec('span','',elx,'','','','');}
+        if(inType == 2) { return cec('div',css_styles.row,InRow);}
         return InRow;
     }
 
     function addPercent(inType,inGroup,ndx,inAmount) {
 
         let lit = '';
-        if(css_styles[7] != '1') {
+        if(css_styles.hidePercent1 != '1') {
             if(inType == 3 && inGroup == 'expense') {
                 if(CE[ndx] > 0 && inAmount > 0) {
                     lit = (inAmount / CE[ndx]) * 100;
@@ -926,7 +935,7 @@ function MenuReportsHistoryDraw() {
 
         if(startYear < getCookie('MT_LowCalendarYear')) {skiprow = true;}
 
-        let div2 = cec('div',css_styles[5],div,'','','style',os2);
+        let div2 = cec('div',css_styles.item,div,'','','style',os2);
         let div3 = cec('span','MTSideDrawerDetail',div2,'Month','','style',os);
         for (let j = startYear; j <= curYear; j++) {
             if(skiprow == false || j > startYear) {
@@ -936,14 +945,14 @@ function MenuReportsHistoryDraw() {
 
         div3 = cec('span','MTSideDrawerDetail3',div2,'','','','');
         div3 = cec('span','MTSideDrawerDetail',div2,'Average for Month','','','');
-        div2 = cec('div',css_styles[5],div,'','','style',os2);
+        div2 = cec('div',css_styles.item,div,'','','style',os2);
         div3 = cec('span','MTSpacerClass',div2,'','','','');
 
         let T = ['Total',0,0,0,0];
 
         for (let i = 0; i < 12; i++) {
             if(i > 0 && i == curMonth) {
-                div2 = cec('div',css_styles[5],div,'','','style',os2);
+                div2 = cec('div',css_styles.item,div,'','','style',os2);
                 div3 = cec('span','MTSpacerClass',div2,'','','','');
             }
             if(sumQue[i].YR2 == sumQue[i].YR3){
@@ -955,7 +964,7 @@ function MenuReportsHistoryDraw() {
                     if(sumQue[i].YR3 > sumQue[i].YR2) {useArrow = 0;} else {useArrow = 1;}
                 }
             }
-            div2 = cec('div',css_styles[5],div,'','','','');
+            div2 = cec('div',css_styles.row,div,'','','','');
             if(sumQue[i].YR1 != 0) {curYears = 3;}
             if(curYears < 3) {
                 if(sumQue[i].YR2 != 0) {curYears = 2;}
@@ -980,9 +989,9 @@ function MenuReportsHistoryDraw() {
         let tot = T[1]+T[2]+T[3];
         if(tot != 0) { T[4] = tot / curYears; }
 
-        div2 = cec('div',css_styles[5],div,'','','style',os2);
+        div2 = cec('div',css_styles.item,div,'','','style',os2);
         div3 = cec('span','MTSpacerClass',div2,'','','');
-        div2 = cec('div',css_styles[5],div,'','','style',os2);
+        div2 = cec('div',css_styles.item,div,'','','style',os2);
 
         div3 = cec('span','MTSideDrawerDetail',div2,T[0],'','style',os);
         for (let i = 1; i < 5; i++) {
@@ -1027,7 +1036,7 @@ function MenuReportsHistoryDraw() {
         detailQue.sort((a, b) => b.YR3 - a.YR3 || b.YR2 - a.YR2);
 
         for (let i = 0; i < detailQue.length; i++) {
-            let div2 = cec('div','TrendHistoryDetail ' + css_styles[5],inDiv,'','','style',os4);
+            let div2 = cec('div','TrendHistoryDetail ' + css_styles.item,inDiv,'','','style',os4);
             let div3 = cec('span','MTSideDrawerDetail2',div2,' ' + detailQue[i].DESC,'','style',os3);
             if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR1),'','','');}
             div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR2),'','','');
@@ -1039,7 +1048,7 @@ function MenuReportsHistoryDraw() {
                 div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue((detailQue[i].YR1 + detailQue[i].YR2)/(curYears-1)),'','','');
             }
         }
-        let div2 = cec('div','TrendHistoryDetail ' + css_styles[5],inDiv,'','','style',os4);
+        let div2 = cec('div','TrendHistoryDetail ' + css_styles.item,inDiv,'','','style',os4);
     }
 
     function MTHistoryFind(inDesc) {
@@ -1479,7 +1488,6 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Budget - Add YTD Total & Projected Total to Forecast / Monthly','MT_PlanYTD','checkbox');
             MenuDisplay_Input('Budget - Panel has smaller compressed grid','MT_PlanCompressed','checkbox');
             MenuDisplay_Input('General - Calendar "Last year" and "Last 12 months" include full month','MT_CalendarEOM','checkbox');
-
         }
     }
 }
@@ -2042,7 +2050,7 @@ function getStyle() {
 
     const cssObj = window.getComputedStyle(document.querySelector('[class*=Page__Root]'), null);
     const bgColor = cssObj.getPropertyValue('background-color');
-    if (bgColor === 'rgb(8, 32, 67)') { css_styles[0] = '#0d2c5c';return 0; } else {css_styles[0] = '#ffffff';return 1;}
+    if (bgColor === 'rgb(8, 32, 67)') { css_styles.background = '#0d2c5c';return 0; } else {css_styles.background = '#ffffff';return 1;}
 
 }
 
@@ -2155,7 +2163,7 @@ async function buildCategoryGroups() {
 
 function getCategoryGroup(InId) {
 
-  // [0]Group Desc, [1]Category Desc, [2]Group ID, [3]]Category ID [4]Type, [5]Icon
+  // [0]Group Desc, [1]Category Desc, [2]Group ID, [3]Category ID [4]Type, [5]Icon
   for (let i = 0; i < accountGroups.length; i++) {
       if(accountGroups[i].ID == InId || accountGroups[i].GROUP == InId) {
           return [accountGroups[i].GROUPNAME,accountGroups[i].NAME,accountGroups[i].GROUP,accountGroups[i].ID,accountGroups[i].TYPE,accountGroups[i].ICON];
