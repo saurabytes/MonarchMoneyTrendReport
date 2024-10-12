@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.25.09
+// @version      1.25
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -388,14 +388,13 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
     let useID = '';
     let useAmount = '';
     let useDesc = '';
+    let useType = '';
     let snapshotData = null;
-    let retCat
     let mm = '';
     let yy = '';
-    let inIDType = ''
     let retGroups = [];
 
-    if(inID) { inIDType = getCategoryGroup(inID).TYPE; }
+    if(inID) { useType = getCategoryGroup(inID).TYPE; }
     inGrouping = Number(inGrouping);
 
     if(inGrouping == 0) {
@@ -417,6 +416,7 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
                 retGroups = getCategoryGroup(useID);
                 useID = retGroups.GROUP;
                 useDesc = retGroups.NAME;
+                useType = retGroups.TYPE;
                 break;
 
         }
@@ -426,7 +426,7 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
                 let useDate = snapshotData.aggregates[i].groupBy.month;
                 yy = useDate.substring(0,4);
                 mm = useDate.substring(5,7);
-                if(inIDType == 'expense') { useAmount = useAmount * -1;}
+                if(useType == 'expense') { useAmount = useAmount * -1;}
                 TrendQueue2.push({"YEAR": yy, "MONTH": mm,"AMOUNT": useAmount, "DESC": useDesc});
             } else { Trend_UpdateQueue(useID,useAmount,inCol); }
         }
@@ -810,11 +810,10 @@ function MenuReportsTrendsDraw(inRedraw) {
     function Trend_DumpData(inRow,inType,inGroup) {
 
         let row = inRow;
-        let tp = ['month','month','quarter'][TrendQueueByPeriod];
         let hr = ['category-groups','categories'][TrendQueueByGroup];
         for (let i = 0; i < TrendQueue.length; i++) {
             if(TrendQueue[i].TYPE == inGroup) {
-                row = Trend_TableGrid(row,3,inGroup,TrendQueue[i].ICON + ' ' + TrendQueue[i].DESC,TrendQueue[i].N_LASTM,TrendQueue[i].N_CURRENTM,TrendQueue[i].N_DIFFM,TrendQueue[i].N_LAST,TrendQueue[i].N_CURRENT,TrendQueue[i].N_DIFF,'/' + hr + '/' + TrendQueue[i].ID + '?timeframe='+tp,'{Hstry/' + hr + '/' + TrendQueue[i].ID);
+                row = Trend_TableGrid(row,3,inGroup,TrendQueue[i].ICON + ' ' + TrendQueue[i].DESC,TrendQueue[i].N_LASTM,TrendQueue[i].N_CURRENTM,TrendQueue[i].N_DIFFM,TrendQueue[i].N_LAST,TrendQueue[i].N_CURRENT,TrendQueue[i].N_DIFF,'/' + hr + '/' + TrendQueue[i].ID,'{Hstry/' + hr + '/' + TrendQueue[i].ID);
             }
         }
         return row;
@@ -1965,9 +1964,11 @@ function findButton(inValue,inName) {
         if(useTarget == null) {
             if(inValue != '' && li.textContent.substring(0,1) == inValue) {
                 useTarget = li;
+                return useTarget;
             }
             if(inName != '' && inName == li.innerText) {
                 useTarget = li;
+                return useTarget;
             }
         }
     } );
