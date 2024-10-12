@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.24
+// @version      1.25
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -51,7 +51,7 @@ function MM_Init() {
     GM_addStyle('.MTPlanHeader {font-weight: 900; align-content: inherit; padding: 0px 0px 15px;}');
     GM_addStyle('.MTPlanDetail {' + css_green + 'font-size: 16px; font-weight: 500;}');
 
-    GM_addStyle('.MTlink {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
+    GM_addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
     GM_addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
 
     GM_addStyle('.MTTrendButtons {display: flex; gap: 20px;}');
@@ -63,8 +63,8 @@ function MM_Init() {
 
     GM_addStyle('.MTTrendsContainer {display:block; padding-bottom: 0px;}');
     GM_addStyle('.MTFlexContainer {margin: 0px; gap: 20px; display: flex;}');
-    GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_styles[0] + ';}');
-    GM_addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right;}');
+    GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_styles.background + ';}');
+    GM_addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right; font-size: 14px; padding-right: 5px;}');
     GM_addStyle('.MTTrendCell:hover {cursor:pointer; color: rgb(50, 170, 240);}');
     GM_addStyle('.MTTrendCellArrow, .MTTrendCellArrow2 {border-style: none; font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 32px; cursor: pointer; border-radius: 100%;  margin-left: 10px;}');
 
@@ -74,6 +74,7 @@ function MM_Init() {
     GM_addStyle('.MTSideDrawerHeader { ' + a5 + ' padding: 12px; }');
     GM_addStyle('.MTSideDrawerDetail { ' + a5 + ' width: 24%; text-align: right; font-size: 13px; }');
     GM_addStyle('.MTSideDrawerDetail2 { ' + a5 + ' width: 24%; text-align: right; font-size: 12px; }');
+    GM_addStyle('.MTSideDrawerDetail3 { ' + a5 + ' width: 13px; text-align: center; font-size: 13px; font-family: MonarchIcons, sans-serif !important; }');
 
     GM_addStyle('.MTTrendBig {font-size: 18px; font-weight: 500; padding-top: 8px;}');
     GM_addStyle('.MTTrendSmall {font-size: 12px;font-weight: 600; padding-top: 8px; color: #919cb4; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
@@ -226,14 +227,18 @@ function MenuReportsTrends() {
 
 function MenuReportsTrendsStyles() {
 
-    css_styles[1] = MTgetStyle('Grid__GridItem','hvKFU0');
-    css_styles[2] = MTgetStyle('Card__CardRoot-sc-','jznQAl');
-    css_styles[3] = MTgetStyle('CardHeader__Root-','eGiVnj');
-    css_styles[4] = MTgetStyle('TransactionsSummaryCard__CardInner','jLxdcY');
-    css_styles[5] = MTgetStyle('TransactionsSummaryCard__CardItem','eqYSVV');
-
     const element = findButton('','');
-    if(element) { css_styles[6] = element.className;}
+    if(element) { css_styles.button = element.className;}
+    css_styles.items1 = MTgetStyle('Grid__GridItem','hvKFU0');
+    css_styles.items2 = MTgetStyle('Card__CardRoot-sc-','jznQAl');
+    css_styles.items3 = MTgetStyle('CardHeader__Root-','eGiVnj');
+    css_styles.row = MTgetStyle('TransactionsSummaryCard__CardInner','jLxdcY');
+    css_styles.item = MTgetStyle('TransactionsSummaryCard__CardItem','eqYSVV');
+    css_styles.hidePercent1 = getCookie('MT_TrendHidePer1',true);
+    css_styles.hidePercent2 = getCookie('MT_TrendHidePer2',true);
+    css_styles.color1 = 'background-color: #e68691';
+    css_styles.color2 = 'background-color: #ffc7ce';
+    css_styles.color3 = 'background-color: #fff3f4';
 
     function MTgetStyle(inClass,inDefault) {
         let element=document.querySelector('[class*="' + inClass + '"]');
@@ -249,7 +254,7 @@ async function MenuReportsTrendsGo() {
     TrendQueueByPeriod = getCookie('MTTrendPeriod',true);
     let TrendFullPeriod = getCookie('MT_TrendFullPeriod',true);
 
-    await BuildCategoryGroups();
+    await buildCategoryGroups();
 
     TrendQueue = [];
 
@@ -355,15 +360,13 @@ async function MenuReportsTrendsGo() {
 
 async function CleanupTrendData() {
 
-    let retGroup = [];
-
     for (let i = 0; i < TrendQueue.length; i += 1) {
-        retGroup = await GetCategoryGroup(TrendQueue[i].ID);
-        TrendQueue[i].DESC = retGroup[TrendQueueByGroup];
-        TrendQueue[i].TYPE = retGroup[3];
-        TrendQueue[i].ICON = retGroup[4];
+        let retGroup = await getCategoryGroup(TrendQueue[i].ID);
+        if(TrendQueueByGroup == 0) {TrendQueue[i].DESC = retGroup.GROUPNAME;} else {TrendQueue[i].DESC = retGroup.NAME;}
+        TrendQueue[i].TYPE = retGroup.TYPE;
+        TrendQueue[i].ICON = retGroup.ICON;
 
-        if(retGroup[3] == 'expense') {
+        if(retGroup.TYPE == 'expense') {
             TrendQueue[i].N_CURRENT = TrendQueue[i].N_CURRENT * -1;
             TrendQueue[i].N_LAST = TrendQueue[i].N_LAST * -1;
             TrendQueue[i].N_CURRENTM = TrendQueue[i].N_CURRENTM * -1;
@@ -385,14 +388,13 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
     let useID = '';
     let useAmount = '';
     let useDesc = '';
+    let useType = '';
     let snapshotData = null;
-    let retCat
     let mm = '';
     let yy = '';
-    let inIDType = ''
     let retGroups = [];
 
-    if(inID) { inIDType = GetCategoryGroup(inID)[3]; }
+    if(inID) { useType = getCategoryGroup(inID).TYPE; }
     inGrouping = Number(inGrouping);
 
     if(inGrouping == 0) {
@@ -411,9 +413,10 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
                 break;
             case 2:
                 useID = snapshotData.aggregates[i].groupBy.category.id;
-                retGroups = GetCategoryGroup(useID);
-                useID = retGroups[2];
-                useDesc = retGroups[1];
+                retGroups = getCategoryGroup(useID);
+                useID = retGroups.GROUP;
+                useDesc = retGroups.NAME;
+                useType = retGroups.TYPE;
                 break;
 
         }
@@ -423,7 +426,7 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
                 let useDate = snapshotData.aggregates[i].groupBy.month;
                 yy = useDate.substring(0,4);
                 mm = useDate.substring(5,7);
-                if(inIDType == 'expense') { useAmount = useAmount * -1;}
+                if(useType == 'expense') { useAmount = useAmount * -1;}
                 TrendQueue2.push({"YEAR": yy, "MONTH": mm,"AMOUNT": useAmount, "DESC": useDesc});
             } else { Trend_UpdateQueue(useID,useAmount,inCol); }
         }
@@ -468,6 +471,32 @@ function Trend_UpdateQueue(useID,useAmount,inCol) {
             TrendQueue.push({"ICON": "", "DESC": "","TYPE": "", "ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_DIFF": 0, "N_CURRENTM": 0, "N_LASTM": useAmount, "N_DIFFM": 0});
             break;
     }
+}
+
+function Trend_addCellPercent(inA,inB) {
+
+    if(css_styles.hidePercent2 != '1') {
+        if(isNaN(inA)) {inA = 0;}
+        if(isNaN(inB)) {inB = 0;}
+        let p = ['',''];
+        if(inA != 0 || inB != 0) {
+            if(inA != 0) {
+                p[0] = ((inB - inA) / inA);
+            } else {
+                p[0] = 1;
+            }
+            p[0] = p[0] * 100;
+            if(p[0] > 100) {
+                p[1] = css_styles.color1;
+            } else {
+                if(p[0] > 50) {p[1] = css_styles.color2;} else {
+                    if(p[0] > 25 ) {p[1] = css_styles.color3;}
+                }
+            }
+            p[0] = ' (' + p[0].toFixed(1) + '%)';
+        }
+        return(p);
+    } else {return ['',''];}
 }
 
 function MenuReportsTrendsPanels(inType) {
@@ -571,9 +600,9 @@ function MenuReportsTrendsDraw(inRedraw) {
             let div2 = document.createElement('div');
             div2.className = 'MTTrendsContainer aMVqz';
             topDiv.prepend(div2);
-            let div = cec('div',css_styles[1],div2);
-            let hed = cec('div',css_styles[2],div);
-            let cht = cec('div',css_styles[3],hed);
+            let div = cec('div',css_styles.items1,div2);
+            let hed = cec('div',css_styles.items2,div);
+            let cht = cec('div',css_styles.items3,hed);
 
             div = cec('div','CardHeader__Title hhcshL',cht);
             div = cec('div','FlexContainer__Root jEeSYR fKLqRU',div);
@@ -588,14 +617,14 @@ function MenuReportsTrendsDraw(inRedraw) {
 
             div2 = document.createElement('button');
             div2.textContent = 'Export';
-            div2.className = 'MTTrendExport ' + css_styles[6];
+            div2.className = 'MTTrendExport ' + css_styles.button;
             tbs.appendChild(div2);
             div2.addEventListener('click',MenuReportsTrendExport,false);
 
             div2 = document.createElement('button');
             let tl = ['By Last Month','By Same Month', 'By Same Quarter'];
             div2.textContent = tl[TrendQueueByPeriod];
-            div2.className = 'MTTrendPeriod ' + css_styles[6];
+            div2.className = 'MTTrendPeriod ' + css_styles.button;
             tbs.appendChild(div2);
             div2.addEventListener('click', () => {
                 flipCookie('MTTrendPeriod',2);
@@ -604,7 +633,7 @@ function MenuReportsTrendsDraw(inRedraw) {
             div2 = document.createElement('button');
             tl = ['By group','By category'];
             div2.textContent = tl[TrendQueueByGroup];
-            div2.className = 'MTTrendGroup ' + css_styles[6];
+            div2.className = 'MTTrendGroup ' + css_styles.button;
             tbs.appendChild(div2);
             div2.addEventListener('click', () => {
                 flipCookie('MTTrendGroup',1);
@@ -619,18 +648,19 @@ function MenuReportsTrendsDraw(inRedraw) {
         let useStyle = ['','',''];
         let useDiv = '';
         let useHref = [inRef,'','','','','','',InRef2];
+        let useCss = '';
 
         let el = null;
 
         switch (inType) {
             case 1:
-                el = cec('div',css_styles[3],InRow,'','','style','font-size: 16px; font-weight:500; position: sticky; top: 0; background-color:' + css_styles[0]);
+                el = cec('div',css_styles.items3,InRow,'','','style','font-size: 16px; font-weight:500; position: sticky; top: 0; background-color:' + css_styles.background);
                 break;
             case 2:
-                el = cec('div',css_styles[3],InRow,'','','style','font-size: 16px; font-weight:500;');
+                el = cec('div',css_styles.items3,InRow,'','','style','font-size: 16px; font-weight:500;');
                 break;
             default:
-                el = cec('div',css_styles[5],InRow);
+                el = cec('div',css_styles.item,InRow);
                 break;
         }
 
@@ -641,55 +671,62 @@ function MenuReportsTrendsDraw(inRedraw) {
             let bb = addPercent(inType,inGroup,1,b);
             let dd = addPercent(inType,inGroup,2,d);
             let ee = addPercent(inType,inGroup,3,e);
+            let ff = Trend_addCellPercent(a,b);
+            let gg = Trend_addCellPercent(d,e);
             a = getDollarValue(a) + aa;
             b = getDollarValue(b) + bb;
-            c = getDollarValue(c);
+            c = getDollarValue(c) + ff[0];
             d = getDollarValue(d) + dd;
             e = getDollarValue(e) + ee;
-            f = getDollarValue(f);
+            f = getDollarValue(f) + gg[0];
+            useCss = 'MTTrendCell2';
+            if(inGroup == 'expense') { useStyle[2] = useStyle[2] + gg[1];}
         } else {
             for (let i = 1; i < 7; i++) {
                 useHref[i] = '{Trend:' + i.toString();
             }
+            useCss = 'MThRefClass';
         }
         if(useHref[0]) {useDiv = 'a';} else {useDiv = 'span';}
         let elx = cec(useDiv,'MTTrendCell',el,inTitle,useHref[0],'style','text-align: left; width: 16%;'+ useStyle[0]);
-        elx = cec('span','MTTrendCell2',el,a,useHref[1],'style','width: 14%;');
-        elx = cec('span','MTTrendCell2',el,b,useHref[2],'style','width: 14%;');
-        elx = cec('span','MTTrendCell2',el,c,useHref[3],'style','width: 11%;'+ useStyle[1]);
-        elx = cec('span','MTTrendCell2',el,d,useHref[4],'style','width: 18%;');
-        elx = cec('span','MTTrendCell2',el,e,useHref[5],'style','width: 14%;');
-        elx = cec('span','MTTrendCell2',el,f,useHref[6],'style','width: 11%;'+ useStyle[2]);
-         elx = cec('button','MTTrendCellArrow',el,'',useHref[7],'','');
-         if(inType == 3) { elx = cec('span','',elx,'','','','');}
-         if(inType == 2) { return cec('div',css_styles[4],InRow);}
+        elx = cec('span',useCss,el,a,useHref[1],'style','width: 13%;');
+        elx = cec('span',useCss,el,b,useHref[2],'style','width: 13%;');
+        elx = cec('span',useCss,el,c,useHref[3],'style','width: 14%;'+ useStyle[1]);
+        elx = cec('span',useCss,el,d,useHref[4],'style','width: 13%;');
+        elx = cec('span',useCss,el,e,useHref[5],'style','width: 13%;');
+        elx = cec('span',useCss,el,f,useHref[6],'style','width: 14%;'+ useStyle[2]);
+        elx = cec('button','MTTrendCellArrow',el,'',useHref[7],'','');
+        if(inType == 3) { elx = cec('span','',elx,'','','','');}
+        if(inType == 2) { return cec('div',css_styles.row,InRow);}
         return InRow;
     }
 
     function addPercent(inType,inGroup,ndx,inAmount) {
 
         let lit = '';
-        if(inType == 3 && inGroup == 'expense') {
-            if(CE[ndx] > 0 && inAmount > 0) {
-                lit = (inAmount / CE[ndx]) * 100;
-                lit = Math.round(lit * 10) / 10;
-                lit = ' (' + lit.toFixed(1) + '%)';
+        if(css_styles.hidePercent1 != '1') {
+            if(inType == 3 && inGroup == 'expense') {
+                if(CE[ndx] > 0 && inAmount > 0) {
+                    lit = (inAmount / CE[ndx]) * 100;
+                    lit = Math.round(lit * 10) / 10;
+                    lit = ' (' + lit.toFixed(1) + '%)';
+                }
             }
-        }
-        if(inType == 3 && inGroup == 'income') {
-            if(CI[ndx] > 0 && inAmount > 0) {
-                lit = (inAmount / CI[ndx]) * 100;
-                lit = Math.round(lit * 10) / 10;
-                lit = ' (' + lit.toFixed(1) + '%)';
+            if(inType == 3 && inGroup == 'income') {
+                if(CI[ndx] > 0 && inAmount > 0) {
+                    lit = (inAmount / CI[ndx]) * 100;
+                    lit = Math.round(lit * 10) / 10;
+                    lit = ' (' + lit.toFixed(1) + '%)';
+                }
             }
-        }
-        if(inGroup == 'savings') {
-            if(CI[ndx] > 0) {
-                lit = (inAmount / CI[ndx]) * 100;
-                lit = Math.round(lit * 10) / 10;
-                lit = ' (' + lit.toFixed(1) + '%)';
-            } else {
-                lit = ' (0%)';
+            if(inGroup == 'savings') {
+                if(CI[ndx] > 0) {
+                    lit = (inAmount / CI[ndx]) * 100;
+                    lit = Math.round(lit * 10) / 10;
+                    lit = ' (' + lit.toFixed(1) + '%)';
+                } else {
+                    lit = ' (0%)';
+                }
             }
         }
         return lit;
@@ -773,11 +810,10 @@ function MenuReportsTrendsDraw(inRedraw) {
     function Trend_DumpData(inRow,inType,inGroup) {
 
         let row = inRow;
-        let tp = ['month','month','quarter'][TrendQueueByPeriod];
         let hr = ['category-groups','categories'][TrendQueueByGroup];
         for (let i = 0; i < TrendQueue.length; i++) {
             if(TrendQueue[i].TYPE == inGroup) {
-                row = Trend_TableGrid(row,3,inGroup,TrendQueue[i].ICON + ' ' + TrendQueue[i].DESC,TrendQueue[i].N_LASTM,TrendQueue[i].N_CURRENTM,TrendQueue[i].N_DIFFM,TrendQueue[i].N_LAST,TrendQueue[i].N_CURRENT,TrendQueue[i].N_DIFF,'/' + hr + '/' + TrendQueue[i].ID + '?timeframe='+tp,'{Hstry/' + hr + '/' + TrendQueue[i].ID);
+                row = Trend_TableGrid(row,3,inGroup,TrendQueue[i].ICON + ' ' + TrendQueue[i].DESC,TrendQueue[i].N_LASTM,TrendQueue[i].N_CURRENTM,TrendQueue[i].N_DIFFM,TrendQueue[i].N_LAST,TrendQueue[i].N_CURRENT,TrendQueue[i].N_DIFF,'/' + hr + '/' + TrendQueue[i].ID,'{Hstry/' + hr + '/' + TrendQueue[i].ID);
             }
         }
         return row;
@@ -835,30 +871,29 @@ function MenuReportsHistory(inParms) {
         const lowerDate = new Date("2022-01-01");
         const higherDate = new Date();
 
+        let retGroups = getCategoryGroup(parmsA[2]);
+        let inGroup = 1;
+
         topDiv = topDiv.childNodes[0];
         let div = cec('div','MTHistoryPanel',topDiv,'','','','');
         let div2 = cec('div','MTSideDrawerRoot',div,'','','tabindex','0');
         let div3 = cec('div','MTSideDrawerContainer',div2,'','','','');
         let div4 = cec('div','MTSideDrawerMotion',div3,'','','grouptype',parmsA[1]);
-
+        div4.setAttribute('cattype',retGroups.TYPE);
         div = cec('span','MTSideDrawerHeader',div4,'','','','');
         div2 = cec('button','MTTrendCellArrow',div,'','','style','float:right;');
         if(parmsA[1] == 'category-groups') {
             div2 = cec('button','MTTrendCellArrow2',div,['',''][getCookie('MTC_div.TrendHistoryDetail',true)],'','style','float:right;');
         }
         div2 = cec('div','MTTrendBig',div,'Monthly Summary');
-
-        let retGroups = GetCategoryGroup(parmsA[2]);
-        let inGroup = 1;
-
         div = cec('span','MTSideDrawerHeader',div4,'','','','');
-        div2 = cec('div','MTTrendSmall',div, retGroups[3],'','style','float:right;');
+        div2 = cec('div','MTTrendSmall',div, retGroups.TYPE,'','style','float:right;');
 
         if(parmsA[1] == 'category-groups') {
-            div2 = cec('div','',div,retGroups[4] + ' ' + retGroups[0] ,'','','' );
+            div2 = cec('a','',div,retGroups.ICON + ' ' + retGroups.GROUPNAME ,'/' + parmsA[1] + '/' + retGroups.GROUP ,'','' );
             inGroup = 2;
         } else {
-            div2 = cec('div','',div,retGroups[4] + ' ' + retGroups[0] + ' / ' + retGroups[1],'','','' );
+            div2 = cec('a','',div,retGroups.ICON + ' ' + retGroups.GROUPNAME + ' / ' + retGroups.NAME,'/' + parmsA[1] + '/' + retGroups.ID,'','' );
         }
 
         TrendQueue2 = [];
@@ -881,10 +916,14 @@ function MenuReportsHistoryDraw() {
     let curYears = 1;
     let skiprow = false;
     let inGroup = 1;
+    let useArrow = 0;
+    let c_r = 'red';
+    let c_g = 'green';
 
     let topDiv = document.querySelector('div.MTSideDrawerMotion')
     if(topDiv) {
         if(topDiv.getAttribute("grouptype") == 'category-groups') { inGroup = 2;}
+        if(topDiv.getAttribute("cattype") == 'income') { c_g = 'red'; c_r = 'green'; }
         let div = cec('div','MTSideDrawerHeader',topDiv,'','','','');
 
         for (let i = 0; i < 12; i++) {
@@ -893,25 +932,36 @@ function MenuReportsHistoryDraw() {
 
         if(startYear < getCookie('MT_LowCalendarYear')) {skiprow = true;}
 
-        let div2 = cec('div',css_styles[5],div,'','','style',os2);
+        let div2 = cec('div',css_styles.item,div,'','','style',os2);
         let div3 = cec('span','MTSideDrawerDetail',div2,'Month','','style',os);
         for (let j = startYear; j <= curYear; j++) {
             if(skiprow == false || j > startYear) {
                 div3 = cec('span','MTSideDrawerDetail',div2,j,'','','');
             }
         }
+
+        div3 = cec('span','MTSideDrawerDetail3',div2,'','','','');
         div3 = cec('span','MTSideDrawerDetail',div2,'Average for Month','','','');
-        div2 = cec('div',css_styles[5],div,'','','style',os2);
+        div2 = cec('div',css_styles.item,div,'','','style',os2);
         div3 = cec('span','MTSpacerClass',div2,'','','','');
 
         let T = ['Total',0,0,0,0];
 
         for (let i = 0; i < 12; i++) {
             if(i > 0 && i == curMonth) {
-                div2 = cec('div',css_styles[5],div,'','','style',os2);
+                div2 = cec('div',css_styles.item,div,'','','style',os2);
                 div3 = cec('span','MTSpacerClass',div2,'','','','');
             }
-            div2 = cec('div',css_styles[5],div,'','','','');
+            if(sumQue[i].YR2 == sumQue[i].YR3){
+                useArrow = 2;}
+            else {
+                if(i >= curMonth) {
+                    if(sumQue[i].YR3 > sumQue[i].YR2) {useArrow = 0;} else {useArrow = 2;}
+                } else {
+                    if(sumQue[i].YR3 > sumQue[i].YR2) {useArrow = 0;} else {useArrow = 1;}
+                }
+            }
+            div2 = cec('div',css_styles.item,div,'','','','');
             if(sumQue[i].YR1 != 0) {curYears = 3;}
             if(curYears < 3) {
                 if(sumQue[i].YR2 != 0) {curYears = 2;}
@@ -920,6 +970,8 @@ function MenuReportsHistoryDraw() {
             if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR1),'','','');}
             div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR2),'','','');
             div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR3),'','','');
+            div3 = cec('span','MTSideDrawerDetail3',div2,['','',' '][useArrow],'','style','color: ' + [c_r,c_g][useArrow]);
+
             if(i < curMonth) {
                 div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue((sumQue[i].YR1 + sumQue[i].YR2 + sumQue[i].YR3) / curYears),'','','');
             } else {
@@ -934,9 +986,9 @@ function MenuReportsHistoryDraw() {
         let tot = T[1]+T[2]+T[3];
         if(tot != 0) { T[4] = tot / curYears; }
 
-        div2 = cec('div',css_styles[5],div,'','','style',os2);
+        div2 = cec('div',css_styles.item,div,'','','style',os2);
         div3 = cec('span','MTSpacerClass',div2,'','','');
-        div2 = cec('div',css_styles[5],div,'','','style',os2);
+        div2 = cec('div',css_styles.item,div,'','','style',os2);
 
         div3 = cec('span','MTSideDrawerDetail',div2,T[0],'','style',os);
         for (let i = 1; i < 5; i++) {
@@ -953,7 +1005,7 @@ function MenuReportsHistoryDraw() {
         let ms = '0' + inMonth.toString();
         ms = ms.slice(-2);
         let ys = inYear.toString();
-        let amt = 0.00;
+        let amt = 0.00
 
         for (let i = 0; i < TrendQueue2.length; i++) {
             if(TrendQueue2[i].MONTH == ms && TrendQueue2[i].YEAR == ys) {
@@ -981,18 +1033,19 @@ function MenuReportsHistoryDraw() {
         detailQue.sort((a, b) => b.YR3 - a.YR3 || b.YR2 - a.YR2);
 
         for (let i = 0; i < detailQue.length; i++) {
-                let div2 = cec('div','TrendHistoryDetail ' + css_styles[5],inDiv,'','','style',os4);
-                let div3 = cec('span','MTSideDrawerDetail2',div2,' ' + detailQue[i].DESC,'','style',os3);
-                if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR1),'','','');}
-                div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR2),'','','');
-                div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR3),'','','');
-                if(i < curMonth) {
-                    div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue((detailQue[i].YR1 + detailQue[i].YR2 + detailQue[i].YR3) / curYears),'','','');
-                } else {
-                    div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue((detailQue[i].YR1 + detailQue[i].YR2)/(curYears-1)),'','','');
-                }
+            let div2 = cec('div','TrendHistoryDetail ' + css_styles.item,inDiv,'','','style',os4);
+            let div3 = cec('span','MTSideDrawerDetail2',div2,' ' + detailQue[i].DESC,'','style',os3);
+            if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR1),'','','');}
+            div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR2),'','','');
+            div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR3),'','','');
+            div3 = cec('span','MTSideDrawerDetail3',div2,'','','','');
+            if(i < curMonth) {
+                div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue((detailQue[i].YR1 + detailQue[i].YR2 + detailQue[i].YR3) / curYears),'','','');
+            } else {
+                div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue((detailQue[i].YR1 + detailQue[i].YR2)/(curYears-1)),'','','');
+            }
         }
-        let div2 = cec('div','TrendHistoryDetail ' + css_styles[5],inDiv,'','','style',os4);
+        let div2 = cec('div','TrendHistoryDetail ' + css_styles.item,inDiv,'','','style',os4);
     }
 
     function MTHistoryFind(inDesc) {
@@ -1023,11 +1076,7 @@ function MenuReportsHistoryExport() {
         if(Cols == 0) {
             if(span.innerText.startsWith('Average')) { Cols = j;}
         }
-        if(span.innerText.startsWith('$')) {
-            csvContent = csvContent + getCleanValue(span.innerText);
-        } else {
-            csvContent = csvContent + span.innerText;
-        }
+        csvContent = csvContent + getCleanValue(span.innerText,2);
         if(j == Cols) {
             j=0;
             csvContent = csvContent + CRLF;
@@ -1229,7 +1278,7 @@ function MenuReportBreadcrumbListener() {
             }
         }
     }
-    BuildCategoryGroups();
+    buildCategoryGroups();
 }
 
 function MenuReportBreadcrumbGo(Parms) {
@@ -1237,11 +1286,12 @@ function MenuReportBreadcrumbGo(Parms) {
     if(getCookie("MT_ReportsDrilldown",true) == 0) {return;}
 
     let bcl = '';
-    let groupId = '';
-    let groupName = '';
-    let catName = '';
-    let catType = '';
-    let catIcon = '';
+    let retGroups = [];
+
+    retGroups.GROUPNAME = '';
+    retGroups.GROUP = '';
+    retGroups.ID = '';
+    retGroups.TYPE = '';
 
     if(Parms) {
         const params = new URLSearchParams(Parms);
@@ -1264,23 +1314,24 @@ function MenuReportBreadcrumbGo(Parms) {
                             if(bcl == '1') { newStoredStr = newStoredStr + ',';}
                             bcl = '1';
                             newStoredStr = newStoredStr + '\\"' + accountGroups[i].ID + '\\"';
-                            groupName = accountGroups[i].GROUPNAME;
-                            groupId = accountGroups[i].GROUP;
-                            catType = accountGroups[i].TYPE;
+                            retGroups.GROUPNAME = accountGroups[i].GROUPNAME;
+                            retGroups.GROUP = accountGroups[i].GROUP;
+                            retGroups.ID = accountGroups[i].ID
+                            retGroups.TYPE = accountGroups[i].TYPE;
                         }
                     }
                 } else
                 {
                     newStoredStr = newStoredStr + '\\"' + categories + '\\"';
                     bcl = '2';
-                    [groupName,catName,groupId,catType,catIcon] = GetCategoryGroup(categories);
+                    retGroups = getCategoryGroup(categories);
                 }
 
                 newStoredStr = newStoredStr + ']' + storedStr.substring(x);
                 newStoredStr = newStoredStr.replace('"category_group','"category');
 
                 localStorage.setItem("persist:reports", newStoredStr);
-                localStorage.setItem("persist:breadcrumb",groupId + '/:/' + groupName + '/:/' + bcl + '/:/' + catName + '/:/' + catType );
+                localStorage.setItem("persist:breadcrumb",retGroups.GROUP + '/:/' + retGroups.GROUPNAME + '/:/' + bcl + '/:/' + retGroups.NAME + '/:/' + retGroups.TYPE );
 
                 // Redirect back to page
                 window.location.replace(SaveLocationPathName);
@@ -1294,46 +1345,48 @@ function MenuReportBreadcrumbGo(Parms) {
             let groupStoredStr = localStorage.getItem('persist:breadcrumb');
             if(groupStoredStr) {
                 const GroupStuff = groupStoredStr.split('/:/');
-                groupId = GroupStuff[0];
-                groupName = GroupStuff[1];
+                retGroups.GROUP = GroupStuff[0];
+                retGroups.GROUPNAME = GroupStuff[1];
                 bcl = GroupStuff[2];
-                catName = GroupStuff[3];
-                catType = GroupStuff[4];
-                if((catType == 'income' && SaveLocationPathName.includes("spending")) || (catType == 'expense' && SaveLocationPathName.includes("income")) ) {
+                retGroups.NAME = GroupStuff[3];
+                retGroups.TYPE = GroupStuff[4];
+                if((retGroups.TYPE == 'income' && SaveLocationPathName.includes("spending")) || (retGroups.TYPE == 'expense' && SaveLocationPathName.includes("income")) ) {
                     return;
                 }
             }
 
-            if(groupId) {
+            if(retGroups.GROUP) {
                 if(bcl == '2') {
                     let bc = document.createElement('button');
                     bc.className = 'MTlink';
-                    bc.innerText = groupName + ' »';
+                    bc.innerText = retGroups.GROUPNAME + ' »';
                     div.prepend(bc);
                     bc.addEventListener('click', () => {
-                        window.location.replace(SaveLocationPathName + '?categoryGroups=' + groupId);
+                        window.location.replace(SaveLocationPathName + '?categoryGroups=' + retGroups.GROUP);
                     });
                 } else
                 {
                     let bc = document.createElement('span');
                     bc.className = 'MTlink2';
-                    bc.innerText = '/ ' + groupName;
+                    bc.innerText = '/ ' + retGroups.GROUPNAME;
                     div.prepend(bc);
                 }
             }
 
-            let bc3 = document.createElement('button');
-            bc3.className = 'MTlink';
-            bc3.innerText = 'Clear Categories »';
-            div.prepend(bc3);
-            bc3.addEventListener('click', () => {
-                const storedStr = localStorage.getItem('persist:reports');
-                let newStoredStr = removeAllEncompass(storedStr,',\\"categories\\":','\"]');
-                newStoredStr = newStoredStr.replace('"\\"category\\""','"\\"category_group\\""');
-                localStorage.setItem('persist:reports',newStoredStr);
-                localStorage.removeItem('persist:breadcrumb');
-                window.location.replace(SaveLocationPathName);
-            });
+            if(document.querySelector('button.MTlink3') == null) {
+                let bc3 = document.createElement('button');
+                bc3.className = 'MTlink3';
+                bc3.innerText = 'Clear Categories »';
+                div.prepend(bc3);
+                bc3.addEventListener('click', () => {
+                    const storedStr = localStorage.getItem('persist:reports');
+                    let newStoredStr = removeAllEncompass(storedStr,',\\"categories\\":','\"]');
+                    newStoredStr = newStoredStr.replace('"\\"category\\""','"\\"category_group\\""');
+                    localStorage.setItem('persist:reports',newStoredStr);
+                    localStorage.removeItem('persist:breadcrumb');
+                    window.location.replace(SaveLocationPathName);
+                });
+            }
         }
     }
 }
@@ -1425,12 +1478,13 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Transactions - Show Pending Transactions in red (Preferences / "Allow Pending Edits" must be off)','MT_PendingIsRed','checkbox');
             MenuDisplay_Input('Transactions - Hide Create Rule pop-up','MT_HideToaster','checkbox');
             MenuDisplay_Input('Reports - Add drill-down & breadcrumbs for Groups to Categories in Income/Spending','MT_ReportsDrilldown','checkbox');
-            MenuDisplay_Input('Reports - Trends always compares to End of Month','MT_TrendFullPeriod','checkbox');
             MenuDisplay_Input('Reports - Hide chart tooltip Difference amount','MT_HideTipDiff','checkbox');
+            MenuDisplay_Input('Reports / Trends - Always compare to End of Month','MT_TrendFullPeriod','checkbox');
+            MenuDisplay_Input('Reports / Trends - Hide percentage of Income & Spending','MT_TrendHidePer1','checkbox');
+            MenuDisplay_Input('Reports / Trends - Hide percentage of Difference','MT_TrendHidePer2','checkbox');
             MenuDisplay_Input('Budget - Add YTD Total & Projected Total to Forecast / Monthly','MT_PlanYTD','checkbox');
             MenuDisplay_Input('Budget - Panel has smaller compressed grid','MT_PlanCompressed','checkbox');
             MenuDisplay_Input('General - Calendar "Last year" and "Last 12 months" include full month','MT_CalendarEOM','checkbox');
-
         }
     }
 }
@@ -1613,7 +1667,8 @@ function MenuPlanUpdate() {
 
             if(useValue.startsWith('$') || useValue.startsWith('-') || useValue == '') {
 
-                cellValue = getCleanValue(useValue,0);
+                if(useValue == '') {useValue = '$0';}
+                cellValue = Number(getCleanValue(useValue,0));
                 pivotCount+=1;
 
                 // check totals finished
@@ -1772,7 +1827,6 @@ function cec(e,c,r,it,hr,a1,a2) {
     if(hr) {
         if(hr[0] == '{') {
             el = hr.substring(1);
-            if(el.startsWith('Trend:')) {c = 'MThRefClass';}
         } else {
             div.href = hr;
         }
@@ -1910,9 +1964,11 @@ function findButton(inValue,inName) {
         if(useTarget == null) {
             if(inValue != '' && li.textContent.substring(0,1) == inValue) {
                 useTarget = li;
+                return useTarget;
             }
             if(inName != '' && inName == li.innerText) {
                 useTarget = li;
+                return useTarget;
             }
         }
     } );
@@ -1922,19 +1978,20 @@ function findButton(inValue,inName) {
 
 function getCleanValue(inValue,inDec) {
 
-    if(inValue) {
+    if(inValue.startsWith('$') || inValue.startsWith('-')) {
         const AmtStr = inValue.replace(/[$,]+/g,"");
         let Amt = Number(AmtStr);
+        if(inDec > 0) {Amt = Amt.toFixed(inDec);}
         return Amt;
     }
     else {
-        return null;
+        return inValue;
     }
 }
 
 function getDollarValue(InValue) {
 
-    if(InValue === -0) {InValue = 0;}
+    if(InValue === -0 || isNaN(InValue)) {InValue = 0;}
     return InValue.toLocaleString("en-US", {style:"currency", currency:css_currency});
 
 }
@@ -1992,7 +2049,7 @@ function getStyle() {
 
     const cssObj = window.getComputedStyle(document.querySelector('[class*=Page__Root]'), null);
     const bgColor = cssObj.getPropertyValue('background-color');
-    if (bgColor === 'rgb(8, 32, 67)') { css_styles[0] = '#0d2c5c';return 0; } else {css_styles[0] = '#ffffff';return 1;}
+    if (bgColor === 'rgb(8, 32, 67)') { css_styles.background = '#0d2c5c';return 0; } else {css_styles.background = '#ffffff';return 1;}
 
 }
 
@@ -2055,7 +2112,7 @@ async function getMonthlySnapshotData2(startDate, endDate,groupingType) {
   const options = callGraphQL({
     operationName: 'GetAggregatesGraph',
     variables: {startDate: startDate, endDate: endDate, },
-      query: "query GetAggregatesGraph($startDate: Date, $endDate: Date) {\n    aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"category\", \"" + groupingType + "\"]\n  fillEmptyValues: false\n ) {\n groupBy {\n category {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
+      query: "query GetAggregatesGraph($startDate: Date, $endDate: Date) {\n aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"category\", \"" + groupingType + "\"]\n  fillEmptyValues: false\n ) {\n groupBy {\n category {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
       });
 
   return fetch(graphql, options)
@@ -2093,7 +2150,7 @@ async function getCategoryData() {
     }).catch((error) => { console.error(GM_info.script.version,error); });
 }
 
-async function BuildCategoryGroups() {
+async function buildCategoryGroups() {
 
     if(accountGroups.length == 0) {
         const categoryData = await getCategoryData();
@@ -2103,14 +2160,12 @@ async function BuildCategoryGroups() {
     }
 }
 
-function GetCategoryGroup(InId) {
+function getCategoryGroup(InId) {
 
-  // [0]Group Desc, [1]Category Desc, [2]Group ID, [3]Type, [4]Icon
   for (let i = 0; i < accountGroups.length; i++) {
       if(accountGroups[i].ID == InId || accountGroups[i].GROUP == InId) {
-          return [accountGroups[i].GROUPNAME,accountGroups[i].NAME,accountGroups[i].GROUP,accountGroups[i].TYPE,accountGroups[i].ICON];
+          return accountGroups[i]
       }
   }
-
-    return [null,null,null, null,null];
+    return [null];
 }
