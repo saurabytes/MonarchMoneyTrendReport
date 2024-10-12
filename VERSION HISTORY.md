@@ -9,6 +9,10 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Monthly History now has clickable header
 
+• NEW: Trends - Added Percentage Difference Increase/Decrease 
+
+• NEW: Trends - Added ability in Setup to hide Percentages on Trends
+
 • FIX: Repetitive "Clear Categories" link
 
 • FIX: Export issues with negative numbers and $NaN if less than one year of data
