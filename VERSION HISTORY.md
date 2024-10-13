@@ -11,7 +11,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Trends - Added Percentage Difference Increase/Decrease 
 
-• NEW: Trends - Added ability in Setup to hide Percentages on Trends
+• NEW: Trends - Added ability in Setup to hide different percentages in Trends
 
 • FIX: Reports - Repetitive "Clear Categories" link
 
