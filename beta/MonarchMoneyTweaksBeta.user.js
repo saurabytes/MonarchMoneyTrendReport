@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.26.01
+// @version      1.26.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -1860,9 +1860,10 @@ function cecHandler(el) {
     }
     if(el =='TrendEOM') {
         if(TrendTodayIs.getMonth() == getDates('n_CurMonth') && TrendTodayIs.getDate() == getDates('n_CurDay') && TrendTodayIs.getFullYear() == getDates('n_CurYear')) {
-           TrendTodayIs = getDates('d_EndofLastMonth');
+            TrendTodayIs = getDates('d_EndofLastMonth');
+
         } else {
-            TrendTodayIs = getDates('d_CurDate')
+            TrendTodayIs = getDates('d_CurDate');
         }
         MenuReportsTrendsGo();
        }
@@ -1914,8 +1915,12 @@ function getMonthName(inValue,inShort) {
 
 function getDates(InValue,InDate) {
 
-    let d = new Date();
-    if(InDate) {d = InDate}
+    let d = null;
+    if(InDate) {
+        d = new Date(InDate);
+    } else {
+        d = new Date();
+    }
     let month = d.getMonth();
     let day = d.getDate();
     let year = d.getFullYear();
@@ -1937,7 +1942,6 @@ function getDates(InValue,InDate) {
                 }
                 day = daysInMonth(month,year);
                 d.setFullYear(year, month, day);
-                console.log(year,month,day,d);
                 return(d);
             case 'LastYTDs':
                 year-=1;
