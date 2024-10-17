@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.25
+// @version      1.26.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -27,6 +27,7 @@ let r_oo = null;
 let r_oo2 = null;
 let r_PlanYear = '';
 let accountGroups = [];
+let TrendTodayIs = new Date();
 let TrendQueue = [];
 let TrendQueue2 = [];
 let TrendQueueTitle = '';
@@ -66,7 +67,9 @@ function MM_Init() {
     GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_styles.background + ';}');
     GM_addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right; font-size: 14px; padding-right: 5px;}');
     GM_addStyle('.MTTrendCell:hover {cursor:pointer; color: rgb(50, 170, 240);}');
-    GM_addStyle('.MTTrendCellArrow, .MTTrendCellArrow2 {border-style: none; font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 32px; cursor: pointer; border-radius: 100%;  margin-left: 10px;}');
+
+    GM_addStyle('.MTTrendCellArrow, .MTTrendCellArrow2 {font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 26px; cursor: pointer; border-radius: 100%;  border-style: none; margin-left: 10px;}');
+    GM_addStyle('.MTTrendCellArrow:hover {border: 1px solid rgb(218, 225, 234); box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;}');
 
     GM_addStyle('.MTSideDrawerRoot {position: absolute;  inset: 0px;  display: flex;  -moz-box-pack: end;  justify-content: flex-end;}');
     GM_addStyle('.MTSideDrawerContainer {overflow: hidden; padding: 12px; width: 640px; -moz-box-pack: end; ' + a4 + ' position: relative; overflow:auto;}');
@@ -258,8 +261,8 @@ async function MenuReportsTrendsGo() {
 
     TrendQueue = [];
 
-    let lowerDate = new Date();
-    let higherDate = new Date();
+    let lowerDate = new Date(TrendTodayIs);
+    let higherDate = new Date(TrendTodayIs);
     lowerDate.setDate(1);
     lowerDate.setMonth(0);
 
@@ -293,7 +296,7 @@ async function MenuReportsTrendsGo() {
     higherDate.setFullYear(year2,month2,day2);
 
     if(TrendQueueByPeriod == 2) {
-        const QtrDate = getDates('ThisQTRs');
+        const QtrDate = getDates('ThisQTRs',TrendTodayIs);
         month = parseInt(QtrDate.substring(0,2)) - 1;
         lowerDate.setMonth(month);
         if(month != month2) {TrendQueueCol[1] = getMonthName(month,true) + ' - ';}
@@ -486,6 +489,9 @@ function Trend_addCellPercent(inA,inB) {
                 p[0] = 1;
             }
             p[0] = p[0] * 100;
+            p[0] = Math.round(p[0] * 10) / 10;
+            p[0] = ' (' + p[0].toFixed(1) + '%)';
+
             if(p[0] > 100) {
                 p[1] = css_styles.color1;
             } else {
@@ -493,7 +499,6 @@ function Trend_addCellPercent(inA,inB) {
                     if(p[0] > 25 ) {p[1] = css_styles.color3;}
                 }
             }
-            p[0] = ' (' + p[0].toFixed(1) + '%)';
         }
         return(p);
     } else {return ['',''];}
@@ -608,7 +613,7 @@ function MenuReportsTrendsDraw(inRedraw) {
             div = cec('div','FlexContainer__Root jEeSYR fKLqRU',div);
 
             div2 = cec('span','MTTrendSmall',div,'Net Income Trend Report');
-            div2 = cec('span','MTTrendBig',div,TrendQueueTitle);
+            div2 = cec('a','MTTrendBig MThRefClass',div,TrendQueueTitle,'{TrendEOM');
             if(getCookie('MT_TrendFullPeriod') == 1) {
                 div2 = cec('span','MTTrendSmall',div,'* Comparing to End of Month','','style','font-size: 10px;');
             }
@@ -695,9 +700,13 @@ function MenuReportsTrendsDraw(inRedraw) {
         elx = cec('span',useCss,el,d,useHref[4],'style','width: 13%;');
         elx = cec('span',useCss,el,e,useHref[5],'style','width: 13%;');
         elx = cec('span',useCss,el,f,useHref[6],'style','width: 14%;'+ useStyle[2]);
-        elx = cec('button','MTTrendCellArrow',el,'',useHref[7],'','');
-        if(inType == 3) { elx = cec('span','',elx,'','','','');}
-        if(inType == 2) { return cec('div',css_styles.row,InRow);}
+        if(inType == 3) {
+            elx = cec('button','MTTrendCellArrow',el,'',useHref[7],'','');
+            elx = cec('span','',elx,'','','','');
+        } else { elx = cec('span','',el,' ','','style','width: 26px;'); }
+        if(inType == 2) {
+            return cec('div',css_styles.row,InRow);
+        }
         return InRow;
     }
 
@@ -910,9 +919,9 @@ function MenuReportsHistoryDraw() {
     const os2 = 'font-weight: 600;';
     const os3 = 'text-align:left; font-weight: 200; font-size: 12px;';
     const os4 = 'margin-bottom: 10px; line-height: 10px !important; display: ' + getDisplay(getCookie('MTC_div.TrendHistoryDetail',true),'');
-    const startYear = Number(getDates('StartYear'));
-    const curYear = Number(getDates('CurYear'));
-    const curMonth = Number(getDates('CurMonth'));
+    const startYear = Number(getDates('n_CurYear') - 2);
+    const curYear = Number(getDates('n_CurYear'));
+    const curMonth = Number(getDates('n_CurMonth'));
     let curYears = 1;
     let skiprow = false;
     let inGroup = 1;
@@ -1849,6 +1858,14 @@ function cecHandler(el) {
         setCookie('MTTrendSort',elSelected);
         MenuReportsTrendsDraw(true);
     }
+    if(el =='TrendEOM') {
+        if(TrendTodayIs.getMonth() == getDates('n_CurMonth') && TrendTodayIs.getDate() == getDates('n_CurDay') && TrendTodayIs.getFullYear() == getDates('n_CurYear')) {
+           TrendTodayIs = getDates('d_EndofLastMonth');
+        } else {
+            TrendTodayIs = getDates('d_CurDate')
+        }
+        MenuReportsTrendsGo();
+       }
     if(el.startsWith('Hstry/') == true) {
         MenuReportsHistory(el);
     }
@@ -1895,46 +1912,62 @@ function getMonthName(inValue,inShort) {
     }
 }
 
-function getDates(InValue) {
+function getDates(InValue,InDate) {
 
     let d = new Date();
+    if(InDate) {d = InDate}
     let month = d.getMonth();
-    let day = 1;
+    let day = d.getDate();
     let year = d.getFullYear();
 
-    if(InValue == 'CurYear') { return(year); }
-    if(InValue == 'CurMonth') { return(month); }
-    if(InValue == 'StartYear') { return year - 2; }
-    if(InValue == 'Today') {day = d.getDate(); }
-    if(InValue == 'ThisYear') { day = 1; }
+    if(InValue == 'n_CurYear') {return(year);}
+    if(InValue == 'n_CurMonth') {return(month);}
+    if(InValue == 'n_CurDay') {return(day);}
+    if(InValue == 'd_CurDate') {return d;};
 
-    if(InValue == 'LastYTDs') {
-        year-=1;
-        month = 0;
+    if(InValue == 'Today') {
+    } else {
+        d.setDate(1);day = 1;
+        switch (InValue) {
+            case 'd_EndofLastMonth':
+                month-=1;
+                if(month < 0) {
+                    month = 11;
+                    year-=1;
+                }
+                day = daysInMonth(month,year);
+                d.setFullYear(year, month, day);
+                console.log(year,month,day,d);
+                return(d);
+            case 'LastYTDs':
+                year-=1;
+                month = 0;
+                break;
+            case '12Mths':
+                year-=1;
+                if(getCookie('MT_CalendarEOM') == 1) { day = 1; } else {day = d.getDate();}
+                break;
+            case 'LastYTDe':
+                year-=1;
+                if(getCookie('MT_CalendarEOM') == 1) {day = daysInMonth(month,year); }
+                break;
+            case 'ThisQTRs':
+                if(month < 3) {month = 0;}
+                if(month == 4 || month == 5) {month = 3;}
+                if(month == 7 || month == 8) {month = 6;}
+                if(month == 10 || month == 11) {month = 9;}
+                break;
+            case 'ThisQTRe':
+                if(month < 2) {month = 2;}
+                if(month == 3 || month == 4) {month = 5;}
+                if(month == 6 || month == 7) {month = 8;}
+                if(month == 9 || month == 10) {month = 11;}
+                day = daysInMonth(month,year)
+                break;
+        }
     }
-    if(InValue == '12Mths') {
-        year-=1;
-        if(getCookie('MT_CalendarEOM') == 1) { day = 1; } else {day = d.getDate();}
-    }
-    if(InValue == 'LastYTDe') {
-        year-=1;
-        if(getCookie('MT_CalendarEOM') == 1) {day = daysInMonth(month,year); }
-    }
-    if(InValue == 'ThisQTRs') {
-        if(month < 3) {month = 0;}
-        if(month == 4 || month == 5) {month = 3;}
-        if(month == 7 || month == 8) {month = 6;}
-        if(month == 10 || month == 11) {month = 9;}
-    }
-    if(InValue == 'ThisQTRe') {
-        if(month < 2) {month = 2;}
-        if(month == 3 || month == 4) {month = 5;}
-        if(month == 6 || month == 7) {month = 8;}
-        if(month == 9 || month == 10) {month = 11;}
-        day = daysInMonth(month,year);
-     }
     month+=1;
-    const FullDate = ("0" + month).slice(-2) + '/' + ("0" + day).slice(-2) + '/' + year;
+    const FullDate = [("0" + month).slice(-2),("0" + day).slice(-2),year].join('/');
     return(FullDate);
 }
 
@@ -1990,14 +2023,11 @@ function getCleanValue(inValue,inDec) {
 }
 
 function getDollarValue(InValue) {
-
     if(InValue === -0 || isNaN(InValue)) {InValue = 0;}
     return InValue.toLocaleString("en-US", {style:"currency", currency:css_currency});
-
 }
 
 function downloadFile(inTitle,inData) {
-
     const encodedUri = encodeURI('data:text/csv;charset=utf-8,' + inData);
     const link = cec('a','',document.body,'',encodedUri,'download',inTitle + '.csv');
     link.click();
@@ -2005,7 +2035,6 @@ function downloadFile(inTitle,inData) {
 }
 
 function setCookie(cName, cValue) {
-
    document.cookie = cName + "=" + cValue + ";expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/" ;
 }
 
@@ -2027,12 +2056,10 @@ function getCookie(cname,isNum) {
 }
 
 function deleteCookie(cName) {
-
     document.cookie = cName + "= ;expires=31 Dec 2000 23:59:59 GMT; path=/" ;
  }
 
 function flipCookie(inCookie,spin) {
-
     let OldValue = parseInt(getCookie(inCookie,true)) + 1;
     if(spin == null) {spin = 1;}
     if(OldValue > spin) {
@@ -2045,12 +2072,11 @@ function flipCookie(inCookie,spin) {
 function getDisplay(InA,InB) {
     if(InA == 1) {return 'none;';} else {return InB;}
 }
-function getStyle() {
 
+function getStyle() {
     const cssObj = window.getComputedStyle(document.querySelector('[class*=Page__Root]'), null);
     const bgColor = cssObj.getPropertyValue('background-color');
     if (bgColor === 'rgb(8, 32, 67)') { css_styles.background = '#0d2c5c';return 0; } else {css_styles.background = '#ffffff';return 1;}
-
 }
 
 (function() {
