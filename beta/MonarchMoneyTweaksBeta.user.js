@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.26.02
+// @version      1.26.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -490,7 +490,6 @@ function Trend_addCellPercent(inA,inB) {
             }
             p[0] = p[0] * 100;
             p[0] = Math.round(p[0] * 10) / 10;
-            p[0] = ' (' + p[0].toFixed(1) + '%)';
 
             if(p[0] > 100) {
                 p[1] = css_styles.color1;
@@ -499,6 +498,8 @@ function Trend_addCellPercent(inA,inB) {
                     if(p[0] > 25 ) {p[1] = css_styles.color3;}
                 }
             }
+            if(p[1]) {p[1] = p[1] + 'border-radius: 6px;';}
+            p[0] = ' (' + p[0].toFixed(1) + '%)';
         }
         return(p);
     } else {return ['',''];}
