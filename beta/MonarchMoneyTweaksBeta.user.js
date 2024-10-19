@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.27.02
+// @version      1.27.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -317,10 +317,7 @@ async function MenuReportsTrendsGo() {
     TrendQueueCol[0] = '';
     if(TrendQueueByPeriod == 0) {
         month-=1;
-        if(month < 0) {
-            month = 11;
-            year = year - 1;
-        }
+        if(month < 0) { month = 11; year = year - 1;}
         month2 = month;
         year2 = year;
         lowerDate.setFullYear(year,month,1);
@@ -535,6 +532,7 @@ function MenuReportsTrendsDraw(inRedraw) {
     let Hrow = null;
     let row = null;
     let ST = [0,0,0,0,0,0];
+    let SP = [0,0,0,0];
 
     if(inRedraw == null) {
         removeAllSections('div.MTTrendsContainer');
@@ -679,13 +677,17 @@ function MenuReportsTrendsDraw(inRedraw) {
             useStyle[1] = Trend_GetColor(inGroup,c);
             useStyle[2] = Trend_GetColor(inGroup,f);
             if(inType == 4) {
+                let aa = addGroupPercent(SP[0]);
+                let bb = addGroupPercent(SP[1]);
+                let dd = addGroupPercent(SP[2]);
+                let ee = addGroupPercent(SP[3]);
                 let ff = Trend_addCellPercent(a,b);
                 let gg = Trend_addCellPercent(d,e);
-                a = getDollarValue(a);
-                b = getDollarValue(b);
+                a = getDollarValue(a) + aa;
+                b = getDollarValue(b) + bb;
                 c = getDollarValue(c) + ff[0];
-                d = getDollarValue(d);
-                e = getDollarValue(e);
+                d = getDollarValue(d) + dd;
+                e = getDollarValue(e) + ee;
                 f = getDollarValue(f) + gg[0];
                 useCss.valueStyle = 'MTTrendCell3';
                 useCss.titleStyle = 'MTTrendCell3Title';
@@ -732,6 +734,14 @@ function MenuReportsTrendsDraw(inRedraw) {
         return InRow;
     }
 
+    function addGroupPercent(a) {
+        let lit = '';
+        if(css_styles.hidePercent1 != '1') {
+           lit = ' (' + a.toFixed(1) + '%)';
+        }
+        return lit;
+    }
+
     function addPercent(inType,inGroup,ndx,inAmount) {
 
         let lit = '';
@@ -740,6 +750,7 @@ function MenuReportsTrendsDraw(inRedraw) {
                 if(CE[ndx] > 0 && inAmount > 0) {
                     lit = (inAmount / CE[ndx]) * 100;
                     lit = Math.round(lit * 10) / 10;
+                    SP[ndx] += lit;
                     lit = ' (' + lit.toFixed(1) + '%)';
                 }
             }
@@ -747,6 +758,7 @@ function MenuReportsTrendsDraw(inRedraw) {
                 if(CI[ndx] > 0 && inAmount > 0) {
                     lit = (inAmount / CI[ndx]) * 100;
                     lit = Math.round(lit * 10) / 10;
+                    SP[ndx] += lit;
                     lit = ' (' + lit.toFixed(1) + '%)';
                 }
             }
@@ -848,6 +860,7 @@ function MenuReportsTrendsDraw(inRedraw) {
                     if(lr != TrendQueue[i].SORTDESC) {
                         row = Trend_TableGrid(row,4,inGroup,TrendQueue[i].SORTDESC,ST[0],ST[1],ST[2],ST[3],ST[4],ST[5],'/category-groups/' + TrendQueue[i].GROUP,'{Hstry/category-groups/' + TrendQueue[i].GROUP);
                         ST = [0,0,0,0,0,0];
+                        SP = [0,0,0,0];
                     }
                 }
             }
