@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 1.26/1.27:**
+**Version 1.26/1.27 beta:**
 
 • NEW: Trends - Added third grouping for full Group & Category reporting (By Group, By Category, By Both)
 
