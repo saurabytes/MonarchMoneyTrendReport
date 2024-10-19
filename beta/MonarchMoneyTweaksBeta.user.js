@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.27.01
+// @version      1.27.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -63,16 +63,16 @@ function MM_Init() {
     GM_addStyle('.MThRefClass:hover {cursor:pointer; color: rgb(50, 170, 240);}');
 
     GM_addStyle('.MTTrendsContainer {display:block; padding-bottom: 0px;}');
-    GM_addStyle('.MTFlexContainer {margin: 0px; gap: 0px; display: flex;}');
+    GM_addStyle('.MTFlexContainer {margin: 0px; gap: 20px; display: flex;}');
     GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_styles.background + ';}');
     GM_addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right; font-size: 14px; padding-right: 5px;}');
     GM_addStyle('.MTTrendCellTitle {' + a1 + a5 + ' text-align: left; padding-right: 5px;}');
 
-    GM_addStyle('.MTTrendCell:hover, .MTTrendCellTitle:hover {cursor:pointer; color: rgb(50, 170, 240);}');
+    GM_addStyle('.MTTrendCell:hover, .MTTrendCellTitle:hover, .MTTrendCell3Title:hover {cursor:pointer; color: rgb(50, 170, 240);}');
     GM_addStyle('.MTTrendCell3Title {' + a1 + a5 + ' text-align: left; font-size: 14px; font-weight: 500; padding-right: 5px; padding-right: 5px; margin-bottom: 20px; border-bottom: 1px solid ' + a3 +';border-top: 1px solid ' + a3 +';}');
     GM_addStyle('.MTTrendCell3 {' + a1 + a5 + ' text-align: right; font-size: 14px; font-weight: 500; padding-right: 5px; margin-bottom: 20px; border-bottom: 1px solid ' + a3 +';border-top: 1px solid ' + a3 +';}');
 
-    GM_addStyle('.MTTrendCellArrow, .MTTrendCellArrow2 {font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 26px; cursor: pointer; border-radius: 100%;  border-style: none; margin-left: 10px;}');
+    GM_addStyle('.MTTrendCellArrow, .MTTrendCellArrow2 {height: 28px; font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 26px; cursor: pointer; border-radius: 100%;  border-style: none; margin-left: 10px;}');
     GM_addStyle('.MTTrendCellArrow:hover {border: 1px solid rgb(218, 225, 234); box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;}');
 
     GM_addStyle('.MTSideDrawerRoot {position: absolute;  inset: 0px;  display: flex;  -moz-box-pack: end;  justify-content: flex-end;}');
@@ -375,6 +375,7 @@ async function CleanupTrendData() {
             TrendQueue[i].DESC = retGroup.NAME;
             TrendQueue[i].SORTDESC = retGroup.GROUPNAME;
         }
+        TrendQueue[i].GROUP = retGroup.GROUP;
         TrendQueue[i].TYPE = retGroup.TYPE;
         TrendQueue[i].ICON = retGroup.ICON;
 
@@ -474,13 +475,13 @@ function Trend_UpdateQueue(useID,useAmount,inCol) {
 
     switch(inCol) {
         case 'cp':
-            TrendQueue.push({"ICON": "", "SORTDESC": "","DESC": "","TYPE": "", "ID": useID,"N_CURRENT": useAmount,"N_LAST": 0, "N_DIFF": 0, "N_CURRENTM": 0, "N_LASTM": 0, "N_DIFFM": 0});
+            TrendQueue.push({"ICON": "", "SORTDESC": "","DESC": "","TYPE": "", "GROUP": "", "ID": useID,"N_CURRENT": useAmount,"N_LAST": 0, "N_DIFF": 0, "N_CURRENTM": 0, "N_LASTM": 0, "N_DIFFM": 0});
             break;
         case 'lp':
-            TrendQueue.push({"ICON": "", "SORTDESC": "","DESC": "","TYPE": "", "ID": useID,"N_CURRENT": 0,"N_LAST": useAmount, "N_DIFF": 0, "N_CURRENTM": 0, "N_LASTM": 0, "N_DIFFM": 0});
+            TrendQueue.push({"ICON": "", "SORTDESC": "","DESC": "","TYPE": "", "GROUP": "", "ID": useID,"N_CURRENT": 0,"N_LAST": useAmount, "N_DIFF": 0, "N_CURRENTM": 0, "N_LASTM": 0, "N_DIFFM": 0});
             break;
         case 'cm':
-            TrendQueue.push({"ICON": "", "SORTDESC": "","DESC": "","TYPE": "", "ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_DIFF": 0, "N_CURRENTM": useAmount, "N_LASTM": 0, "N_DIFFM": 0});
+            TrendQueue.push({"ICON": "", "SORTDESC": "","DESC": "","TYPE": "", "GROUP": "", "ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_DIFF": 0, "N_CURRENTM": useAmount, "N_LASTM": 0, "N_DIFFM": 0});
             break;
         case 'lm':
             TrendQueue.push({"ICON": "", "SORTDESC": "","DESC": "","TYPE": "", "ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_DIFF": 0, "N_CURRENTM": 0, "N_LASTM": useAmount, "N_DIFFM": 0});
@@ -721,7 +722,7 @@ function MenuReportsTrendsDraw(inRedraw) {
         elx = cec('span',useCss.valueStyle,el,d,useHref[4],'style','width: 13%;');
         elx = cec('span',useCss.valueStyle,el,e,useHref[5],'style','width: 13%;');
         elx = cec('span',useCss.valueStyle,el,f,useHref[6],'style','width: 14%;'+ useStyle[2]);
-        if(inType == 3) {
+        if(inType == 3 || inType == 4) {
             elx = cec('button','MTTrendCellArrow',el,'',useHref[7],'','');
             elx = cec('span','',elx,'','','','');
         } else { elx = cec('span','',el,' ','','style','width: 35px;'); }
@@ -845,7 +846,7 @@ function MenuReportsTrendsDraw(inRedraw) {
                     ST[5] += TrendQueue[i].N_DIFF;
                     if(i+1 == TrendQueue.length) {lr = '';} else { lr = TrendQueue[i+1].SORTDESC;}
                     if(lr != TrendQueue[i].SORTDESC) {
-                        row = Trend_TableGrid(row,4,inGroup,TrendQueue[i].SORTDESC,ST[0],ST[1],ST[2],ST[3],ST[4],ST[5],'');
+                        row = Trend_TableGrid(row,4,inGroup,TrendQueue[i].SORTDESC,ST[0],ST[1],ST[2],ST[3],ST[4],ST[5],'/category-groups/' + TrendQueue[i].GROUP,'{Hstry/category-groups/' + TrendQueue[i].GROUP);
                         ST = [0,0,0,0,0,0];
                     }
                 }
