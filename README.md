@@ -23,6 +23,9 @@ Please read each option carefully before turning it on/off to fully understand w
 
 Enjoy!
 
+![Settings](/images/MM_SettingsDeveloper.png)
+
+
 # Features:
 
 * **Reports / Trends** - Summarize your history and compare it to last month, same month last year or same quarter last year.  Drill down to the monthly totals for your categories and export your summarized data. 
