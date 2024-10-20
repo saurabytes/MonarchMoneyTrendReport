@@ -14,10 +14,10 @@ Once Tampermonkey is installed, install or update the Monarch Money Tweaks exten
 https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
 
 
-**Monarch Money Tweaks Chrome Install**
+**Monarch Money Tweaks Dashboard**
 ![Settings](/images/MM_Chrome1.png)
 
-**Monarch Money Tweaks Chrome Install**
+**Monarch Money Tweaks Chrome Developer Mode to "ON"**
 ![Settings](/images/MM_Chrome2.png)
 
 Once installed, Refresh the Mnonarch Money webpage and then go to **Settings / Display**.
