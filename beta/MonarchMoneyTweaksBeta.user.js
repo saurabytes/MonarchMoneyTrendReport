@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.27.03
+// @version      1.27.04
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -67,10 +67,11 @@ function MM_Init() {
     GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_styles.background + ';}');
     GM_addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right; font-size: 14px; padding-right: 5px;}');
     GM_addStyle('.MTTrendCellTitle {' + a1 + a5 + ' text-align: left; padding-right: 5px;}');
+    GM_addStyle('.MTTrendItem {font-size: 14px; margin-bottom: 10px; place-content: stretch space-between; display: flex;}');
 
     GM_addStyle('.MTTrendCell:hover, .MTTrendCellTitle:hover, .MTTrendCell3Title:hover {cursor:pointer; color: rgb(50, 170, 240);}');
-    GM_addStyle('.MTTrendCell3Title {' + a1 + a5 + ' text-align: left; font-size: 14px; font-weight: 500; padding-right: 5px; padding-right: 5px; margin-bottom: 20px; border-bottom: 1px solid ' + a3 +';border-top: 1px solid ' + a3 +';}');
-    GM_addStyle('.MTTrendCell3 {' + a1 + a5 + ' text-align: right; font-size: 14px; font-weight: 500; padding-right: 5px; margin-bottom: 20px; border-bottom: 1px solid ' + a3 +';border-top: 1px solid ' + a3 +';}');
+    GM_addStyle('.MTTrendCell3Title {' + a1 + a5 + ' text-align: left; font-size: 14px; font-weight: 500; padding-right: 5px; margin-bottom: 24px; border-bottom: 1px solid ' + a3 +';border-top: 1px solid ' + a3 +';}');
+    GM_addStyle('.MTTrendCell3 {' + a1 + a5 + ' text-align: right; font-size: 14px; font-weight: 500; padding-right: 5px; margin-bottom: 24px; border-bottom: 1px solid ' + a3 +';border-top: 1px solid ' + a3 +';}');
 
     GM_addStyle('.MTTrendCellArrow, .MTTrendCellArrow2 {height: 28px; font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 26px; cursor: pointer; border-radius: 100%;  border-style: none; margin-left: 10px;}');
     GM_addStyle('.MTTrendCellArrow:hover {border: 1px solid rgb(218, 225, 234); box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;}');
@@ -240,7 +241,7 @@ function MenuReportsTrendsStyles() {
     css_styles.items2 = MTgetStyle('Card__CardRoot-sc-','jznQAl');
     css_styles.items3 = MTgetStyle('CardHeader__Root-','eGiVnj');
     css_styles.row = MTgetStyle('TransactionsSummaryCard__CardInner','jLxdcY');
-    css_styles.item = MTgetStyle('TransactionsSummaryCard__CardItem','eqYSVV');
+    css_styles.item = 'MTTrendItem';
     css_styles.hidePercent1 = getCookie('MT_TrendHidePer1',true);
     css_styles.hidePercent2 = getCookie('MT_TrendHidePer2',true);
     css_styles.color1 = 'background-color: #e68691;color: black;';
