@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.27.04
+// @version      1.27
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -730,7 +730,7 @@ function MenuReportsTrendsDraw(inRedraw) {
             elx = cec('span','',elx,'','','','');
         } else { elx = cec('span','',el,' ','','style','width: 35px;'); }
         if(inType == 2) {
-            return cec('div',css_styles.row,InRow);
+            return cec('div',css_styles.row,InRow,'','','style','padding-bottom:0px;');
         }
         return InRow;
     }
