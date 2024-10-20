@@ -22,4 +22,5 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
 
 ![Settings](/images/MM_Chrome2.png)
 
-Once installed, Refresh the Mnonarch Money webpage and then go to **Settings / Display**.
+
+Once installed, Refresh the Monarch Money webpage and then go to **Settings / Display**.
