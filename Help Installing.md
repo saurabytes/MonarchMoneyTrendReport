@@ -13,6 +13,8 @@ Once Tampermonkey is installed, install or update the Monarch Money Tweaks exten
 
 https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
 
+
+
 **Monarch Money Tweaks Install/Update screen**
 
 ![Settings](/images/MM_Chrome3.png)
