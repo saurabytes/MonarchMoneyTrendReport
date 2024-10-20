@@ -9,3 +9,9 @@ For more help installing the script and getting it to work:
 5. Add Tampermonkey using **Add to Chrome** button
 
 Once Tampermonkey is installed, click on the github link in step 2 to install/update the Monarch Money Tweaks extension.
+
+**Monarch Money Tweaks Chrome Install**
+![Settings](/images/MM_Chrome1.png)
+
+**Monarch Money Tweaks Chrome Install**
+![Settings](/images/MM_Chrome2.png)
