@@ -19,7 +19,7 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
 
 Finally, Refresh/Reload the Monarch Money webpage and select **Settings / Display** in Monarch to configure the Tweaks.
 
-Please read each option carefully before turning it on/off to fully understand what it does.
+Please read each option carefully before turning it on/off to fully understand what it does.  Tampermonkey is  used by over 10 million users and GitHub has over 100 million accounts world-wide.  
 
 Enjoy!
 
