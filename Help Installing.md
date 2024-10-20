@@ -15,3 +15,5 @@ Once Tampermonkey is installed, click on the github link in step 2 to install/up
 
 **Monarch Money Tweaks Chrome Install**
 ![Settings](/images/MM_Chrome2.png)
+
+Once installed, Refresh the Mnonarch Money webpage and then go to **Settings / Display**.
