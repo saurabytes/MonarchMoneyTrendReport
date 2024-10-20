@@ -15,9 +15,11 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
 
 
 **Monarch Money Tweaks Dashboard**
+
 ![Settings](/images/MM_Chrome1.png)
 
 **Monarch Money Tweaks Chrome Developer Mode to "ON"**
+
 ![Settings](/images/MM_Chrome2.png)
 
 Once installed, Refresh the Mnonarch Money webpage and then go to **Settings / Display**.
