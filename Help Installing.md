@@ -1,6 +1,6 @@
 Chrome:
 
-For more help installing the script and getting it to work:
+For detailed help installing the script:
 
 1. Click on **Chrome** menu option and then Settings
 2. Click on **Extensions** at bottom left
