@@ -10,7 +10,7 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
 
 **Monarch Money Tweaks iPad Tap to Install screen**
 
-![Settings](/images/MM_iPad1.png)
+![Settings](/images/MM_iPad1.PNG)
 
 
 
