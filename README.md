@@ -2,7 +2,7 @@
 
 Hello!  I use **Monarch Money**.  
 
-I found there were opportunities to enhance the Monarch Money web application with more functionality and configuration options. You can install the script on the iPad using **Safari </> Userscripts** app or using the **Tampermonkey** app extension on Chrome, Microsoft Edge, Safari, Firefox and Opera Next.  
+I found there were opportunities to enhance the Monarch Money web application with more functionality and configuration options. You can install the script by using **Tampermonkey** app extension in Chrome, Microsoft Edge, Safari, Firefox and Opera Next.  For the iPad, use **Safari </> Userscripts** app.
 
 
 Non iPad users: Install Tampermonkey by going to the following link:  https://www.tampermonkey.net/
