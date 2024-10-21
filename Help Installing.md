@@ -1,5 +1,15 @@
 **iPad using UserScripts </> app:**
 
+1. Download the Userscripts </> - User Script and Style Manager from the App Store
+2. Select **Settings** and search for **Safari** and select General / Extensions
+3. Set the **</> Userscripts** option from Off to **Allow Extension**
+4. At bottom, set the "Other Websites" to **Ask** or **Allow**.
+5. Open Safari and click on the following link and **Tap to Install:
+
+https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
+
+
+
 
 **Chrome:**
 
@@ -8,6 +18,11 @@
 3. Click on "Discover more extensions and themes …" for **Chrome Web Store**
 4. Search for “Tampermonkey”
 5. Add Tampermonkey using **Add to Chrome** button
+
+**Monarch Money Tweaks iPad Tap to Install screen**
+
+![Settings](/images/MM_iPad1.png)
+
 
    
 Once Tampermonkey is installed, install or update the Monarch Money Tweaks extension by clicking on this link in Chrome:
