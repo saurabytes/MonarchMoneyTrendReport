@@ -1,25 +1,22 @@
-
 # Monarch Money Tweaks
 
-Hello!
+Hello!  I use **Monarch Money**.  
 
-I use **Monarch Money**.  
+I found there were opportunities to enhance the Monarch Money web application with more functionality and configuration options. You can install the script on the iPad using **Safari </> Userscripts** app or using the **Tampermonkey** app extension on Chrome, Microsoft Edge, Safari, Firefox and Opera Next.  
 
-I found there were opportunities to enhance the Monarch Money web application with more functionality and configuration options using Tampermonkey.  Tampermonkey is a browser extension for Chrome, Microsoft Edge, Safari, Opera Next, and Firefox.  
+Non iPad users: Install Tampermonkey by going to the following link:  https://www.tampermonkey.net/
 
-You can install it by going to the following link: 
-
-https://www.tampermonkey.net/
+iPad users: Close your Safari browser, go to App Store and install the Userscripts (User Script and Style Manager) by Justin Wasack.
 
 
-Once Tampermonkey is installed, install or update the Monarch Money Tweaks extension:
+Once the above is installed, you can install or update the Monarch Money Tweaks extension by clicking on the following link:
 
 https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
 
 
 Finally, Refresh/Reload the Monarch Money webpage and select **Settings / Display** in Monarch to configure the Tweaks.
 
-Please read each option carefully before turning it on/off to fully understand what it does.  Tampermonkey is  used by over 10 million users and GitHub has over 100 million accounts world-wide.  
+Please read each option carefully before turning it on/off to fully understand what it does. 
 
 Enjoy!
 
