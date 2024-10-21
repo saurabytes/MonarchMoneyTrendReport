@@ -1,15 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      1.27
+// @version      1.28
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
-// @grant        GM_addStyle
-// @grant        GM_info
 // ==/UserScript==
 
+const version = '1.28';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -17,6 +16,7 @@ const pending = 2;
 const graphql = 'https://api.monarchmoney.com/graphql';
 
 let r_Init = false;
+let r_headStyle = null;
 let r_DatePickerActive = false;
 let r_PlanGridActive = false;
 let r_TrendsActiveReady = false;
@@ -49,72 +49,72 @@ function MM_Init() {
     const a4 = 'background: ' + ['#082043;','aliceblue;'][a];
     const a5 = 'color: ' + ['#FFFFFF;','#082864;'][a];
 
-    GM_addStyle('.MTPlanHeader {font-weight: 900; align-content: inherit; padding: 0px 0px 15px;}');
-    GM_addStyle('.MTPlanDetail {' + css_green + 'font-size: 16px; font-weight: 500;}');
+    addStyle('.MTPlanHeader {font-weight: 900; align-content: inherit; padding: 0px 0px 15px;}');
+    addStyle('.MTPlanDetail {' + css_green + 'font-size: 16px; font-weight: 500;}');
 
-    GM_addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
-    GM_addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
+    addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
+    addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
 
-    GM_addStyle('.MTTrendButtons {display: flex; gap: 20px;}');
-    GM_addStyle('.MTCheckboxClass {width: 20px; height: 20px;}');
-    GM_addStyle('.MTSpacerClass {padding: 1px 1px 1px 1px; width: 100%; line-height: 10px; border-bottom: 1px solid ' + a3 +';}');
+    addStyle('.MTTrendButtons {display: flex; gap: 20px;}');
+    addStyle('.MTCheckboxClass {width: 20px; height: 20px;}');
+    addStyle('.MTSpacerClass {padding: 1px 1px 1px 1px; width: 100%; line-height: 10px; border-bottom: 1px solid ' + a3 +';}');
 
-    GM_addStyle('.MThRefClass {cursor:pointer; text-align: right; ' + a5 + '}');
-    GM_addStyle('.MThRefClass:hover {cursor:pointer; color: rgb(50, 170, 240);}');
+    addStyle('.MThRefClass {cursor:pointer; text-align: right; ' + a5 + '}');
+    addStyle('.MThRefClass:hover {cursor:pointer; color: rgb(50, 170, 240);}');
 
-    GM_addStyle('.MTTrendsContainer {display:block; padding-bottom: 0px;}');
-    GM_addStyle('.MTFlexContainer {margin: 0px; gap: 20px; display: flex;}');
-    GM_addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_styles.background + ';}');
-    GM_addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right; font-size: 14px; padding-right: 5px;}');
-    GM_addStyle('.MTTrendCellTitle {' + a1 + a5 + ' text-align: left; padding-right: 5px;}');
-    GM_addStyle('.MTTrendItem {font-size: 14px; margin-bottom: 10px; place-content: stretch space-between; display: flex;}');
+    addStyle('.MTTrendsContainer {display:block; padding-bottom: 0px;}');
+    addStyle('.MTFlexContainer {margin: 0px; gap: 20px; display: flex;}');
+    addStyle('.MTFlexContainerCard {padding: 30px; flex: 1 1 0%; display: flex; flex-flow: column; place-content: stretch flex-start; border-radius: 8px; background-color: '+ css_styles.background + ';}');
+    addStyle('.MTTrendCell, .MTTrendCell2 {' + a1 + a5 + ' text-align: right; font-size: 14px; padding-right: 5px;}');
+    addStyle('.MTTrendCellTitle {' + a1 + a5 + ' text-align: left; padding-right: 5px;}');
+    addStyle('.MTTrendItem {font-size: 14px; margin-bottom: 10px; place-content: stretch space-between; display: flex;}');
 
-    GM_addStyle('.MTTrendCell:hover, .MTTrendCellTitle:hover, .MTTrendCell3Title:hover {cursor:pointer; color: rgb(50, 170, 240);}');
-    GM_addStyle('.MTTrendCell3Title {' + a1 + a5 + ' text-align: left; font-size: 14px; font-weight: 500; padding-right: 5px; margin-bottom: 24px; border-bottom: 1px solid ' + a3 +';border-top: 1px solid ' + a3 +';}');
-    GM_addStyle('.MTTrendCell3 {' + a1 + a5 + ' text-align: right; font-size: 14px; font-weight: 500; padding-right: 5px; margin-bottom: 24px; border-bottom: 1px solid ' + a3 +';border-top: 1px solid ' + a3 +';}');
+    addStyle('.MTTrendCell:hover, .MTTrendCellTitle:hover, .MTTrendCell3Title:hover {cursor:pointer; color: rgb(50, 170, 240);}');
+    addStyle('.MTTrendCell3Title {' + a1 + a5 + ' text-align: left; font-size: 14px; font-weight: 500; padding-right: 5px; margin-bottom: 24px; border-bottom: 1px solid ' + a3 +';border-top: 1px solid ' + a3 +';}');
+    addStyle('.MTTrendCell3 {' + a1 + a5 + ' text-align: right; font-size: 14px; font-weight: 500; padding-right: 5px; margin-bottom: 24px; border-bottom: 1px solid ' + a3 +';border-top: 1px solid ' + a3 +';}');
 
-    GM_addStyle('.MTTrendCellArrow, .MTTrendCellArrow2 {height: 28px; font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 26px; cursor: pointer; border-radius: 100%;  border-style: none; margin-left: 10px;}');
-    GM_addStyle('.MTTrendCellArrow:hover {border: 1px solid rgb(218, 225, 234); box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;}');
+    addStyle('.MTTrendCellArrow, .MTTrendCellArrow2 {height: 28px; font-size: 16px; font-family: MonarchIcons, sans-serif !important; transition: 0.1s ease-out; ' + a1 + a5 + ' width: 26px; cursor: pointer; border-radius: 100%;  border-style: none; margin-left: 10px;}');
+    addStyle('.MTTrendCellArrow:hover {border: 1px solid rgb(218, 225, 234); box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;}');
 
-    GM_addStyle('.MTSideDrawerRoot {position: absolute;  inset: 0px;  display: flex;  -moz-box-pack: end;  justify-content: flex-end;}');
-    GM_addStyle('.MTSideDrawerContainer {overflow: hidden; padding: 12px; width: 640px; -moz-box-pack: end; ' + a4 + ' position: relative; overflow:auto;}');
-    GM_addStyle('.MTSideDrawerMotion {display: flex; flex-direction: column; transform:none;}');
-    GM_addStyle('.MTSideDrawerHeader { ' + a5 + ' padding: 12px; }');
-    GM_addStyle('.MTSideDrawerDetail { ' + a5 + ' width: 24%; text-align: right; font-size: 13px; }');
-    GM_addStyle('.MTSideDrawerDetail2 { ' + a5 + ' width: 24%; text-align: right; font-size: 12px; }');
-    GM_addStyle('.MTSideDrawerDetail3 { ' + a5 + ' width: 13px; text-align: center; font-size: 13px; font-family: MonarchIcons, sans-serif !important; }');
+    addStyle('.MTSideDrawerRoot {position: absolute;  inset: 0px;  display: flex;  -moz-box-pack: end;  justify-content: flex-end;}');
+    addStyle('.MTSideDrawerContainer {overflow: hidden; padding: 12px; width: 640px; -moz-box-pack: end; ' + a4 + ' position: relative; overflow:auto;}');
+    addStyle('.MTSideDrawerMotion {display: flex; flex-direction: column; transform:none;}');
+    addStyle('.MTSideDrawerHeader { ' + a5 + ' padding: 12px; }');
+    addStyle('.MTSideDrawerDetail { ' + a5 + ' width: 24%; text-align: right; font-size: 13px; }');
+    addStyle('.MTSideDrawerDetail2 { ' + a5 + ' width: 24%; text-align: right; font-size: 12px; }');
+    addStyle('.MTSideDrawerDetail3 { ' + a5 + ' width: 13px; text-align: center; font-size: 13px; font-family: MonarchIcons, sans-serif !important; }');
 
-    GM_addStyle('.MTTrendBig {font-size: 18px; font-weight: 500; padding-top: 8px;}');
-    GM_addStyle('.MTTrendSmall {font-size: 12px;font-weight: 600; padding-top: 8px; color: #919cb4; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
+    addStyle('.MTTrendBig {font-size: 18px; font-weight: 500; padding-top: 8px;}');
+    addStyle('.MTTrendSmall {font-size: 12px;font-weight: 600; padding-top: 8px; color: #919cb4; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
 
-    GM_addStyle('.dropbtn {' + a1 + a5 + '; border: none; cursor: pointer;}');
-    GM_addStyle('.dropbtn:hover, .dropbtn:focus {' + a2 + '}');
-    GM_addStyle('.MTdropdown {float: right;  position: relative; display: inline-block; font-weight: 200;}');
-    GM_addStyle('.MTdropdown-content div {font-size: 0px; line-height: 2px; background-color: #ff7369;}');
-    GM_addStyle('.MTdropdown-content {' + a1 + a5 + ';display:none; position: absolute; min-width: 300px; overflow: auto; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0; z-index: 1;}');
-    GM_addStyle('.MTdropdown-content a {' + a1 + a5 + ';font-size: 15px; padding: 10px 10px; display: block;}');
-    GM_addStyle('.MTdropdown a:hover {' + a2 + ' }');
-    GM_addStyle('.show {display: block;}');
+    addStyle('.dropbtn {' + a1 + a5 + '; border: none; cursor: pointer;}');
+    addStyle('.dropbtn:hover, .dropbtn:focus {' + a2 + '}');
+    addStyle('.MTdropdown {float: right;  position: relative; display: inline-block; font-weight: 200;}');
+    addStyle('.MTdropdown-content div {font-size: 0px; line-height: 2px; background-color: #ff7369;}');
+    addStyle('.MTdropdown-content {' + a1 + a5 + ';display:none; position: absolute; min-width: 300px; overflow: auto; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0; z-index: 1;}');
+    addStyle('.MTdropdown-content a {' + a1 + a5 + ';font-size: 15px; padding: 10px 10px; display: block;}');
+    addStyle('.MTdropdown a:hover {' + a2 + ' }');
+    addStyle('.show {display: block;}');
 
-    GM_addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster"),'block;') + '}');
-    GM_addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff"),'block;') + '}');
-    GM_addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph"),'block;') + '}');
+    addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster"),'block;') + '}');
+    addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff"),'block;') + '}');
+    addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph"),'block;') + '}');
 
     if(getCookie('MT_PlanCompressed') == 1) {
-        GM_addStyle('.sTiBE {height: 69px;}');
-        GM_addStyle('.jWyZIM {height: 45px;}');
-        GM_addStyle('.fAcQtX {margin-bottom: 2px;}');
+        addStyle('.sTiBE {height: 69px;}');
+        addStyle('.jWyZIM {height: 45px;}');
+        addStyle('.fAcQtX {margin-bottom: 2px;}');
     }
 
     if(getCookie('MT_PendingIsRed') == 1) {
-        GM_addStyle('.cxLoFP {color:red;}');
+        addStyle('.cxLoFP {color:red;}');
     }
 
     if(getCookie('MT_CompressedTx') == 1) {
-        GM_addStyle('.dHdtJt {font-size: 14px;}');
-        GM_addStyle('.hDZmpo {font-size: 14px;}');
-        GM_addStyle('.dnAUzj {font-size: 14px; padding: 2px;}');
-        GM_addStyle('.kphLtI {height: 28px;}');
+        addStyle('.dHdtJt {font-size: 14px;}');
+        addStyle('.hDZmpo {font-size: 14px;}');
+        addStyle('.dnAUzj {font-size: 14px; padding: 2px;}');
+        addStyle('.kphLtI {height: 28px;}');
     }
 
     MM_hideElement("[href~='/settings/referrals']",getCookie('MT_Ads'));
@@ -445,7 +445,7 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
             } else { Trend_UpdateQueue(useID,useAmount,inCol); }
         }
     }
-    console.log(GM_info.script.version,firstDate,lastDate,inGrouping,inPeriod,inID,'Data Len: ' + snapshotData.aggregates.length,'Queue Len: ' + TrendQueue.length);
+    console.log(version,firstDate,lastDate,inGrouping,inPeriod,inID,'Data Len: ' + snapshotData.aggregates.length,'Queue Len: ' + TrendQueue.length);
     if(inCol == 'hs') {r_TrendsActiveReady = 2;}
 }
 
@@ -1514,7 +1514,7 @@ function MenuDisplay(OnFocus) {
             }
         }
         if(OnFocus == true) {
-            MenuDisplay_Input(GM_info.script.name + ' - ' + GM_info.script.version,'','header');
+            MenuDisplay_Input('Monarch Money Tweaks - ' + version,'','header');
             MenuDisplay_Input('Lowest Calendar/Data year','MT_LowCalendarYear','number');
             MenuDisplay_Input('','','spacer');
             MenuDisplay_Input('Menu - Hide Budget','MT_Budget','checkbox');
@@ -2125,6 +2125,18 @@ function getStyle() {
     if (bgColor === 'rgb(8, 32, 67)') { css_styles.background = '#0d2c5c';return 0; } else {css_styles.background = '#ffffff';return 1;}
 }
 
+function addStyle(aCss) {
+
+    if(r_headStyle == null) {
+        r_headStyle = document.getElementsByTagName('head')[0];
+    }
+    let style = document.createElement('style');
+    style.setAttribute('type', 'text/css');
+    style.textContent = aCss;
+    r_headStyle.appendChild(style);
+
+};
+
 (function() {
 
     setInterval(() => {
@@ -2191,7 +2203,7 @@ async function getMonthlySnapshotData2(startDate, endDate,groupingType) {
     .then((response) => response.json())
     .then((data) => {
       return data.data;
-    }).catch((error) => { console.error(GM_info.script.version,error); });
+    }).catch((error) => { console.error(version,error); });
 }
 
 async function getMonthlySnapshotData(startDate, endDate, groupingType) {
@@ -2205,7 +2217,7 @@ async function getMonthlySnapshotData(startDate, endDate, groupingType) {
     .then((response) => response.json())
     .then((data) => {
       return data.data;
-    }).catch((error) => { console.error(GM_info.script.version,error); });
+    }).catch((error) => { console.error(version,error); });
 }
 
 async function getCategoryData() {
@@ -2219,7 +2231,7 @@ async function getCategoryData() {
         .then((response) => response.json())
         .then((data) => {
         return data.data;
-    }).catch((error) => { console.error(GM_info.script.version,error); });
+    }).catch((error) => { console.error(version,error); });
 }
 
 async function buildCategoryGroups() {
