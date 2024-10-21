@@ -1,6 +1,6 @@
 **iPad using UserScripts </> app:**
 
-1. Download the Userscripts </> - User Script and Style Manager from the App Store
+1. Download **Userscripts </> - User Script and Style Manager** from the App Store
 2. Select **Settings** and search for **Safari** and select General / Extensions
 3. Set the **</> Userscripts** option from Off to **Allow Extension**
 4. At bottom, set the "Other Websites" to **Ask** or **Allow**.
