@@ -3,6 +3,12 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 2.00 (Beta):**
+
+• NEW: Complete rewrite of Trends (faster, cleaner, object oriented, t's crossed and i's dotted)
+
+
+
 **Version 1.28:**
 
 • NEW: Full support for iPad and any external script besides Tampermonkey.
