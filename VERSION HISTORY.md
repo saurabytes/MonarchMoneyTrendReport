@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.00 (Beta):**
 
-• NEW: Complete rewrite of Trends (faster, cleaner, object oriented, t's crossed and i's dotted)
+• NEW: Complete rewrite of Trends (faster, cleaner, object oriented, all t's crossed & i's dotted)
 
 
 
