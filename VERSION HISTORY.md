@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.00 (Beta):**
 
-• NEW: Complete rewrite of Trends (faster, object oriented) including cleaner percentages and better Trend cards at top)
+• NEW: Complete rewrite of Trends (faster, object oriented) including cleaner percentages and better Trend cards at top.
 
 
 **Version 1.28:**
