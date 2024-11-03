@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks (BETA)
 // @namespace    http://tampermonkey.net/
-// @version      2.00.04
+// @version      2.00.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.00.04';
+const version = '2.00.05';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -77,7 +77,7 @@ function MM_Init() {
     addStyle('.MTFlexGridHCell2 { text-align: right; }');
     addStyle('.MTFlexGridDCell, .MTFlexGridD3Cell {' + a5 +' }');
     addStyle('.MTFlexGridDCell2 { text-align: right; }');
-    addStyle('.MTFlexGridSCell { padding-bottom: 18px; vertical-align:top; height: 36px;' + a5 + ' font-weight: 500; border-top: 1px solid ' + a3 + ';}');
+    addStyle('.MTFlexGridSCell,.MTFlexGridS3Cell { padding-bottom: 18px; vertical-align:top; height: 36px;' + a5 + ' font-weight: 500; border-top: 1px solid ' + a3 + ';}');
     addStyle('.MTFlexGridSCell2 { text-align: right; padding-bottom: 18px; vertical-align:top; height: 36px;' + a5 + ' font-weight: 500; border-top: 1px solid ' + a3 + ';}');
     addStyle('.MTFlexBig {font-size: 18px; font-weight: 500; padding-top: 8px;}');
     addStyle('.MTFlexSmall {font-size: 12px;font-weight: 600; padding-top: 8px; color: #919cb4; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
@@ -283,7 +283,6 @@ function MT_GridDrawDetails() {
                 elx = cec('td',useStyle,el,useDesc);
             }
         } else {
-
             if(useRow.isHeader == true) {return;}
             if(MTFlex.Subtotals != true) {return;};
 
@@ -293,12 +292,11 @@ function MT_GridDrawDetails() {
             useRow.IgnoreShade = true;
             useDesc = useRow.PKValue;
             el = cec('tr','MTFlexGridItem',Header,'','','','');
-            useStyle = 'MTFlexGridSCell';
             if(useRow.PKHRef) {
                 elx = cec('td','MTFlexGridSCell',el,'','','','');
                 elx = cec('a','MTFlexGridDCell',elx,useDesc,useRow.PKHRef,'','');
             } else {
-                elx = cec('td','MTFlexGridSCell',el,useDesc,'','','');
+                elx = cec('td','MTFlexGridS3Cell',el,useDesc,'','','');
             }
             useStyle = 'MTFlexGridSCell';
         }
@@ -307,7 +305,11 @@ function MT_GridDrawDetails() {
         for (let j = 1; j < MTFlexTitle.length; j += 1) {
             useValue = useRow[j + MTFields];
             if(MTFlexTitle[j].Format == 0) {
-                cec('td','MTFlexGridD3Cell',el,useValue,'','','');
+                if(isSubTotal == false) {
+                    cec('td','MTFlexGridD3Cell',el,useValue,'','','');
+                } else {
+                    cec('td',useStyle,el,useValue,'','','');
+                }
             } else {
                 useValue2 = getDollarValue(useValue);
                 useStyle2 = '';
@@ -610,7 +612,7 @@ async function MenuReportsAccountsGo() {
             MTP.Section = 4;
             bal1[1] += useBalance;
         }
-        MTP.PK = snapshotData.accounts[i].subtype.display;
+        //MTP.PK = snapshotData.accounts[i].subtype.display;
         MTP.PKValue = snapshotData.accounts[i].subtype.display;
         MTP.SKHRef = '/accounts/details/' + snapshotData.accounts[i].id;
         MF_QueueAddRow(MTP);
