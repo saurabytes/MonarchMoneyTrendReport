@@ -1,12 +1,13 @@
 # Monarch Money Tweaks - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
-
+https://github.com/RobertParesi/MonarchMoneyTrendReport/edit/main/VERSION%20HISTORY.md
 Email any issues directly:  robert @ paresi.net
 
 **Version 2.00 (Beta):**
 
 • NEW: Complete rewrite of Trends (faster, object oriented) including cleaner percentages and better Trend cards at top.
 
+• NEW: Added Accounts grid to Reports (display & export)
 
 **Version 1.28:**
 
