@@ -1,18 +1,17 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks (BETA)
 // @namespace    http://tampermonkey.net/
-// @version      2.00.02
+// @version      2.00.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.00.02';
+const version = '2.00.03';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
-const pending = 2;
 const graphql = 'https://api.monarchmoney.com/graphql';
 
 let r_Init = false;
@@ -65,7 +64,6 @@ function MM_Init() {
     addStyle('.MTFlexContainer2 {margin: 0px;  gap: 20px;  display: flex; }');
     addStyle('.MTFlexContainerPanel { display: flex; flex-flow: column; place-content: stretch flex-start; ' + a1 + 'border-radius: 8px; box-shadow: rgba(8, 40, 100, 0.04) 0px 4px 8px;}');
     addStyle('.MTFlexContainerCard {  display: flex; flex: 1 1 0%; justify-content: space-between; padding: 16px 24px; align-items: center;' + a1 + 'border-radius: 8px; box-shadow: rgba(8, 40, 100, 0.04) 0px 4px 8px;}');
-
     addStyle('.MTFlexGrid {' + a1 + 'padding: 20px;  border-spacing: 8px;}');
     addStyle('.MTFlexGrid th, td { padding-right: 8px;}');
     addStyle('.MTFlexTitle2 {display: flex; flex-flow: column;}');
@@ -73,17 +71,14 @@ function MM_Init() {
     addStyle('.MTFlexGridTitleCell { border-bottom: 1px solid ' + a3 + ';}');
     addStyle('.MTFlexGridTitleCell2 { text-align: right; border-bottom: 1px solid ' + a3 + ';}');
     addStyle('.MTFlexGridTitleCell:hover, .MTFlexGridTitleCell2:hover, .MTFlexGridDCell:hover, .MTFlexGridSCell:hover, .MThRefClass:hover {cursor:pointer; color: rgb(50, 170, 240);}');
-
     addStyle('.MTFlexGridRow { font-size: 14px; font-weight: 500; height: 56px; }');
     addStyle('.MTFlexGridItem { font-size: 14px; ; height: 28px }');
-
     addStyle('.MTFlexGridHCell { }');
     addStyle('.MTFlexGridHCell2 { text-align: right; }');
     addStyle('.MTFlexGridDCell, .MTFlexGridD3Cell {' + a5 +' }');
     addStyle('.MTFlexGridDCell2 { text-align: right; }');
     addStyle('.MTFlexGridSCell { padding-bottom: 18px; vertical-align:top; height: 36px;' + a5 + ' font-weight: 500; border-top: 1px solid ' + a3 + ';}');
     addStyle('.MTFlexGridSCell2 { text-align: right; padding-bottom: 18px; vertical-align:top; height: 36px;' + a5 + ' font-weight: 500; border-top: 1px solid ' + a3 + ';}');
-
     addStyle('.MTFlexBig {font-size: 18px; font-weight: 500; padding-top: 8px;}');
     addStyle('.MTFlexSmall {font-size: 12px;font-weight: 600; padding-top: 8px; color: #919cb4; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
     addStyle('.MTFlexLittle {font-size: 10px;font-weight: 600; padding-top: 8px; color: #919cb4; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
@@ -116,9 +111,7 @@ function MM_Init() {
         addStyle('.jWyZIM {height: 45px;}');
         addStyle('.fAcQtX {margin-bottom: 2px;}');
     }
-    if(getCookie('MT_PendingIsRed') == 1) {
-        addStyle('.cxLoFP {color:red;}');
-    }
+    if(getCookie('MT_PendingIsRed') == 1) {addStyle('.cxLoFP {color:red;}');}
     if(getCookie('MT_CompressedTx') == 1) {
         addStyle('.dHdtJt {font-size: 14px;}');
         addStyle('.hDZmpo {font-size: 14px;}');
@@ -162,7 +155,7 @@ function MM_SetupCallbacks() {
 
 const MM_BodyCallback = (mutationList, observer2) => {
 
-    if(r_PlanGridActive == pending && r_PlanYear != '') {
+    if(r_PlanGridActive == 2 && r_PlanYear != '') {
         if(mutationList.length < 49) { r_PlanGridActive = true; }
     }
 
@@ -178,7 +171,7 @@ const MM_BodyCallback = (mutationList, observer2) => {
 
 // [ Flex Queue ]
 function MF_QueueAddTitle(p) {
-    MTFlexTitle.push({"Col": p.Column, "Title": p.Title,"isSortable": p.isSortable, "Width": p.Width, "isNumeric": p.isNumeric, "ShowPercent": p.ShowPercent, "ShowPercentShade": p.ShowPercentShade});
+    MTFlexTitle.push({"Col": p.Column, "Title": p.Title,"isSortable": p.isSortable, "Width": p.Width, "Format": p.Format, "ShowPercent": p.ShowPercent, "ShowPercentShade": p.ShowPercentShade});
     MTFlexTitle.sort((a, b) => (a.Col - b.Col));
 }
 
@@ -193,7 +186,6 @@ function MF_QueueAddCard(p) {
     MTFlexCard.push({"Col": p.Col, "Title": p.Title,"Subtitle": p.Subtitle, "Style": p.Style});
 }
 
-// [ Fix Grid ]
 async function MF_GridInit(inName) {
 
     document.body.style.cursor = "wait";
@@ -261,7 +253,7 @@ function MT_GridDrawDetails() {
         Header = cec('table','MTFlexGrid',MTFlexDetails,'','','','');
         el = cec('tr','MTFlexGridTitleRow',Header,'','','','');
         for (RowI = 0; RowI < MTFlexTitle.length; RowI += 1) {
-            if(MTFlexTitle[RowI].isNumeric == true) {useStyle = 'MTFlexGridTitleCell2'; } else {useStyle = 'MTFlexGridTitleCell'; }
+            if(MTFlexTitle[RowI].Format == 1) {useStyle = 'MTFlexGridTitleCell2'; } else {useStyle = 'MTFlexGridTitleCell'; }
             elx = cec('td',useStyle,el,MTFlexTitle[RowI].Title,'','Column',RowI.toString());
             if(MTFlexTitle[RowI].Width != '') {elx.style = 'width: ' + MTFlexTitle[RowI].Width;}
         }
@@ -314,7 +306,7 @@ function MT_GridDrawDetails() {
         useStyle = useStyle + '2';
         for (let j = 1; j < MTFlexTitle.length; j += 1) {
             useValue = useRow[j + MTFields];
-            if(MTFlexTitle[j].isNumeric == false) {
+            if(MTFlexTitle[j].Format == 0) {
                 cec('td','MTFlexGridD3Cell',el,useValue,'','','');
             } else {
                 useValue2 = getDollarValue(useValue);
@@ -471,18 +463,24 @@ function MT_GridExport() {
     const MTFieldsEnd = MTFields + MTFlexTitle.length;
     let csvContent = '';
     let useValue = '';
+    let k = 0;
 
     for (let i = 0; i < MTFlexTitle.length; i += 1) { csvContent = csvContent + '"' + MTFlexTitle[i].Title + '"' + c;}
     csvContent = csvContent + CRLF;
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         if(i > 0 && MTFlexRow[i].Section != MTFlexRow[i-1].Section) { csvContent = csvContent + c + CRLF; }
+        k = 0;
         for (let j = MTFields; j < MTFieldsEnd; j += 1) {
-            if(j == MTFields) {
-                useValue = MTFlexRow[i][j];
-            } else {
-                useValue = Number(MTFlexRow[i][j]);
-                useValue = useValue.toFixed(2);
+            useValue = '';
+            if(MTFlexRow[i][j] != undefined) {
+                if(MTFlexTitle[k].Format == 1) {
+                    useValue = Number(MTFlexRow[i][j]);
+                    useValue = useValue.toFixed(2);
+                } else {
+                    useValue = MTFlexRow[i][j];
+                }
             }
+            k+=1;
             csvContent = csvContent + useValue + c;
         }
         csvContent = csvContent + CRLF;
@@ -514,39 +512,132 @@ function MenuReports(OnFocus) {
        if(OnFocus == true) {
            MenuReportsDataset();
            MenuReportBreadcrumbListener();
-           MenuReportsTrends();
+           MenuReportsCustom();
            r_spawn = 1;
         }
     }
 }
 
 // [ Trends Menu ]
-function MenuReportsTrends() {
+function MenuReportsCustom() {
 
-    let r_TrendsActive = document.querySelector('a.MTTrendsMenu');
-    if(!r_TrendsActive) {
-        const div = document.querySelector('[class*="ReportsHeaderTabs__Root"]');
+    let cMenus = [];
+    cMenus[0] = document.querySelector('a.MTTrendsMenu');
+    if(!cMenus[0]) {
+        let div = document.querySelector('[class*="ReportsHeaderTabs__Root"]');
         if(div) {
-            r_TrendsActive = cec('a','MTTrendsMenu ' + div.lastChild.className,div,'Trends','/reports/trends','','');
+            cMenus[0] = cec('a','MTTrendsMenu ' + div.lastChild.className,div,'Trends','/reports/trends','','');
+            cMenus[1] = cec('a','MTAccountsMenu ' + div.lastChild.className,div,'Accounts','/reports/accounts','','');
         }
     }
+    for (let i = 0; i < cMenus.length; i += 1) {
+         cMenus[i].className = cMenus[i].className.replace(' tab-nav-item-active','')
+    }
     if(SaveLocationPathName.endsWith('/reports/trends')) {
-        r_TrendsActive.className = r_TrendsActive.className + ' tab-nav-item-active';
-        MenuReportsTrendsPanels('display:none;');
+        cMenus[0].className = cMenus[0].className + ' tab-nav-item-active';
+        MenuReportsPanels('display:none;');
         MenuReportsTrendsGo();
+    } else if (SaveLocationPathName.endsWith('/reports/accounts')) {
+        cMenus[1].className = cMenus[1].className + ' tab-nav-item-active';
+        MenuReportsPanels('display:none;');
+        MenuReportsAccountsGo();
     } else {
-        r_TrendsActive.className = r_TrendsActive.className.replace(' tab-nav-item-active','');
         removeAllSections('.MTFlexContainer');
-        MenuReportsTrendsPanels('');
+        MenuReportsPanels('');
     }
 }
 
-function MenuReportsTrendsPanels(inType) {
+function MenuReportsPanels(inType) {
 
     let div = document.querySelector("div.MTdropdown");
     if(div) {div.parentNode.style=inType;}
     div = document.querySelector('[class*="Grid__GridStyled-"]');
     if(div) {div.style=inType;}
+}
+
+async function MenuReportsAccountsGo() {
+
+    let bal1 = [0,0];
+    let useBalance = 0;
+    let useTime = '';
+
+    await MF_GridInit('MTAccounts');
+    let snapshotData = await getAccountsData();
+
+    MTFlex.Title1 = 'Accounts';
+    MTFlex.Title2 = 'as of ' + getDates('s_FullDate');
+    MTFlex.Title3 = '';
+    MTFlex.TriggerEvent = false;
+    MTFlex.TriggerEvents = false;
+
+    MTP = [];
+    MTP.Column = 0;
+    MTP.Title = 'Account';
+    MTP.isSortable = 1;
+    MTP.Format = 0;
+    MF_QueueAddTitle(MTP);
+    MTP = [];
+    MTP.Column = 1;
+    MTP.Title = 'Type';
+    MTP.isSortable = 1;
+    MTP.Format = 0;
+    MF_QueueAddTitle(MTP);
+    MTP = [];
+    MTP.Column = 2;
+    MTP.Title = 'Last Updated';
+    MTP.isSortable = 1;
+    MTP.Format = 0;
+    MF_QueueAddTitle(MTP);
+    MTP = [];
+    MTP.Column = 3;
+    MTP.Title = 'Current Balance';
+    MTP.isSortable = 2;
+    MTP.Format = 1;
+    MF_QueueAddTitle(MTP);
+
+    for (let i = 0; i < snapshotData.accounts.length; i += 1) {
+        MTP = [];
+        MTP.isHeader = false;
+        useBalance = snapshotData.accounts[i].currentBalance;
+        if(snapshotData.accounts[i].isAsset == true) {
+            MTP.BasedOn = 1;
+            MTP.Section = 2;
+            bal1[0] += useBalance;
+        } else {
+            MTP.BasedOn = 3;
+            MTP.Section = 4;
+            bal1[1] += useBalance;
+        }
+        MTP.PK = snapshotData.accounts[i].subtype.display;
+        MTP.SKHRef = '/accounts/details/' + snapshotData.accounts[i].id;
+        MF_QueueAddRow(MTP);
+        MTFlexRow[MTFlexCR][MTFields] = snapshotData.accounts[i].displayName;
+        MTFlexRow[MTFlexCR][MTFields+1] = snapshotData.accounts[i].subtype.display;
+        useTime = snapshotData.accounts[i].displayLastUpdatedAt.substring(0, 10);
+        useTime = useTime + ' ' + snapshotData.accounts[i].displayLastUpdatedAt.substring(11, 16);
+        MTFlexRow[MTFlexCR][MTFields+2] = useTime;
+        MTFlexRow[MTFlexCR][MTFields+3] = useBalance;
+    }
+    MTP = [];
+    MTP.isHeader = true;
+    MTP.Section = 1;
+    MF_QueueAddRow(MTP);
+    MTFlexRow[MTFlexCR][MTFields] = 'Assets';
+    MTFlexRow[MTFlexCR][MTFields+3] = bal1[0];
+    MTP = [];
+    MTP.isHeader = true;
+    MTP.Section = 3;
+    MF_QueueAddRow(MTP);
+    MTFlexRow[MTFlexCR][MTFields] = 'Liabilities';
+    MTFlexRow[MTFlexCR][MTFields+3] = bal1[1];
+    MTP = [];
+    MTP.isHeader = true;
+    MTP.Section = 5;
+    MF_QueueAddRow(MTP);
+    MTFlexRow[MTFlexCR][MTFields] = 'Net Worth';
+    MTFlexRow[MTFlexCR][MTFields+3] = bal1[0] + bal1[1];
+
+    MTFlexReady = true;
 }
 
 async function MenuReportsTrendsGo() {
@@ -569,19 +660,19 @@ async function MenuReportsTrendsGo() {
     let year2 = higherDate.getFullYear();
 
     MTFlex.Title1 = 'Net Income Trend Report';
-    MTFlex.Title2 = getMonthName(month,true) + ' ' + day + ', ' + year + ' - ' + getMonthName(month2,true) + ' ' + day2 + ', ' + year2;
+    MTFlex.Title2 = getDates('s_FullDate',lowerDate) + ' - ' + getDates('s_FullDate',higherDate);
     if(TrendFullPeriod == 1) { MTFlex.Title3 = '* Comparing to End of Month'; }
     MTFlex.TriggerEvent = true;
     MTFlex.TriggerEvents = true;
     MTFlex.Button1Options = ['By group','By category','By both'];
-    MTFlex.Button2Options = ['By Last Month','By same month','By same quarter']
+    MTFlex.Button2Options = ['By Last Month','By same month','By same quarter'];
     if(MTFlex.Button1 == 2) {MTFlex.Subtotals = true;}
 
     MTP = [];
     MTP.Column = 0;
     MTP.Title = ['Group','Category','Group/Category'][MTFlex.Button1];
     MTP.isSortable = 1;
-    MTP.isNumeric = false;
+    MTP.Format = 0;
     MF_QueueAddTitle(MTP);
 
     // this year
@@ -590,7 +681,7 @@ async function MenuReportsTrendsGo() {
     MTP.Title = 'YTD ' + year;
     MTP.isSortable = 2;
     MTP.Width = '14%';
-    MTP.isNumeric = true;
+    MTP.Format = 1;
     if(getCookie('MT_TrendHidePer1',true) != true) {MTP.ShowPercent = 2;}
     MTP.ShowPercentShade = false;
     MF_QueueAddTitle(MTP);
@@ -604,14 +695,14 @@ async function MenuReportsTrendsGo() {
     MTP.Column = 4;
     MTP.Title = 'YTD ' + year;
     MTP.isSortable = 2;
-    MTP.isNumeric = true;
+    MTP.Format = 1;
     MTP.Width = '14%';
     if(getCookie('MT_TrendHidePer1',true) != true) {MTP.ShowPercent = 2;}
     MTP.ShowPercentShade = false;
     MF_QueueAddTitle(MTP);
     MTP.Column = 6;
     MTP.Title = 'Difference';
-    MTP.isNumeric = true;
+    MTP.Format = 1;
     MTP.Width = '14%';
     if(getCookie('MT_TrendHidePer2',true) != true) {MTP.ShowPercent = 1;}
     MTP.ShowPercentShade = true;
@@ -642,7 +733,7 @@ async function MenuReportsTrendsGo() {
     MTP.Title = useTitle;
     MTP.isSortable = 2;
     MTP.Width = '14%';
-    MTP.isNumeric = true;
+    MTP.Format = 1;
     if(getCookie('MT_TrendHidePer1',true) != true) {MTP.ShowPercent = 2;}
     MTP.ShowPercentShade = false;
     MF_QueueAddTitle(MTP);
@@ -693,8 +784,9 @@ async function MenuReportsTrendsGo() {
     MTP.Column = 1;
     MTP.Title = useTitle;
     MTP.isSortable = 2;
+    MTP.Format = 1;
     MTP.Width = '14%';
-    MTP.isNumeric = true;
+    MTP.Format1 = true;
     if(getCookie('MT_TrendHidePer1',true) != true) {MTP.ShowPercent = 2;}
     MTP.ShowPercentShade = false;
     MF_QueueAddTitle(MTP);
@@ -704,7 +796,7 @@ async function MenuReportsTrendsGo() {
     MTP.ShowPercentShade = true;
     MTP.Title = 'Difference';
     MTP.isSortable = 2;
-    MTP.isNumeric = true;
+    MTP.Format = 1;
     MTP.Width = '14%';
     MF_QueueAddTitle(MTP);
 
@@ -1672,7 +1764,7 @@ function MenuPlanUpdate() {
     let hed = document.querySelector('[class*="PlanHeaderControls__SettingsButton"]');
     if(!hed) {
         r_PlanYear = '';
-        r_PlanGridActive = pending;
+        r_PlanGridActive = 2;
         return;
     }
 
@@ -1695,14 +1787,14 @@ function MenuPlanUpdate() {
     hed = document.querySelector('[class*="PlanHeader__Container"]');
     if(!hed) {
         r_PlanYear = '';
-        r_PlanGridActive = pending;
+        r_PlanGridActive = 2;
         return;
     }
 
     // get current page year
     r_PlanYear = hed.innerText.substring(0,4);
     if(hed.innerText[5] == '-') {
-        r_PlanGridActive = pending;
+        r_PlanGridActive = 2;
         r_PlanYear = '';
         return;
     }
@@ -1720,7 +1812,7 @@ function MenuPlanUpdate() {
     let year = d.getFullYear();
     let month = d.getMonth();
     if(year.toString() != r_PlanYear) {
-        r_PlanGridActive = pending;
+        r_PlanGridActive = 2;
         r_PlanYear = '';
         return;
     }
@@ -1779,7 +1871,7 @@ function MenuPlanUpdate() {
                 if(pivotCount == 1) { JanValue = useValue; }
                 if(pivotCount == month) {
                     if(useValue.startsWith('$') && JanValue == '-') {
-                        r_PlanGridActive = pending;
+                        r_PlanGridActive = 2;
                         return;
                     }
                 }
@@ -1817,7 +1909,7 @@ function MenuPlanUpdate() {
         }
     }
 
-    r_PlanGridActive = pending;
+    r_PlanGridActive = 2;
 }
 
 function MenuCheckSpawnProcess() {
@@ -1841,7 +1933,7 @@ function MenuCheckSpawnProcess() {
         case true:
             MenuPlanUpdate();
             break;
-        case pending:
+        case 2:
             if(SaveLocationHRefName != window.location.href) {
                 SaveLocationHRefName = window.location.href;
                 r_PlanGridActive = true;
@@ -1865,7 +1957,7 @@ window.onclick = function(event) {
     const pcn = event.target.parentNode.className;
 
     // ======================================================
-    console.log(cn,event.target,pcn,event.target.parentNode);
+    // console.log(cn,event.target,pcn,event.target.parentNode);
 
     switch (cn) {
         case 'MTSideDrawerRoot':
@@ -2042,6 +2134,7 @@ function getDates(InValue,InDate) {
     if(InValue == 'n_CurMonth') {return(month);}
     if(InValue == 'n_CurDay') {return(day);}
     if(InValue == 'd_CurDate') {return d;};
+    if(InValue == 's_FullDate') {return(getMonthName(month,true) + ' ' + day + ', ' + year );}
 
     if(InValue == 'Today') {
     } else {
@@ -2274,6 +2367,20 @@ async function getMonthlySnapshotData(startDate, endDate, groupingType) {
     operationName: 'GetAggregatesGraphCategoryGroup',
     variables: {startDate: startDate, endDate: endDate, },
       query: "query GetAggregatesGraphCategoryGroup($startDate: Date, $endDate: Date) {\n aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"categoryGroup\", \"" + groupingType + "\"]\n fillEmptyValues: false\n ) {\n groupBy {\n categoryGroup {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
+      });
+
+  return fetch(graphql, options)
+    .then((response) => response.json())
+    .then((data) => {
+      return data.data;
+    }).catch((error) => { console.error(version,error); });
+}
+
+async function getAccountsData() {
+    const options = callGraphQL({
+    operationName: 'GetAccounts',
+    variables: { },
+      query: "query GetAccounts {\n accounts {\n id\n displayName\n deactivatedAt\n isHidden\n isAsset\n mask\n displayLastUpdatedAt\n currentBalance\n displayBalance\n hideFromList\n hideTransactionsFromReports\n order\n icon\n logoUrl\n deactivatedAt \n subtype {\n name\n display\n }\n }}\n"
       });
 
   return fetch(graphql, options)
