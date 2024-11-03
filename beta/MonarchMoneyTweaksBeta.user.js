@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks (BETA)
 // @namespace    http://tampermonkey.net/
-// @version      2.00.03
+// @version      2.00.04
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.00.03';
+const version = '2.00.04';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -569,6 +569,8 @@ async function MenuReportsAccountsGo() {
     MTFlex.Title3 = '';
     MTFlex.TriggerEvent = false;
     MTFlex.TriggerEvents = false;
+    MTFlex.Button1Options = ['Show Subtotals','Hide Subtotals'];
+    MTFlex.Subtotals = MTFlex.Button1;
 
     MTP = [];
     MTP.Column = 0;
@@ -609,6 +611,7 @@ async function MenuReportsAccountsGo() {
             bal1[1] += useBalance;
         }
         MTP.PK = snapshotData.accounts[i].subtype.display;
+        MTP.PKValue = snapshotData.accounts[i].subtype.display;
         MTP.SKHRef = '/accounts/details/' + snapshotData.accounts[i].id;
         MF_QueueAddRow(MTP);
         MTFlexRow[MTFlexCR][MTFields] = snapshotData.accounts[i].displayName;
@@ -1979,6 +1982,7 @@ window.onclick = function(event) {
         case 'MTFlexButton1':
             flipCookie(MTFlex.Name + 'Button1',MTFlex.Button1Options.length-1);
             if(MTFlex.Name == 'MTTrend') {MenuReportsTrendsGo();}
+            if(MTFlex.Name == 'MTAccounts') {MenuReportsAccountsGo();}
             return;
         case 'MTFlexButton2':
             flipCookie(MTFlex.Name + 'Button2',MTFlex.Button2Options.length-1);
