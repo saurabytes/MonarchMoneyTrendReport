@@ -691,6 +691,7 @@ async function MenuReportsAccountsGo() {
     }
     MT_GridRollup(1,2,1,'Assets');
     MT_GridRollup(3,4,2,'Liabilities');
+    MT_GridRollDifference(5,1,3,1,'Net Worth');
     MTFlexReady = true;
 }
 
