@@ -7,7 +7,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW:  Rewrite of Trends including cleaner percentages and better Trend cards at top.
 
-• NEW: Added Accounts to Reports (display & export)   More enhancements & flexibility to come for Accounts.
+• NEW: Added Accounts to Reports (display & export)   - More enhancements & flexibility to come for Accounts.
 
 **Version 1.28:**
 
