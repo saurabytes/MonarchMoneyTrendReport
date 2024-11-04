@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Monarch Money Tweaks (BETA)
+// @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
 // @version      2.00
 // @description  Monarch Tweaks
