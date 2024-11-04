@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks (BETA)
 // @namespace    http://tampermonkey.net/
-// @version      2.00.06
+// @version      2.00
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.00.06';
+const version = '2.00';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -537,10 +537,15 @@ function MT_GridRollup(inNew,inRoll,inBasedOn,inName) {
 function MT_GridRollDifference(inNew,inA,inB, inBasedOn, inName) {
 
     if(MTFlexRow.length == 0) {return;}
+
+    let p1 =null;
+    let p2 = null;
+
     for (let i = 0; i < MTFlexRow.length; i += 1) {
-        if(MTFlexRow[i].Section == inA) {inA = i;}
-        if(MTFlexRow[i].Section == inB) {inB = i;}
+        if(MTFlexRow[i].Section == inA) {p1 = i;}
+        if(MTFlexRow[i].Section == inB) {p2 = i;}
     }
+    if(p1 == null || p2 == null) {return;};
     MTP = [];
     MTP.isHeader = true;
     MTP.IgnoreShade = true;
@@ -550,7 +555,7 @@ function MT_GridRollDifference(inNew,inA,inB, inBasedOn, inName) {
     MTFlexRow[MTFlexCR][MTFields] = inName;
     for (let j = 1; j < MTFlexTitle.length; j += 1) {
         if(MTFlexTitle[j].Format > 0) {
-            MTFlexRow[MTFlexCR][MTFields+j] = MTFlexRow[inA][MTFields+j] - MTFlexRow[inB][MTFields+j];
+            MTFlexRow[MTFlexCR][MTFields+j] = MTFlexRow[p1][MTFields+j] - MTFlexRow[p2][MTFields+j];
         } else {
             MTFlexRow[MTFlexCR][MTFields+j] = '';
         }
