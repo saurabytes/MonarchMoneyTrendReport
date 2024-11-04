@@ -658,7 +658,7 @@ async function MenuReportsAccountsGo() {
     MTP.Title = 'Net Change';
     MTP.isSortable = 2;
     MTP.Format = 1;
-    //MTP.ShowPercent = 2;
+    MTP.ShowPercent = 1;
     MF_QueueAddTitle(MTP);
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
         MTP = [];
