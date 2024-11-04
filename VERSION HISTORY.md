@@ -3,11 +3,11 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 https://github.com/RobertParesi/MonarchMoneyTrendReport/edit/main/VERSION%20HISTORY.md
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.00 (Beta):**
+**Version 2.00:**
 
 • NEW:  Rewrite of Trends including cleaner percentages and better Trend cards at top.
 
-• NEW: Added Accounts to Reports (display & export)
+• NEW: Added Accounts to Reports (display & export)   Much more enhancements & flexibility to come for Accounts.
 
 **Version 1.28:**
 
