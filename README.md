@@ -30,6 +30,8 @@ Enjoy!
 
 * **Reports / Trends** - Summarize your history and compare it to last month, same month last year or same quarter last year.  Drill down to the monthly totals for your categories and export your summarized data. 
 
+* **Reports / Accounts** - Summarize your Account balances (Beginning of Month to Currret), sort and export.
+
 * Ability to show "Actual YTD" and "Projected" totals in **Budget / Forecast / Monthly**
 
 * Breadcrumbs on **Reports / Income & Spending** allows staying on Reports page instead of going to Transactions connecting _All Categories > Groups > Categories_ 
