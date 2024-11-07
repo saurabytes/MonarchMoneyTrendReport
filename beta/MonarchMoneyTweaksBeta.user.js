@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.01.02
+// @version      2.01.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.01.02';
+const version = '2.01.03';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -27,6 +27,7 @@ let r_oo = null;
 let r_oo2 = null;
 let r_PlanYear = '';
 let accountGroups = [];
+let accountBalances = [];
 let AccountsTodayIs = new Date();
 let TrendTodayIs = new Date();
 let TrendQueue = [];
@@ -651,10 +652,14 @@ async function MenuReportsAccountsGo() {
     MTFlex.Button1Options = ['Show Subtotals','Hide Subtotals'];
     MTFlex.Subtotals = MTFlex.Button1;
 
+    let isToday = getDates('isToday',AccountsTodayIs);
+    if(isToday) {accountBalances = [];}
+
     let snapshotData = await getAccountsData();
     let useDate = formatQueryDate(getDates('d_StartofMonth',AccountsTodayIs));
     let useDate2 = formatQueryDate(AccountsTodayIs);
-    let snapshotData2 = await GetTransactions(useDate,useDate2,0)
+    let snapshotData2 = await GetTransactions(useDate,useDate2,0);
+    console.log(useDate,useDate2,snapshotData,snapshotData2);
 
     MTP = [];
     MTP.Column = 0; MTP.Title = 'Account';MTP.isSortable = 1; MTP.Format = 0; MF_QueueAddTitle(MTP);
@@ -670,11 +675,15 @@ async function MenuReportsAccountsGo() {
     let useBalance = 0;
     let useAmount = 0;
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
-        if(snapshotData.accounts[i].isHidden == false) {
+        if(snapshotData.accounts[i].isHidden == false && snapshotData.accounts[i].hideTransactionsFromReports == false) {
             MTP = [];
             MTP.isHeader = false;
             MTP.UID = snapshotData.accounts[i].id;
-            useBalance = snapshotData.accounts[i].displayBalance;
+            if(isToday) {
+                useBalance = snapshotData.accounts[i].displayBalance;
+            } else {
+                useBalance = getAccountBalance(MTP.UID);
+            }
             if(snapshotData.accounts[i].isAsset == true) {
                 MTP.BasedOn = 1;
                 MTP.Section = 2;
@@ -721,6 +730,7 @@ async function MenuReportsAccountsGo() {
             MTFlexRow[MTFlexCR][MTFields+8] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
             MTFlexRow[MTFlexCR][MTFields+3] = parseFloat(MTFlexRow[MTFlexCR][MTFields+3].toFixed(2));
             MTFlexRow[MTFlexCR][MTFields+8] = parseFloat(MTFlexRow[MTFlexCR][MTFields+8].toFixed(2));
+            if(isToday) {updateAccountBalance(snapshotData.accounts[i].id,MTFlexRow[MTFlexCR][MTFields+3]);}
         }
     }
     MT_GridRollup(1,2,1,'Assets');
@@ -2015,12 +2025,12 @@ window.onclick = function(event) {
 function onClickMTFlexBig() {
 
   if(MTFlex.Name == 'MTTrend') {
-      if(TrendTodayIs.getMonth() == getDates('n_CurMonth') && TrendTodayIs.getDate() == getDates('n_CurDay') && TrendTodayIs.getFullYear() == getDates('n_CurYear')) {
+      if(getDates('isToday',TrendTodayIs)) {
           TrendTodayIs = getDates('d_EndofLastMonth');} else { TrendTodayIs = getDates('d_CurDate'); }
       MenuReportsTrendsGo();
   }
   if(MTFlex.Name == 'MTAccounts') {
-      if(AccountsTodayIs.getMonth() == getDates('n_CurMonth') && AccountsTodayIs.getDate() == getDates('n_CurDay') && AccountsTodayIs.getFullYear() == getDates('n_CurYear')) {
+      if(getDates('isToday',AccountsTodayIs)) {
           AccountsTodayIs = getDates('d_EndofLastMonth');} else {AccountsTodayIs = getDates('d_CurDate'); }
       MenuReportsAccountsGo();
   }
@@ -2142,6 +2152,10 @@ function getDates(InValue,InDate) {
     if(InValue == 'd_CurDate') {return d;};
     if(InValue == 's_FullDate') {return(getMonthName(month,true) + ' ' + day + ', ' + year );}
     if(InValue == 's_ShortDate') {return(getMonthName(month,true) + ' ' + day);}
+    if(InValue == 'isToday') {
+        let todaysDate = new Date();
+        if(InDate.setHours(0,0,0,0) == todaysDate.setHours(0,0,0,0)) {return true;} else {return false;}
+    }
 
     if(InValue == 'Today') {
     } else {
@@ -2408,7 +2422,7 @@ async function getDisplayBalanceAtDateData(date) {
     const options = callGraphQL({
     operationName: 'Common_GetDisplayBalanceAtDate',
     variables: {date: date, },
-      query: "query Common_GetDisplayBalanceAtDate($date: Date!) {\n    accounts {\n      id\n      displayBalance(date: $date)\n      includeInNetWorth\n      type {\n        name\n      }\n    }\n  }\n"
+      query: "query Common_GetDisplayBalanceAtDate($date: Date!) {\n accounts {\n id\n displayBalance(date: $date)\n type {\n name\n}\n }\n }\n"
       });
 
   return fetch(graphql, options)
@@ -2464,4 +2478,18 @@ function getCategoryGroup(InId) {
       }
   }
     return [null];
+}
+
+function updateAccountBalance(inId,inBalance) {
+
+    accountBalances.push({"ID": inId, "BALANCE": inBalance});
+
+}
+
+function getAccountBalance(inId) {
+
+  for (let i = 0; i < accountBalances.length; i++) {
+      if(accountBalances[i].ID == inId ) { return accountBalances[i].BALANCE; }
+  }
+    return 0;
 }
