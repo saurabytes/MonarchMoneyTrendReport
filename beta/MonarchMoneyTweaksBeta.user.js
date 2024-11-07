@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.01.01
+// @version      2.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.01.01';
+const version = '2.01';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -553,6 +553,7 @@ function MT_GridCalcDifference(inA,inB,inC,inCols,inOp) {
         } else {
             MTFlexRow[p3][MTFields + inCols[i]] = MTFlexRow[p1][MTFields + inCols[i]] - MTFlexRow[p2][MTFields + inCols[i]];
         }
+        MTFlexRow[p3][MTFields + inCols[i]] = parseFloat(MTFlexRow[p3][MTFields + inCols[i]].toFixed(2));
     }
 }
 
@@ -576,6 +577,7 @@ function MT_GridRollDifference(inNew,inA,inB,inBasedOn,inName,inOp) {
             } else {
                 MTFlexRow[MTFlexCR][MTFields+j] = MTFlexRow[p1][MTFields+j] - MTFlexRow[p2][MTFields+j];
             }
+            MTFlexRow[MTFlexCR][MTFields+j] = parseFloat(MTFlexRow[MTFlexCR][MTFields+j].toFixed(2));
         } else {
             MTFlexRow[MTFlexCR][MTFields+j] = '';
         }
@@ -666,6 +668,7 @@ async function MenuReportsAccountsGo() {
     MTP.Column = 8; MTP.Title = 'Net Change'; MTP.ShowPercent = 0; MF_QueueAddTitle(MTP);
 
     let useBalance = 0;
+    let useAmount = 0;
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
         MTP = [];
         MTP.isHeader = false;
@@ -698,10 +701,12 @@ async function MenuReportsAccountsGo() {
                             MTFlexRow[MTFlexCR][MTFields+4] += snapshotData2.allTransactions.results[j].amount;
                             break;
                         case 'expense':
-                            MTFlexRow[MTFlexCR][MTFields+5] += (snapshotData2.allTransactions.results[j].amount * -1);
+                            useAmount = snapshotData2.allTransactions.results[j].amount * -1;
+                            MTFlexRow[MTFlexCR][MTFields+5] += useAmount;
+                            MTFlexRow[MTFlexCR][MTFields+5] = parseFloat(MTFlexRow[MTFlexCR][MTFields+5].toFixed(2));
                             break;
                         case 'transfer':
-                            MTFlexRow[MTFlexCR][MTFields+6] += (snapshotData2.allTransactions.results[j].amount );
+                            MTFlexRow[MTFlexCR][MTFields+6] += snapshotData2.allTransactions.results[j].amount;
                             break;
                     }
                 }
@@ -713,6 +718,8 @@ async function MenuReportsAccountsGo() {
             MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] - MTFlexRow[MTFlexCR][MTFields+5] + MTFlexRow[MTFlexCR][MTFields+6];
         }
         MTFlexRow[MTFlexCR][MTFields+8] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
+        MTFlexRow[MTFlexCR][MTFields+3] = parseFloat(MTFlexRow[MTFlexCR][MTFields+3].toFixed(2));
+        MTFlexRow[MTFlexCR][MTFields+8] = parseFloat(MTFlexRow[MTFlexCR][MTFields+8].toFixed(2));
     }
     MT_GridRollup(1,2,1,'Assets');
     MT_GridRollup(3,4,2,'Liabilities');
@@ -2230,6 +2237,7 @@ function getCleanValue(inValue,inDec) {
 }
 
 function getDollarValue(InValue) {
+    
     if(InValue === -0 || isNaN(InValue)) {InValue = 0;}
     return InValue.toLocaleString("en-US", {style:"currency", currency:css_currency});
 }
