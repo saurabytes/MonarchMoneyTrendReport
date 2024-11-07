@@ -669,7 +669,7 @@ async function MenuReportsAccountsGo() {
     MTP.Column = 4; MTP.Title = 'Income'; MF_QueueAddTitle(MTP);
     MTP.Column = 5; MTP.Title = 'Expenses'; MF_QueueAddTitle(MTP);
     MTP.Column = 6; MTP.Title = 'Transfers'; MF_QueueAddTitle(MTP);
-    MTP.Column = 7; MTP.Title = 'Current Balance'; MF_QueueAddTitle(MTP);
+    MTP.Column = 7; MTP.Title = 'Ending Balance'; MF_QueueAddTitle(MTP);
     MTP.Column = 8; MTP.Title = 'Net Change'; MTP.ShowPercent = 0; MF_QueueAddTitle(MTP);
 
     let useBalance = 0;
