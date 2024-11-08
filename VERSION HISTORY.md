@@ -5,7 +5,11 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.01 (beta):**
 
-• CHANGE:  Removed YTD figures from Forecast / Budget to remove all uses of mutation observers. 
+• NEW: Added Income, Expenses and Transfers to Reports / Accounts
+
+• NEW: Added ability to go back to previous month in Reports / Accounts to behave like Trends
+
+• CHANGE:  Modified script to remove all mutation observers to avoid any potential memory leaks. (caused YTD figures in Forecast / Budget to be depricated)
 
 **Version 2.00:**
 
