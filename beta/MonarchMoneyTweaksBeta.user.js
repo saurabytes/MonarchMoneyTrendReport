@@ -1650,7 +1650,6 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Reports / Trends - Always compare to End of Month','MT_TrendFullPeriod','checkbox');
             MenuDisplay_Input('Reports / Trends - Hide percentage of Income & Spending','MT_TrendHidePer1','checkbox');
             MenuDisplay_Input('Reports / Trends - Hide percentage of Difference','MT_TrendHidePer2','checkbox');
-            MenuDisplay_Input('Budget - Add YTD Total & Projected Total to Forecast / Monthly','MT_PlanYTD','checkbox');
             MenuDisplay_Input('Budget - Panel has smaller compressed grid','MT_PlanCompressed','checkbox');
             MenuDisplay_Input('General - Calendar "Last year" and "Last 12 months" include full month','MT_CalendarEOM','checkbox');
         }
