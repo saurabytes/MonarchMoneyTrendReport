@@ -7,7 +7,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Added Income, Expenses and Transfers to Reports / Accounts
 
-• NEW: Added ability to go back to previous month in Reports / Accounts to behave like Trends
+• NEW: Added ability to go back to previous month in Reports / Accounts like Trends
 
 • CHANGE:  Modified script to remove all mutation observers to avoid any potential memory leaks. (caused YTD figures in Forecast / Budget to be depricated)
 
