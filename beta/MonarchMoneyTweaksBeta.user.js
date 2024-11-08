@@ -19,13 +19,9 @@ let SaveLocationHRefName = '';
 let SaveLocationPathName = '';
 let r_headStyle = null;
 let r_DatePickerActive = false;
-let r_PlanGridActive = false;
 let r_DatasetActive = false;
 let r_spawn = 0;
 let r_eventListener = null;
-let r_oo = null;
-let r_oo2 = null;
-let r_PlanYear = '';
 let accountGroups = [];
 let accountBalances = [];
 let AccountsTodayIs = new Date();
@@ -121,7 +117,6 @@ function MM_Init() {
         addStyle('.kphLtI {height: 28px;}');
     }
     MM_MenuFix();
-    MM_SetupCallbacks();
 }
 
 function MM_MenuFix() {
@@ -142,34 +137,6 @@ function MM_hideElement(InList,InValue) {
         InValue == 1 ? el.style.display = 'none' : el.style.display = '';
     }
 }
-
-function MM_SetupCallbacks() {
-
-    if(!r_oo2) {
-        r_oo2 = document.body;
-        if(r_oo2 != null) {
-            const observer2 = new MutationObserver(MM_BodyCallback);
-            const config = { attributes: true, childList: true, subtree: true, };
-            observer2.observe(r_oo2, config);
-        }
-    }
-}
-
-const MM_BodyCallback = (mutationList, observer2) => {
-
-    if(r_PlanGridActive == 2 && r_PlanYear != '') {
-        if(mutationList.length < 49) { r_PlanGridActive = true; }
-    }
-
-    if(r_oo2) {
-        const text = r_oo2.lastChild.innerText;
-        if(text) {
-            if(text.startsWith('Split Transaction')) {
-                MM_SplitTransaction();
-            }
-        }
-    }
-};
 
 // [ Flex Queue ]
 function MF_QueueAddTitle(p) {
@@ -592,7 +559,6 @@ function MenuReports(OnFocus) {
         if(OnFocus == false) {
             const pn = window.location.pathname;
             if(pn.startsWith('/reports/') == false) {
-                r_oo = null;
             }
         }
        if(OnFocus == true) {
@@ -1389,15 +1355,47 @@ function MenuFilter_Restore(cn) {
 }
 
 // ===[ Calendar Fixes ] ===
-function MM_FixCalendar(inValue) {
+function MM_FixCalendarShortcuts() {
 
-    if(r_oo == null) {
-        r_oo = findButton(inValue,'');
-        if(r_oo != null) {
-            const observer = new MutationObserver(MM_FixCalendarCallback);
-            const config = { attributes: true, childList: true, subtree: true };
-            observer.observe(r_oo, config);
-        }
+    let li = document.querySelectorAll('div.DateRangePickerShortcuts__StyledMenuItem-jr6842-1');
+    if(li[6]) {
+        const useClass = li[0].className;
+        let div = document.createElement('div');
+        div.className = useClass;
+        div.innerText = 'This quarter';
+        let newli = li[5].nextSibling.after(div);
+        div.addEventListener('click', () => {
+            inputTwoFields('input.DateInput_input',getDates('ThisQTRs'),getDates('ThisQTRe'));
+            let sb = findButton('','Apply');
+            if(sb) {
+                focus(sb);
+                sb.click();
+            }
+        });
+        div = document.createElement('div');
+        div.className = useClass;
+        div.innerText = 'Last year YTD';
+        newli = li[5].nextSibling.after(div);
+        div.addEventListener('click', () => {
+            inputTwoFields('input.DateInput_input',getDates('LastYTDs'),getDates('LastYTDe'));
+            let sb = findButton('','Apply');
+            if(sb) {
+                focus(sb);
+                sb.click();
+            }
+        });
+        div = document.createElement('div');
+        div.className = useClass;
+        div.innerText = 'Last 12 months';
+        newli = li[5].nextSibling.after(div);
+        div.addEventListener('click', () => {
+            inputTwoFields('input.DateInput_input',getDates('12Mths'),getDates('Today'));
+            let sb = findButton('','Apply');
+            if(sb) {
+                focus(sb);
+                sb.click();
+            }
+        });
     }
 }
 
@@ -1425,55 +1423,6 @@ function MM_FixCalendarDropdown(InList) {
         InList.removeChild(InList.firstChild);
     }
 }
-
-const MM_FixCalendarCallback = (mutationList, observer) => {
-
-    r_DatePickerActive = r_DatePickerActive? false : true;
-
-    if (r_DatePickerActive == true) {
-        let li = document.querySelectorAll('div.DateRangePickerShortcuts__StyledMenuItem-jr6842-1');
-        if(li[6]) {
-            const useClass = li[0].className;
-
-            let div = document.createElement('div');
-            div.className = useClass;
-            div.innerText = 'This quarter';
-            let newli = li[5].nextSibling.after(div);
-            div.addEventListener('click', () => {
-                inputTwoFields('input.DateInput_input',getDates('ThisQTRs'),getDates('ThisQTRe'));
-                let sb = findButton('','Apply');
-                if(sb) {
-                    focus(sb);
-                    sb.click();
-                }
-            });
-            div = document.createElement('div');
-            div.className = useClass;
-            div.innerText = 'Last year YTD';
-            newli = li[5].nextSibling.after(div);
-            div.addEventListener('click', () => {
-                inputTwoFields('input.DateInput_input',getDates('LastYTDs'),getDates('LastYTDe'));
-                let sb = findButton('','Apply');
-                if(sb) {
-                    focus(sb);
-                    sb.click();
-                }
-            });
-            div = document.createElement('div');
-            div.className = useClass;
-            div.innerText = 'Last 12 months';
-            newli = li[5].nextSibling.after(div);
-            div.addEventListener('click', () => {
-                inputTwoFields('input.DateInput_input',getDates('12Mths'),getDates('Today'));
-                let sb = findButton('','Apply');
-                if(sb) {
-                    focus(sb);
-                    sb.click();
-                }
-            });
-        }
-    }
-};
 
 // [ Breadcrumbs ]
 function MenuReportBreadcrumbListener() {
@@ -1662,7 +1611,6 @@ function MM_SplitTransaction() {
 function MenuTransactions(OnFocus) {
 
     if (SaveLocationPathName.startsWith('/transactions')) {
-        if(OnFocus == false) { r_oo = null; }
         if(OnFocus == true) { r_spawn = 1; }
     }
 }
@@ -1769,170 +1717,6 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
     }
 }
 
-// [ Plan & Budget ]
-function MenuPlan(OnFocus) {
-
-    if (SaveLocationPathName.startsWith('/plan')) {
-        if(getCookie("MT_PlanYTD") == 1) {
-            if(OnFocus == false) { r_PlanGridActive = false; }
-            if(OnFocus == true) { r_PlanGridActive = true; }
-        }
-    }
-}
-
-function MenuPlanUpdate() {
-
-    // Getting Setting button of Plan container
-    let hed = document.querySelector('[class*="PlanHeaderControls__SettingsButton"]');
-    if(!hed) {
-        r_PlanYear = '';
-        r_PlanGridActive = 2;
-        return;
-    }
-
-    if(getCookie("MT_Goals") == 1) {
-        let div = document.querySelectorAll('[class*="PlanSectionHeader__Root"]');
-        if(div.length > 2) {
-            div[2].style = 'display: ' + getDisplay(1,'block;');
-            div = div[2].nextSibling;
-            div.style = 'display: ' + getDisplay(1,'block;');
-            div = div.nextSibling;
-            div.style = 'display: ' + getDisplay(1,'block;');
-        }
-    }
-
-    // remove all tweaked columns
-    removeAllSections('.MTPlanHeader');
-    removeAllSections('.MTPlanDetail');
-
-    // check if forecasting year
-    hed = document.querySelector('[class*="PlanHeader__Container"]');
-    if(!hed) {
-        r_PlanYear = '';
-        r_PlanGridActive = 2;
-        return;
-    }
-
-    // get current page year
-    r_PlanYear = hed.innerText.substring(0,4);
-    if(hed.innerText[5] == '-') {
-        r_PlanGridActive = 2;
-        r_PlanYear = '';
-        return;
-    }
-
-    // wait till a full page load
-    let elements = document.querySelectorAll('[class*="PlanSectionFooter__Title"]');
-    if(elements == null || elements.length < 4) {
-        r_PlanYear = '';
-        r_PlanGridActive = true;
-        return;
-    }
-
-    // only tweak this year's forecast
-    const d = new Date();
-    let year = d.getFullYear();
-    let month = d.getMonth();
-    if(year.toString() != r_PlanYear) {
-        r_PlanGridActive = 2;
-        r_PlanYear = '';
-        return;
-    }
-
-    if(month > 0) {
-        // insert header
-        month-=1;
-        let currentPeriod = getMonthName(month,true) + ' ' + year;
-        let elements = document.querySelectorAll('[class*="PlanGrid__PlanGridColumn"]');
-
-        for (let el of elements) {
-            if(el.innerText == currentPeriod) {
-                let clonedNode = el.cloneNode(true);
-                clonedNode.innerText = 'Total YTD';
-                clonedNode.className = clonedNode.className + ' MTPlanHeader';
-                el.insertAdjacentElement('afterend', clonedNode);
-            }
-            if(el.innerText == 'Dec ' + year) {
-                let clonedNode = el.cloneNode(true);
-                clonedNode.innerText = 'Projected';
-                clonedNode.className = clonedNode.className + ' MTPlanHeader';
-                el.insertAdjacentElement('afterend', clonedNode);
-            }
-        }
-
-        // add data
-        let pivotCount = 0;
-        var cellValue = 0;
-        var rowValue = 0;
-        let useValue = '';
-        let JanValue = '';
-        let clonedNodeYTD = null;
-        let clonedNodeProj = null;
-
-        month+=1;
-
-        elements = document.querySelectorAll('[class*="PlanGrid__PlanGridColumn"]');
-        for (let el of elements) {
-            useValue = el.innerText;
-            if(!useValue) {
-                if(el.lastChild != null) {
-                    let x = el.lastChild.childNodes[0];
-                    if(x) {
-                        useValue = x.defaultValue;
-                    }
-                }
-            }
-
-            if(useValue.startsWith('$') || useValue.startsWith('-') || useValue == '') {
-
-                if(useValue == '') {useValue = '$0';}
-                cellValue = Number(getCleanValue(useValue,0));
-                pivotCount+=1;
-
-                // check totals finished
-                if(pivotCount == 1) { JanValue = useValue; }
-                if(pivotCount == month) {
-                    if(useValue.startsWith('$') && JanValue == '-') {
-                        r_PlanGridActive = 2;
-                        return;
-                    }
-                }
-
-                rowValue += cellValue;
-
-                // clone first column
-                if(pivotCount == 1) {
-                    clonedNodeYTD = el.cloneNode(true);
-                    clonedNodeYTD.className = clonedNodeYTD.className + ' MTPlanDetail';
-                    clonedNodeProj = el.cloneNode(true);
-                    clonedNodeProj.className = clonedNodeProj.className + ' MTPlanDetail';
-                }
-
-                if(pivotCount == month) {
-                    if(isNaN(rowValue)) {
-                        clonedNodeYTD.innerText = '-';
-                    } else {
-                        clonedNodeYTD.innerText = getDollarValue(rowValue);
-                    }
-                    el.insertAdjacentElement('afterend', clonedNodeYTD);
-                }
-
-                if(pivotCount == 12) {
-                    if(isNaN(rowValue)) {
-                        clonedNodeProj.innerText = '-';
-                    } else {
-                        clonedNodeProj.innerText = getDollarValue(rowValue);
-                    }
-                    el.insertAdjacentElement('afterend', clonedNodeProj);
-                    pivotCount = 0;
-                    rowValue = 0;
-                }
-            }
-        }
-    }
-    r_PlanGridActive = 2;
-}
-
 function MenuCheckSpawnProcess() {
 
     if(r_DatePickerActive == true) {
@@ -1950,24 +1734,11 @@ function MenuCheckSpawnProcess() {
             break;
     }
 
-    switch (r_PlanGridActive) {
-        case true:
-            MenuPlanUpdate();
-            break;
-        case 2:
-            if(SaveLocationHRefName != window.location.href) {
-                SaveLocationHRefName = window.location.href;
-                r_PlanGridActive = true;
-            }
-            break;
-    }
-
     if(r_spawn > 0) {
         r_spawn+=1;
         if(r_spawn > 3) {
             r_spawn = 0;
             MenuReportBreadcrumbGo(window.location.search);
-            MM_FixCalendar('');
         }
     }
 }
@@ -1977,7 +1748,7 @@ window.onclick = function(event) {
     const cn = event.target.className;
     const pcn = event.target.parentNode.className;
 
-    // console.log(cn,event.target,pcn,event.target.parentNode);
+    console.log(cn,event.target,pcn,event.target.parentNode);
 
     switch (cn) {
         case 'MTSideDrawerRoot':
@@ -2019,6 +1790,17 @@ window.onclick = function(event) {
             onClickFilter();
             return;
     }
+    if(cn.includes('Text-qcxgyd-0') && pcn.includes('TransactionDrawerBody')) {
+        if(event.target.innerText = 'Split') { MM_SplitTransaction();}
+    }
+    if(pcn.includes('AbstractButton')) {
+       if(event.target.parentNode.innerText.startsWith('\uf10b')) {
+           MM_FixCalendarShortcuts()
+       }
+    }
+    if(cn.startsWith('DateInput_') && pcn.startsWith('DateInput')) {
+        MM_FixCalendarYears();
+       }
     if(r_DatasetActive == true) {onClickFilter();}
 };
 
