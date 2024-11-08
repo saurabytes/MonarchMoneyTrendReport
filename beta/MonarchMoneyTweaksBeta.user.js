@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.01.03
+// @version      2.01.04
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.01.03';
+const version = '2.01.04';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -1748,7 +1748,7 @@ window.onclick = function(event) {
     const cn = event.target.className;
     const pcn = event.target.parentNode.className;
 
-    console.log(cn,event.target,pcn,event.target.parentNode);
+    //console.log(cn,event.target,pcn,event.target.parentNode);
 
     switch (cn) {
         case 'MTSideDrawerRoot':
@@ -2114,7 +2114,6 @@ function addStyle(aCss) {
                     MenuReports(false);
                     MenuDisplay(false);
                     MenuTransactions(false);
-                    MenuPlan(false);
                 }
 
                 if(r_Init == false) {
@@ -2129,7 +2128,6 @@ function addStyle(aCss) {
                 MenuReports(true);
                 MenuDisplay(true);
                 MenuTransactions(true);
-                MenuPlan(true);
             }
             MenuCheckSpawnProcess();
         }
