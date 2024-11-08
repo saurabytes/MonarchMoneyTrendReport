@@ -1,11 +1,11 @@
 # Monarch Money Tweaks - Version History
 Here are a list of Open Issues, Unreleased changes and past changes:
-https://github.com/RobertParesi/MonarchMoneyTrendReport/edit/main/VERSION%20HISTORY.md
+
 Email any issues directly:  robert @ paresi.net
 
 **Version 2.01 (beta):**
 
-• CHANGE:  Removed YTD figures from Forecast / Budget. 
+• CHANGE:  Removed YTD figures from Forecast / Budget to remove all uses of mutation observers. 
 
 **Version 2.00:**
 
