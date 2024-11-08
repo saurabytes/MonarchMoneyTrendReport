@@ -49,8 +49,6 @@ function MM_Init() {
     const a4 = 'background: ' + ['#082043;','aliceblue;'][a];
     const a5 = 'color: ' + ['#FFFFFF;','#082864;'][a];
 
-    addStyle('.MTPlanHeader {font-weight: 900; align-content: inherit; padding: 0px 0px 15px;}');
-    addStyle('.MTPlanDetail {' + css_green + 'font-size: 16px; font-weight: 500;}');
     addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
     addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
     addStyle('.MTCheckboxClass {width: 20px; height: 20px;}');
@@ -198,7 +196,7 @@ function MT_GridDrawDetails() {
     let Grouptotals = [];
     let SubtotalsNdx = 0;
     let RowI = 0;
-    let ArrowSpacing = 'width: 34px; padding-left: 0px;'
+    let ArrowSpacing = 'width: 34px; padding-left: 0px;';
 
     MT_GridDrawClear();
     MT_GridDrawTitles();
@@ -253,7 +251,7 @@ function MT_GridDrawDetails() {
             }
         } else {
             if(useRow.isHeader == true) {return;}
-            if(MTFlex.Subtotals != true) {return;};
+            if(MTFlex.Subtotals != true) {return;}
 
             for (let j = 0; j < MTFlexTitle.length; j += 1) {
                 useRow[MTFields + j + 1] = Grouptotals[j];
@@ -344,7 +342,7 @@ function MT_GridDrawSort() {
             }
             break;
         default:
-            MTFlexRow.sort((a, b) => (a.Section - b.Section || a.PK.localeCompare(b.PK)))
+            MTFlexRow.sort((a, b) => (a.Section - b.Section || a.PK.localeCompare(b.PK)));
     }
 }
 
@@ -536,7 +534,7 @@ function MT_GridRollDifference(inNew,inA,inB,inBasedOn,inName,inOp) {
         if(MTFlexRow[i].Section == inA) {p1 = i;}
         if(MTFlexRow[i].Section == inB) {p2 = i;}
     }
-    if(p1 == null || p2 == null) {return;};
+    if(p1 == null || p2 == null) {return;}
     MTP = [];
     MTP.isHeader = true; MTP.IgnoreShade = true; MTP.Section = inNew; MTP.BasedOn = inBasedOn; MF_QueueAddRow(MTP);
     MTFlexRow[MTFlexCR][MTFields] = inName;
@@ -585,7 +583,7 @@ function MenuReportsCustom() {
         }
     } else { cMenus[1] = document.querySelector('a.MTAccountsMenu');}
     for (let i = 0; i < cMenus.length; i += 1) {
-         cMenus[i].className = cMenus[i].className.replace(' tab-nav-item-active','')
+         cMenus[i].className = cMenus[i].className.replace(' tab-nav-item-active','');
     }
     if(SaveLocationPathName.endsWith('/reports/trends')) {
         cMenus[0].className = cMenus[0].className + ' tab-nav-item-active';
@@ -1088,7 +1086,7 @@ function MenuReportsHistoryDraw() {
     let c_r = 'red';
     let c_g = 'green';
 
-    let topDiv = document.querySelector('div.MTSideDrawerMotion')
+    let topDiv = document.querySelector('div.MTSideDrawerMotion');
     if(topDiv) {
         if(topDiv.getAttribute("grouptype") == 'category-groups') { inGroup = 2;}
         if(topDiv.getAttribute("cattype") == 'income') { c_g = 'red'; c_r = 'green'; }
@@ -1488,7 +1486,7 @@ function MenuReportBreadcrumbGo(Parms) {
                             newStoredStr = newStoredStr + '\\"' + accountGroups[i].ID + '\\"';
                             retGroups.GROUPNAME = accountGroups[i].GROUPNAME;
                             retGroups.GROUP = accountGroups[i].GROUP;
-                            retGroups.ID = accountGroups[i].ID
+                            retGroups.ID = accountGroups[i].ID;
                             retGroups.TYPE = accountGroups[i].TYPE;
                         }
                     }
@@ -1619,7 +1617,7 @@ function MenuTransactions(OnFocus) {
 function MenuLogin(OnFocus) {
 
     if (SaveLocationPathName.startsWith('/login')) {
-        if(OnFocus == false) { r_Init == false; }
+        if(OnFocus == false) { r_Init = false; }
     }
 }
 
@@ -1795,7 +1793,7 @@ window.onclick = function(event) {
     }
     if(pcn.includes('AbstractButton')) {
        if(event.target.parentNode.innerText.startsWith('\uf10b')) {
-           MM_FixCalendarShortcuts()
+           MM_FixCalendarShortcuts();
        }
     }
     if(cn.startsWith('DateInput_') && pcn.startsWith('DateInput')) {
@@ -1827,7 +1825,7 @@ function onClickMTFlexArrow() {
 
 function onClickGridSort() {
 
-    let Column = event.target.getAttribute("column")
+    let Column = event.target.getAttribute("column");
     if(Column != '') {
         let elSelected = Number(Column);
         let elCurrent = getCookie(MTFlex.Name + "Sort",true);
@@ -1842,7 +1840,7 @@ function onClickFilter() {
     let isShowing = document.getElementById("MTDropdown").classList.toggle("show");
     if(isShowing == true) {
         MenuFilter();
-        r_DatasetActive = true
+        r_DatasetActive = true;
     } else {
         r_DatasetActive = false;
         const et = event.target.href;
@@ -1896,7 +1894,7 @@ function flipAllSections(inDiv) {
 
     flipCookie('MTC_' + inDiv,1);
     const cv = getCookie('MTC_' + inDiv,true);
-    MM_hideElement(inDiv,cv)
+    MM_hideElement(inDiv,cv);
 }
 
 function inputTwoFields(InSelector,InValue1,InValue2) {
@@ -1931,7 +1929,7 @@ function getDates(InValue,InDate) {
     if(InValue == 'n_CurYear') {return(year);}
     if(InValue == 'n_CurMonth') {return(month);}
     if(InValue == 'n_CurDay') {return(day);}
-    if(InValue == 'd_CurDate') {return d;};
+    if(InValue == 'd_CurDate') {return d;}
     if(InValue == 's_FullDate') {return(getMonthName(month,true) + ' ' + day + ', ' + year );}
     if(InValue == 's_ShortDate') {return(getMonthName(month,true) + ' ' + day);}
     if(InValue == 'isToday') {
@@ -1977,7 +1975,7 @@ function getDates(InValue,InDate) {
                 if(month == 3 || month == 4) {month = 5;}
                 if(month == 6 || month == 7) {month = 8;}
                 if(month == 9 || month == 10) {month = 11;}
-                day = daysInMonth(month,year)
+                day = daysInMonth(month,year);
                 break;
         }
     }
@@ -2096,7 +2094,7 @@ function addStyle(aCss) {
     style.textContent = aCss;
     r_headStyle.appendChild(style);
 
-};
+}
 
 (function() {
 
