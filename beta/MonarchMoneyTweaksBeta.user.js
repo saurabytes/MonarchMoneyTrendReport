@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.01.04
+// @version      2.01.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.01.04';
+const version = '2.01.05';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -621,22 +621,24 @@ async function MenuReportsAccountsGo() {
     let isToday = getDates('isToday',AccountsTodayIs);
     if(isToday) {accountBalances = [];}
 
-    let snapshotData = await getAccountsData();
     let useDate = formatQueryDate(getDates('d_StartofMonth',AccountsTodayIs));
     let useDate2 = formatQueryDate(AccountsTodayIs);
+    let snapshotData = await getAccountsData();
     let snapshotData2 = await GetTransactions(useDate,useDate2,0);
-    console.log(useDate,useDate2,snapshotData,snapshotData2);
+    let snapshotData3 = await getDisplayBalanceAtDateData(useDate);
+    console.log(useDate,useDate2,snapshotData,snapshotData2,snapshotData3);
 
     MTP = [];
     MTP.Column = 0; MTP.Title = 'Account';MTP.isSortable = 1; MTP.Format = 0; MF_QueueAddTitle(MTP);
     MTP.Column = 1; MTP.Title = 'Type'; MF_QueueAddTitle(MTP);
-    MTP.Column = 2; MTP.Title = 'Last Updated';MF_QueueAddTitle(MTP);
+    MTP.Column = 2; MTP.Title = 'Updated';MF_QueueAddTitle(MTP);
     MTP.Column = 3; MTP.Title = 'Beginning Balance'; MTP.isSortable = 2; MTP.Format = 1;MF_QueueAddTitle(MTP);
     MTP.Column = 4; MTP.Title = 'Income'; MF_QueueAddTitle(MTP);
     MTP.Column = 5; MTP.Title = 'Expenses'; MF_QueueAddTitle(MTP);
     MTP.Column = 6; MTP.Title = 'Transfers'; MF_QueueAddTitle(MTP);
-    MTP.Column = 7; MTP.Title = 'Ending Balance'; MF_QueueAddTitle(MTP);
-    MTP.Column = 8; MTP.Title = 'Net Change'; MTP.ShowPercent = 0; MF_QueueAddTitle(MTP);
+    MTP.Column = 7; MTP.Title = 'Other'; MF_QueueAddTitle(MTP);
+    MTP.Column = 8; MTP.Title = 'Ending Balance'; MF_QueueAddTitle(MTP);
+    MTP.Column = 9; MTP.Title = 'Net Change'; MTP.ShowPercent = 0; MF_QueueAddTitle(MTP);
 
     let useBalance = 0;
     let useAmount = 0;
@@ -645,11 +647,7 @@ async function MenuReportsAccountsGo() {
             MTP = [];
             MTP.isHeader = false;
             MTP.UID = snapshotData.accounts[i].id;
-            if(isToday) {
-                useBalance = snapshotData.accounts[i].displayBalance;
-            } else {
-                useBalance = getAccountBalance(MTP.UID);
-            }
+            useBalance = snapshotData.accounts[i].displayBalance;
             if(snapshotData.accounts[i].isAsset == true) {
                 MTP.BasedOn = 1;
                 MTP.Section = 2;
@@ -663,12 +661,13 @@ async function MenuReportsAccountsGo() {
             MTFlexRow[MTFlexCR][MTFields] = snapshotData.accounts[i].displayName;
             MTFlexRow[MTFlexCR][MTFields+1] = snapshotData.accounts[i].subtype.display;
             MTFlexRow[MTFlexCR][MTFields+2] = snapshotData.accounts[i].displayLastUpdatedAt.substring(0, 10);
-            MTFlexRow[MTFlexCR][MTFields+3] = 0;
+            MTFlexRow[MTFlexCR][MTFields+3] = getAccountBalance(snapshotData.accounts[i].id);
             MTFlexRow[MTFlexCR][MTFields+4] = 0;
             MTFlexRow[MTFlexCR][MTFields+5] = 0;
             MTFlexRow[MTFlexCR][MTFields+6] = 0;
-            MTFlexRow[MTFlexCR][MTFields+7] = useBalance;
-            MTFlexRow[MTFlexCR][MTFields+8] = 0;
+            MTFlexRow[MTFlexCR][MTFields+7] = 0;
+            MTFlexRow[MTFlexCR][MTFields+8] = useBalance;
+            MTFlexRow[MTFlexCR][MTFields+9] = 0;
             for (let j = 0; j < snapshotData2.allTransactions.results.length; j += 1) {
                 if(snapshotData2.allTransactions.results[j].hideFromReports == false && snapshotData2.allTransactions.results[j].pending == false) {
                     if(snapshotData2.allTransactions.results[j].account.id == snapshotData.accounts[i].id) {
@@ -688,22 +687,23 @@ async function MenuReportsAccountsGo() {
                     }
                 }
             }
-            if(snapshotData.accounts[i].isAsset == true){
-                MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] + MTFlexRow[MTFlexCR][MTFields+5] - MTFlexRow[MTFlexCR][MTFields+6];
-            } else {
-                MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] - MTFlexRow[MTFlexCR][MTFields+5] + MTFlexRow[MTFlexCR][MTFields+6];
-            }
-            MTFlexRow[MTFlexCR][MTFields+8] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
-            MTFlexRow[MTFlexCR][MTFields+3] = parseFloat(MTFlexRow[MTFlexCR][MTFields+3].toFixed(2));
-            MTFlexRow[MTFlexCR][MTFields+8] = parseFloat(MTFlexRow[MTFlexCR][MTFields+8].toFixed(2));
-            if(isToday) {updateAccountBalance(snapshotData.accounts[i].id,MTFlexRow[MTFlexCR][MTFields+3]);}
+            MTFlexRow[MTFlexCR][MTFields+9] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
+            MTFlexRow[MTFlexCR][MTFields+9] = parseFloat(MTFlexRow[MTFlexCR][MTFields+9].toFixed(2));
         }
     }
     MT_GridRollup(1,2,1,'Assets');
     MT_GridRollup(3,4,2,'Liabilities');
     MT_GridRollDifference(5,1,3,1,'Net Worth/Totals',0);
-    MT_GridCalcDifference(1,3,5,[3,7,8],1);
+    MT_GridCalcDifference(1,3,5,[3,8,9],1);
     MTFlexReady = true;
+
+    function getAccountBalance(inId) {
+
+        for (let k = 0; k < snapshotData3.accounts.length; k++) {
+            if(snapshotData3.accounts[k].id == inId ) { return snapshotData3.accounts[k].displayBalance; }
+        }
+        return 0;
+    }
 }
 
 async function MenuReportsTrendsGo() {
@@ -2256,16 +2256,3 @@ function getCategoryGroup(InId) {
     return [null];
 }
 
-function updateAccountBalance(inId,inBalance) {
-
-    accountBalances.push({"ID": inId, "BALANCE": inBalance});
-
-}
-
-function getAccountBalance(inId) {
-
-  for (let i = 0; i < accountBalances.length; i++) {
-      if(accountBalances[i].ID == inId ) { return accountBalances[i].BALANCE; }
-  }
-    return 0;
-}
