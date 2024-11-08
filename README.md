@@ -32,8 +32,6 @@ Enjoy!
 
 * **Reports / Accounts** - Summarize your Account balances (Beginning of Month to Currret), sort and export.
 
-* Ability to show "Actual YTD" and "Projected" totals in **Budget / Forecast / Monthly**
-
 * Breadcrumbs on **Reports / Income & Spending** allows staying on Reports page instead of going to Transactions connecting _All Categories > Groups > Categories_ 
 
 * Save and restore unlimited filters and other report options on **Reports / Datasets**
