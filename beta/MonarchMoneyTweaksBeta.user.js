@@ -343,6 +343,8 @@ function MT_GridDrawSort() {
                 MTFlexRow.sort((a, b) => (a.Section - b.Section || a.PK.localeCompare(b.PK) || a.SK - b.SK ));
             }
             break;
+        default:
+            MTFlexRow.sort((a, b) => (a.Section - b.Section || a.PK.localeCompare(b.PK)))
     }
 }
 
@@ -1155,7 +1157,6 @@ function MenuReportsHistoryDraw() {
         div2 = cec('div','MTSideDrawerItem',div,'','','style',os2);
         div3 = cec('span','MTSpacerClass',div2,'','','');
         div2 = cec('div','MTSideDrawerItem',div,'','','style',os2);
-
         div3 = cec('span','MTSideDrawerDetail',div2,T[0],'','style',os);
         for (let i = 1; i < 5; i++) {
             if(skiprow == false || i > 1) {
@@ -2194,9 +2195,7 @@ async function GetTransactions(startDate,endDate, offset) {
         .then((response) => response.json())
         .then((data) => {
         return data.data;
-    }).catch((error) => {
-        console.error(error);
-    });
+    }).catch((error) => { console.error(version,error);});
 }
 
 async function getDisplayBalanceAtDateData(date) {
