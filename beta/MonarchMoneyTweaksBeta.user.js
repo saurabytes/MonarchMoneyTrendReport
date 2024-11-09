@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.01.05
+// @version      2.01.07
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.01.05';
+const version = '2.01.07';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -636,18 +636,24 @@ async function MenuReportsAccountsGo() {
     MTP.Column = 4; MTP.Title = 'Income'; MF_QueueAddTitle(MTP);
     MTP.Column = 5; MTP.Title = 'Expenses'; MF_QueueAddTitle(MTP);
     MTP.Column = 6; MTP.Title = 'Transfers'; MF_QueueAddTitle(MTP);
-    MTP.Column = 7; MTP.Title = 'Other'; MF_QueueAddTitle(MTP);
-    MTP.Column = 8; MTP.Title = 'Ending Balance'; MF_QueueAddTitle(MTP);
-    MTP.Column = 9; MTP.Title = 'Net Change'; MTP.ShowPercent = 0; MF_QueueAddTitle(MTP);
+    MTP.Column = 7; MTP.Title = 'Balance'; MF_QueueAddTitle(MTP);
+    MTP.Column = 8; MTP.Title = 'Net Change'; MTP.ShowPercent = 0; MF_QueueAddTitle(MTP);
 
     let useBalance = 0;
     let useAmount = 0;
+
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
         if(snapshotData.accounts[i].isHidden == false && snapshotData.accounts[i].hideTransactionsFromReports == false) {
             MTP = [];
             MTP.isHeader = false;
             MTP.UID = snapshotData.accounts[i].id;
-            useBalance = snapshotData.accounts[i].displayBalance;
+
+            if(isToday) {
+                useBalance = snapshotData.accounts[i].displayBalance;
+            } else {
+                useBalance = getAccountCacheBalance(MTP.UID);
+            }
+
             if(snapshotData.accounts[i].isAsset == true) {
                 MTP.BasedOn = 1;
                 MTP.Section = 2;
@@ -661,13 +667,11 @@ async function MenuReportsAccountsGo() {
             MTFlexRow[MTFlexCR][MTFields] = snapshotData.accounts[i].displayName;
             MTFlexRow[MTFlexCR][MTFields+1] = snapshotData.accounts[i].subtype.display;
             MTFlexRow[MTFlexCR][MTFields+2] = snapshotData.accounts[i].displayLastUpdatedAt.substring(0, 10);
-            MTFlexRow[MTFlexCR][MTFields+3] = getAccountBalance(snapshotData.accounts[i].id);
             MTFlexRow[MTFlexCR][MTFields+4] = 0;
             MTFlexRow[MTFlexCR][MTFields+5] = 0;
             MTFlexRow[MTFlexCR][MTFields+6] = 0;
-            MTFlexRow[MTFlexCR][MTFields+7] = 0;
-            MTFlexRow[MTFlexCR][MTFields+8] = useBalance;
-            MTFlexRow[MTFlexCR][MTFields+9] = 0;
+            MTFlexRow[MTFlexCR][MTFields+7] = useBalance;
+            MTFlexRow[MTFlexCR][MTFields+8] = 0;
             for (let j = 0; j < snapshotData2.allTransactions.results.length; j += 1) {
                 if(snapshotData2.allTransactions.results[j].hideFromReports == false && snapshotData2.allTransactions.results[j].pending == false) {
                     if(snapshotData2.allTransactions.results[j].account.id == snapshotData.accounts[i].id) {
@@ -687,8 +691,16 @@ async function MenuReportsAccountsGo() {
                     }
                 }
             }
-            MTFlexRow[MTFlexCR][MTFields+9] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
-            MTFlexRow[MTFlexCR][MTFields+9] = parseFloat(MTFlexRow[MTFlexCR][MTFields+9].toFixed(2));
+
+            if(snapshotData.accounts[i].isAsset == true){
+                MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] + MTFlexRow[MTFlexCR][MTFields+5] - MTFlexRow[MTFlexCR][MTFields+6];
+            } else {
+                MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] - MTFlexRow[MTFlexCR][MTFields+5] + MTFlexRow[MTFlexCR][MTFields+6];
+            }
+            MTFlexRow[MTFlexCR][MTFields+8] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
+            MTFlexRow[MTFlexCR][MTFields+3] = parseFloat(MTFlexRow[MTFlexCR][MTFields+3].toFixed(2));
+            MTFlexRow[MTFlexCR][MTFields+8] = parseFloat(MTFlexRow[MTFlexCR][MTFields+8].toFixed(2));
+            if(isToday) {updateAccountBalance(snapshotData.accounts[i].id,MTFlexRow[MTFlexCR][MTFields+3]);}
         }
     }
     MT_GridRollup(1,2,1,'Assets');
@@ -2256,3 +2268,13 @@ function getCategoryGroup(InId) {
     return [null];
 }
 
+function updateAccountBalance(inId,inBalance) {
+    accountBalances.push({"ID": inId, "BALANCE": inBalance});
+}
+
+function getAccountCacheBalance(inId) {
+  for (let i = 0; i < accountBalances.length; i++) {
+      if(accountBalances[i].ID == inId ) { return accountBalances[i].BALANCE; }
+  }
+    return 0;
+}
