@@ -138,7 +138,7 @@ function MM_hideElement(InList,InValue) {
 
 // [ Flex Queue ]
 function MF_QueueAddTitle(p) {
-    MTFlexTitle.push({"Col": p.Column, "Title": p.Title,"isSortable": p.isSortable, "Width": p.Width, "Format": p.Format, "ShowPercent": p.ShowPercent, "ShowPercentShade": p.ShowPercentShade});
+    MTFlexTitle.push({"Col": p.Column, "Title": p.Title,"isSortable": p.isSortable, "Width": p.Width, "Format": p.Format, "ShowPercent": p.ShowPercent, "ShowPercentShade": p.ShowPercentShade, "ShowSort": p.ShowSort});
     MTFlexTitle.sort((a, b) => (a.Col - b.Col));
 }
 
@@ -221,7 +221,7 @@ function MT_GridDrawDetails() {
         el = cec('tr','MTFlexGridTitleRow',Header,'','','','');
         for (RowI = 0; RowI < MTFlexTitle.length; RowI += 1) {
             if(MTFlexTitle[RowI].Format == 1) {useStyle = 'MTFlexGridTitleCell2'; } else {useStyle = 'MTFlexGridTitleCell'; }
-            elx = cec('td',useStyle,el,MTFlexTitle[RowI].Title,'','Column',RowI.toString());
+            elx = cec('td',useStyle,el,MTFlexTitle[RowI].Title + ' ' + MTFlexTitle[RowI].ShowSort,'','Column',RowI.toString());
             if(MTFlexTitle[RowI].Width != '') {elx.style = 'width: ' + MTFlexTitle[RowI].Width;}
         }
         if(MTFlex.TriggerEvents) { elx = cec('td',useStyle,el,'','','style',ArrowSpacing);}
@@ -326,6 +326,16 @@ function MT_GridDrawSort() {
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         MTFlexRow[i].SK = MTFlexRow[i][useCol];
     }
+
+    for (let i = 0; i < MTFlexTitle.length; i += 1) {
+        MTFlexTitle[i].ShowSort = '';
+        if(i == useSort) {
+            MTFlexTitle[i].ShowSort = '▲';
+        } else if (i == Math.abs(useSort)) {
+             MTFlexTitle[i].ShowSort = '▼';
+        }
+    }
+
     switch (MTFlexTitle[useCol-MTFields].isSortable) {
         case 1:
             if(useSort < 0) {
