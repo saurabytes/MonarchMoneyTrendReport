@@ -11,8 +11,6 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Added column sorting indicators (ascending & descending)
 
-• CHANGE:  Modified script to remove all mutation observers to avoid potential memory leaks. (caused YTD figures in Forecast / Budget to be depricated)
-
 • FIX:  Reports / Accounts could hang on null balance
 
 **Version 2.00:**
