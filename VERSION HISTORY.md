@@ -3,15 +3,17 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.01 (beta):**
+**Version 2.01:**
 
-• NEW: Added Income, Expenses and Transfers to Reports / Accounts
+• NEW: Added Income, Expenses and Transfers to Reports / Accounts (Checking and Credit Card can use a Calculated balance based on Display / Settings)
 
 • NEW: Added ability to go back to previous month in Reports / Accounts like Trends
 
 • NEW: Added column sorting indicators (ascending & descending)
 
 • CHANGE:  Modified script to remove all mutation observers to avoid potential memory leaks. (caused YTD figures in Forecast / Budget to be depricated)
+
+• FIX:  Reports / Accounts could hang on null balance
 
 **Version 2.00:**
 
