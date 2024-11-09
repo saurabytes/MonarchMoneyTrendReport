@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.01.07
+// @version      2.01.08
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.01.07';
+const version = '2.01.08';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -323,17 +323,11 @@ function MT_GridDrawSort() {
     let useSort = getCookie(MTFlex.Name + 'Sort',true);
     let useCol = MTFields + Math.abs(useSort);
 
-    for (let i = 0; i < MTFlexRow.length; i += 1) {
-        MTFlexRow[i].SK = MTFlexRow[i][useCol];
-    }
+    for (let i = 0; i < MTFlexRow.length; i += 1) { MTFlexRow[i].SK = MTFlexRow[i][useCol]; }
 
     for (let i = 0; i < MTFlexTitle.length; i += 1) {
         MTFlexTitle[i].ShowSort = '';
-        if(i == useSort) {
-            MTFlexTitle[i].ShowSort = '▲';
-        } else if (i == Math.abs(useSort)) {
-             MTFlexTitle[i].ShowSort = '▼';
-        }
+        if(i == useSort) { MTFlexTitle[i].ShowSort = '▲'; } else if (i == Math.abs(useSort)) { MTFlexTitle[i].ShowSort = '▼';}
     }
 
     switch (MTFlexTitle[useCol-MTFields].isSortable) {
@@ -653,7 +647,7 @@ async function MenuReportsAccountsGo() {
     let useAmount = 0;
 
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
-        if(snapshotData.accounts[i].isHidden == false && snapshotData.accounts[i].hideTransactionsFromReports == false) {
+        if(snapshotData.accounts[i].isHidden == false && snapshotData.accounts[i].hideFromList == false) {
             MTP = [];
             MTP.isHeader = false;
             MTP.UID = snapshotData.accounts[i].id;
