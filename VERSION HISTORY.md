@@ -9,6 +9,8 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Added ability to go back to previous month in Reports / Accounts like Trends
 
+• NEW: Added column sorting indicators (ascending & descending)
+
 • CHANGE:  Modified script to remove all mutation observers to avoid potential memory leaks. (caused YTD figures in Forecast / Budget to be depricated)
 
 **Version 2.00:**
