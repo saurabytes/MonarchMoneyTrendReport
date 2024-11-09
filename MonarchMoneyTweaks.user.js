@@ -1011,7 +1011,6 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
             } else { Trend_UpdateQueue(useID,useAmount,inCol); }
         }
     }
-    console.log(version,firstDate,lastDate,inGrouping,inPeriod,inID,'Data Len: ' + snapshotData.aggregates.length,'Queue Len: ' + TrendQueue.length);
     if(inCol == 'hs') {MTFlexReady = 2;}
 }
 
