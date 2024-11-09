@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.01.08
+// @version      2.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.01.08';
+const version = '2.01';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -630,7 +630,6 @@ async function MenuReportsAccountsGo() {
     let snapshotData = await getAccountsData();
     let snapshotData2 = await GetTransactions(useDate,useDate2,0);
     let snapshotData3 = await getDisplayBalanceAtDateData(useDate);
-    console.log(useDate,useDate2,snapshotData,snapshotData2,snapshotData3);
 
     MTP = [];
     MTP.Column = 0; MTP.Title = 'Account';MTP.isSortable = 1; MTP.Format = 0; MF_QueueAddTitle(MTP);
@@ -645,6 +644,7 @@ async function MenuReportsAccountsGo() {
 
     let useBalance = 0;
     let useAmount = 0;
+    let skipTxs = getCookie('MT_AccountsBalance',true);
 
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
         if(snapshotData.accounts[i].isHidden == false && snapshotData.accounts[i].hideFromList == false) {
@@ -666,45 +666,52 @@ async function MenuReportsAccountsGo() {
                 MTP.Section = 4;
             }
             MTP.PK = snapshotData.accounts[i].subtype.display;
-            MTP.SKHRef = '/accounts/details/' + snapshotData.accounts[i].id;
+            MTP.SKHRef = '/accounts/details/' + MTP.UID;
             MF_QueueAddRow(MTP);
             MTFlexRow[MTFlexCR][MTFields] = snapshotData.accounts[i].displayName;
             MTFlexRow[MTFlexCR][MTFields+1] = snapshotData.accounts[i].subtype.display;
             MTFlexRow[MTFlexCR][MTFields+2] = snapshotData.accounts[i].displayLastUpdatedAt.substring(0, 10);
+            MTFlexRow[MTFlexCR][MTFields+3] = 0;
             MTFlexRow[MTFlexCR][MTFields+4] = 0;
             MTFlexRow[MTFlexCR][MTFields+5] = 0;
             MTFlexRow[MTFlexCR][MTFields+6] = 0;
             MTFlexRow[MTFlexCR][MTFields+7] = useBalance;
             MTFlexRow[MTFlexCR][MTFields+8] = 0;
-            for (let j = 0; j < snapshotData2.allTransactions.results.length; j += 1) {
-                if(snapshotData2.allTransactions.results[j].hideFromReports == false && snapshotData2.allTransactions.results[j].pending == false) {
-                    if(snapshotData2.allTransactions.results[j].account.id == snapshotData.accounts[i].id) {
-                        switch (snapshotData2.allTransactions.results[j].category.group.type) {
-                            case 'income':
-                                MTFlexRow[MTFlexCR][MTFields+4] += snapshotData2.allTransactions.results[j].amount;
-                                break;
-                            case 'expense':
-                                useAmount = snapshotData2.allTransactions.results[j].amount * -1;
-                                MTFlexRow[MTFlexCR][MTFields+5] += useAmount;
-                                MTFlexRow[MTFlexCR][MTFields+5] = parseFloat(MTFlexRow[MTFlexCR][MTFields+5].toFixed(2));
-                                break;
-                            case 'transfer':
-                                MTFlexRow[MTFlexCR][MTFields+6] += snapshotData2.allTransactions.results[j].amount;
-                                break;
+            if(snapshotData.accounts[i].hideTransactionsFromReports == false) {
+                for (let j = 0; j < snapshotData2.allTransactions.results.length; j += 1) {
+                    if(snapshotData2.allTransactions.results[j].hideFromReports == false && snapshotData2.allTransactions.results[j].pending == false) {
+                        if(snapshotData2.allTransactions.results[j].account.id == snapshotData.accounts[i].id) {
+                            switch (snapshotData2.allTransactions.results[j].category.group.type) {
+                                case 'income':
+                                    MTFlexRow[MTFlexCR][MTFields+4] += snapshotData2.allTransactions.results[j].amount;
+                                    break;
+                                case 'expense':
+                                    useAmount = snapshotData2.allTransactions.results[j].amount * -1;
+                                    MTFlexRow[MTFlexCR][MTFields+5] += useAmount;
+                                    MTFlexRow[MTFlexCR][MTFields+5] = parseFloat(MTFlexRow[MTFlexCR][MTFields+5].toFixed(2));
+                                    break;
+                                case 'transfer':
+                                    MTFlexRow[MTFlexCR][MTFields+6] += snapshotData2.allTransactions.results[j].amount;
+                                    break;
+                            }
                         }
                     }
                 }
             }
-
-            if(snapshotData.accounts[i].isAsset == true){
-                MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] + MTFlexRow[MTFlexCR][MTFields+5] - MTFlexRow[MTFlexCR][MTFields+6];
+            if(skipTxs == 1 && (snapshotData.accounts[i].subtype.name == 'checking' || snapshotData.accounts[i].subtype.name == 'credit_card')) {
+                if(snapshotData.accounts[i].isAsset == true){
+                    MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] + MTFlexRow[MTFlexCR][MTFields+5] - MTFlexRow[MTFlexCR][MTFields+6];
+                } else {
+                    MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] - MTFlexRow[MTFlexCR][MTFields+5] + MTFlexRow[MTFlexCR][MTFields+6];
+                }
             } else {
-                MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] - MTFlexRow[MTFlexCR][MTFields+5] + MTFlexRow[MTFlexCR][MTFields+6];
+               MTFlexRow[MTFlexCR][MTFields+3] = getAccountBalance(MTP.UID);
             }
-            MTFlexRow[MTFlexCR][MTFields+8] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
-            MTFlexRow[MTFlexCR][MTFields+3] = parseFloat(MTFlexRow[MTFlexCR][MTFields+3].toFixed(2));
-            MTFlexRow[MTFlexCR][MTFields+8] = parseFloat(MTFlexRow[MTFlexCR][MTFields+8].toFixed(2));
+            if(MTFlexRow[MTFlexCR][MTFields+3] == null) {MTFlexRow[MTFlexCR][MTFields+3] = 0;}
             if(isToday) {updateAccountBalance(snapshotData.accounts[i].id,MTFlexRow[MTFlexCR][MTFields+3]);}
+            MTFlexRow[MTFlexCR][MTFields+3] = parseFloat(MTFlexRow[MTFlexCR][MTFields+3].toFixed(2));
+            MTFlexRow[MTFlexCR][MTFields+8] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
+            MTFlexRow[MTFlexCR][MTFields+8] = parseFloat(MTFlexRow[MTFlexCR][MTFields+8].toFixed(2));
         }
     }
     MT_GridRollup(1,2,1,'Assets');
@@ -1665,6 +1672,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Reports / Trends - Always compare to End of Month','MT_TrendFullPeriod','checkbox');
             MenuDisplay_Input('Reports / Trends - Hide percentage of Income & Spending','MT_TrendHidePer1','checkbox');
             MenuDisplay_Input('Reports / Trends - Hide percentage of Difference','MT_TrendHidePer2','checkbox');
+            MenuDisplay_Input('Reports / Accounts - Use a calculated balance (Income, Expenses & Transfers) for Checking & Credit Cards','MT_AccountsBalance','checkbox');
             MenuDisplay_Input('Budget - Panel has smaller compressed grid','MT_PlanCompressed','checkbox');
             MenuDisplay_Input('General - Calendar "Last year" and "Last 12 months" include full month','MT_CalendarEOM','checkbox');
         }
@@ -2228,7 +2236,7 @@ async function getAccountsData() {
     const options = callGraphQL({
     operationName: 'GetAccounts',
     variables: { },
-      query: "query GetAccounts {\n accounts {\n id\n displayName\n deactivatedAt\n isHidden\n isAsset\n mask\n displayLastUpdatedAt\n currentBalance\n displayBalance\n hideFromList\n hideTransactionsFromReports\n order\n icon\n logoUrl\n deactivatedAt \n subtype {\n name\n display\n }\n }}\n"
+      query: "query GetAccounts {\n accounts {\n id\n displayName\n deactivatedAt\n isHidden\n isAsset\n isManual\n mask\n displayLastUpdatedAt\n currentBalance\n displayBalance\n hideFromList\n hideTransactionsFromReports\n order\n icon\n logoUrl\n deactivatedAt \n subtype {\n name\n display\n }\n }}\n"
       });
 
   return fetch(graphql, options)
