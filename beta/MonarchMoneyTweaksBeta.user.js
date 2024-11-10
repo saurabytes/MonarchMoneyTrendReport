@@ -1552,7 +1552,7 @@ function MenuReportBreadcrumbGo(Parms) {
                 }
             }
 
-            if(retGroups.GROUP) {
+            if(retGroups.GROUP && retGroups != 'undefined') {
                 if(bcl == '2') {
                     let bc = document.createElement('button');
                     bc.className = 'MTlink';
