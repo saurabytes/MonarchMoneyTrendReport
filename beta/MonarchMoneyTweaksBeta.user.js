@@ -657,6 +657,7 @@ async function MenuReportsAccountsGo() {
             } else {
                 useBalance = getAccountCacheBalance(MTP.UID);
             }
+            if(useBalance == null) {useBalance = 0;}
 
             if(snapshotData.accounts[i].isAsset == true) {
                 MTP.BasedOn = 1;
