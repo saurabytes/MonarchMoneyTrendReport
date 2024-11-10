@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.01
+// @version      2.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -722,7 +722,7 @@ async function MenuReportsAccountsGo() {
     MT_GridRollup(1,2,1,'Assets');
     MT_GridRollup(3,4,2,'Liabilities');
     MT_GridRollDifference(5,1,3,1,'Net Worth/Totals',0);
-    MT_GridCalcDifference(1,3,5,[3,8,9],1);
+    MT_GridCalcDifference(1,3,5,[3,7,8],1);
     MTFlexReady = true;
 
     function getAccountBalance(inId) {
