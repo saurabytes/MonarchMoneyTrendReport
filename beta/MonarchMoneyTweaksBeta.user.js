@@ -665,7 +665,11 @@ async function MenuReportsAccountsGo() {
                 MTP.BasedOn = 2;
                 MTP.Section = 4;
             }
-            MTP.PK = snapshotData.accounts[i].subtype.display;
+            if(MTFlex.Subtotals == 1) {
+                MTP.PK = snapshotData.accounts[i].subtype.display;
+            } else {
+                MTP.PK = MTP.BasedOn.toString();
+            }
             MTP.SKHRef = '/accounts/details/' + MTP.UID;
             MF_QueueAddRow(MTP);
             MTFlexRow[MTFlexCR][MTFields] = snapshotData.accounts[i].displayName;
@@ -1011,7 +1015,6 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
             } else { Trend_UpdateQueue(useID,useAmount,inCol); }
         }
     }
-    console.log(version,firstDate,lastDate,inGrouping,inPeriod,inID,'Data Len: ' + snapshotData.aggregates.length,'Queue Len: ' + TrendQueue.length);
     if(inCol == 'hs') {MTFlexReady = 2;}
 }
 
