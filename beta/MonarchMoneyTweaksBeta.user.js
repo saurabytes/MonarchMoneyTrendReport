@@ -1836,13 +1836,6 @@ window.onclick = function(event) {
 
     // console.log(cn,event.target,pcn,event.target.parentNode);
 
-    if(r_FlexButtonActive == true) {
-        document.getElementById("MTDropdown1").className = 'MTFlexdown-content';
-        document.getElementById("MTDropdown2").className = 'MTFlexdown-content';
-        r_FlexButtonActive = false;
-    }
-    if(r_DatasetActive == true) {onClickFilter();}
-
     switch (cn) {
         case 'MTSideDrawerRoot':
             removeAllSections('div.MTSideDrawerRoot');
@@ -1861,10 +1854,12 @@ window.onclick = function(event) {
             onClickMTFlexBig();
             return;
         case 'MTFlexButton1':
-            r_FlexButtonActive = document.getElementById("MTDropdown1").classList.toggle("show");
+            if(r_FlexButtonActive == 2) {document.getElementById("MTDropdown2").className = 'MTFlexdown-content';}
+            if(document.getElementById("MTDropdown1").classList.toggle("show") == true) { r_FlexButtonActive = 1;} else { r_FlexButtonActive = 0;}
             return;
         case 'MTFlexButton2':
-            r_FlexButtonActive = document.getElementById("MTDropdown2").classList.toggle("show");
+            if(r_FlexButtonActive == 1) {document.getElementById("MTDropdown1").className = 'MTFlexdown-content';}
+            if(document.getElementById("MTDropdown2").classList.toggle("show") == true) { r_FlexButtonActive = 2;} else { r_FlexButtonActive = 0;}
             return;
         case 'MTFlexButtonExport':
             MT_GridExport();
@@ -1891,6 +1886,13 @@ window.onclick = function(event) {
     if(cn.startsWith('DateInput_') && pcn.startsWith('DateInput')) {
         MM_FixCalendarYears();
     }
+    if(r_DatasetActive == true) {onClickFilter();}
+    if(r_FlexButtonActive > 0) {
+        document.getElementById("MTDropdown1").className = 'MTFlexdown-content';
+        document.getElementById("MTDropdown2").className = 'MTFlexdown-content';
+        r_FlexButtonActive = 0;
+    }
+
 };
 
 function onClickMTFlexBig() {
