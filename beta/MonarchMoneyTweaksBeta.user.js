@@ -659,7 +659,7 @@ async function MenuReportsAccountsGo() {
     MTFlex.TriggerEvent = true;
     MTFlex.TriggerEvents = false;
     MTFlex.Button1Options = ['Hide subtotals','Show subtotals'];
-    MTFlex.Button2Options = ['This month','3 months', '6 months', 'This year', '1 year', '2 years', '3 years'];
+    MTFlex.Button2Options = ['This week','This month','3 months', '6 months', 'This year', '1 year', '2 years', '3 years'];
     MTFlex.Subtotals = MTFlex.Button1;
 
     let isToday = getDates('isToday',AccountsTodayIs);
@@ -668,7 +668,7 @@ async function MenuReportsAccountsGo() {
     let snapshotData = null;
     let snapshotData2 = null;
     let snapshotData3 = null;
-    let useDateRange = ['d_StartofMonth','d_Minus3Months','d_Minus6Months','d_StartOfYear','d_Minus1Year','d_Minus2Years','d_Minus3Years'][MTFlex.Button2];
+    let useDateRange = ['d_MinusWeek','d_StartofMonth','d_Minus3Months','d_Minus6Months','d_StartOfYear','d_Minus1Year','d_Minus2Years','d_Minus3Years'][MTFlex.Button2];
     let useDate = getDates(useDateRange,AccountsTodayIs);
     let useDate2 = AccountsTodayIs;
     let cards = 0;
@@ -680,7 +680,7 @@ async function MenuReportsAccountsGo() {
     MTP.Column = 1; MTP.Title = 'Type'; MF_QueueAddTitle(MTP);
     MTP.Column = 2; MTP.Title = 'Updated';MF_QueueAddTitle(MTP);
     MTP.Column = 3; MTP.Title = 'Beginning Balance'; MTP.isSortable = 2; MTP.Format = 1;MF_QueueAddTitle(MTP);
-    if(MTFlex.Button2 > 0) { MTP.isHidden = true; }
+    if(MTFlex.Button2 > 1) { MTP.isHidden = true; }
     MTP.Column = 4; MTP.Title = 'Income'; MF_QueueAddTitle(MTP);
     MTP.Column = 5; MTP.Title = 'Expenses'; MF_QueueAddTitle(MTP);
     MTP.Column = 6; MTP.Title = 'Transfers'; MF_QueueAddTitle(MTP);
@@ -692,7 +692,7 @@ async function MenuReportsAccountsGo() {
     let pastBalance = 0;
     let useAmount = 0;
     let skipTxs = getCookie('MT_AccountsBalance',true);
-    if(MTFlex.Button2 > 0) {skipTxs = 0;} else {snapshotData2 = await GetTransactions(formatQueryDate(useDate),formatQueryDate(useDate2),0);}
+    if(MTFlex.Button2 > 1) {skipTxs = 0;} else {snapshotData2 = await GetTransactions(formatQueryDate(useDate),formatQueryDate(useDate2),0);}
 
     snapshotData = await getAccountsData();
     snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
@@ -736,7 +736,7 @@ async function MenuReportsAccountsGo() {
                 MTFlexRow[MTFlexCR][MTFields+7] = useBalance;
                 MTFlexRow[MTFlexCR][MTFields+8] = 0;
                 if(snapshotData.accounts[i].hideTransactionsFromReports == false) {
-                    if(MTFlex.Button2 == 0) {
+                    if(MTFlex.Button2 < 2) {
                         for (let j = 0; j < snapshotData2.allTransactions.results.length; j += 1) {
                             if(snapshotData2.allTransactions.results[j].hideFromReports == false && snapshotData2.allTransactions.results[j].pending == false) {
                                 if(snapshotData2.allTransactions.results[j].account.id == snapshotData.accounts[i].id) {
@@ -2032,6 +2032,7 @@ function getDates(InValue,InDate) {
     if(InValue == 'n_CurMonth') {return(month);}
     if(InValue == 'n_CurDay') {return(day);}
     if(InValue == 'd_CurDate') {return d;}
+    if(InValue == 'd_MinusWeek') {d.setDate(d.getDate() - 7);return d;}
     if(InValue == 's_FullDate') {return(getMonthName(month,true) + ' ' + day + ', ' + year );}
     if(InValue == 's_ShortDate') {return(getMonthName(month,true) + ' ' + day);}
 
@@ -2071,7 +2072,7 @@ function getDates(InValue,InDate) {
                 return(d);
             case 'd_Minus3Years':
                 d.setFullYear(d.getFullYear() - 3);
-                return(d);
+                return(d);;
             case 'LastYTDs':
                 year-=1;
                 month = 0;
