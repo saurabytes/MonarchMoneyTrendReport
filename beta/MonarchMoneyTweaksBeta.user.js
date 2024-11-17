@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.03.02
+// @version      2.03.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.03.02';
+const version = '2.03.03';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -689,6 +689,7 @@ async function MenuReportsAccountsGo() {
     MTP.Column = 8; MTP.Title = 'Net Change'; MTP.ShowPercent = 0; MF_QueueAddTitle(MTP);
 
     let useBalance = 0;
+    let pastBalance = 0;
     let useAmount = 0;
     let skipTxs = getCookie('MT_AccountsBalance',true);
     if(MTFlex.Button2 > 0) {skipTxs = 0;} else {snapshotData2 = await GetTransactions(formatQueryDate(useDate),formatQueryDate(useDate2),0);}
@@ -697,86 +698,88 @@ async function MenuReportsAccountsGo() {
     snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
 
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
-        if(snapshotData.accounts[i].isHidden == false && snapshotData.accounts[i].hideFromList == false) {
+        if(snapshotData.accounts[i].isHidden == false ) {
             MTP = [];
             MTP.isHeader = false;
             MTP.UID = snapshotData.accounts[i].id;
 
             if(isToday) {
-                useBalance = snapshotData.accounts[i].displayBalance;
+                useBalance = Number(snapshotData.accounts[i].displayBalance);
             } else {
                 useBalance = getAccountCacheBalance(MTP.UID);
             }
             if(useBalance == null) {useBalance = 0;}
-
-            if(snapshotData.accounts[i].isAsset == true) {
-                MTP.BasedOn = 1;
-                MTP.Section = 2;
-            } else {
-                MTP.BasedOn = 2;
-                MTP.Section = 4;
-            }
-            if(MTFlex.Subtotals == 1) {
-                MTP.PK = snapshotData.accounts[i].subtype.display;
-            } else {
-                MTP.PK = MTP.BasedOn.toString();
-            }
-            MTP.SKHRef = '/accounts/details/' + MTP.UID;
-            MF_QueueAddRow(MTP);
-            MTFlexRow[MTFlexCR][MTFields] = snapshotData.accounts[i].displayName;
-            MTFlexRow[MTFlexCR][MTFields+1] = snapshotData.accounts[i].subtype.display;
-            MTFlexRow[MTFlexCR][MTFields+2] = snapshotData.accounts[i].displayLastUpdatedAt.substring(0, 10);
-            MTFlexRow[MTFlexCR][MTFields+3] = 0;
-            MTFlexRow[MTFlexCR][MTFields+4] = 0;
-            MTFlexRow[MTFlexCR][MTFields+5] = 0;
-            MTFlexRow[MTFlexCR][MTFields+6] = 0;
-            MTFlexRow[MTFlexCR][MTFields+7] = useBalance;
-            MTFlexRow[MTFlexCR][MTFields+8] = 0;
-            if(snapshotData.accounts[i].hideTransactionsFromReports == false) {
-                if(MTFlex.Button2 == 0) {
-                    for (let j = 0; j < snapshotData2.allTransactions.results.length; j += 1) {
-                        if(snapshotData2.allTransactions.results[j].hideFromReports == false && snapshotData2.allTransactions.results[j].pending == false) {
-                            if(snapshotData2.allTransactions.results[j].account.id == snapshotData.accounts[i].id) {
-                                switch (snapshotData2.allTransactions.results[j].category.group.type) {
-                                    case 'income':
-                                        MTFlexRow[MTFlexCR][MTFields+4] += snapshotData2.allTransactions.results[j].amount;
-                                        break;
-                                    case 'expense':
-                                        useAmount = snapshotData2.allTransactions.results[j].amount * -1;
-                                        MTFlexRow[MTFlexCR][MTFields+5] += useAmount;
-                                        MTFlexRow[MTFlexCR][MTFields+5] = parseFloat(MTFlexRow[MTFlexCR][MTFields+5].toFixed(2));
-                                        break;
-                                    case 'transfer':
-                                        MTFlexRow[MTFlexCR][MTFields+6] += snapshotData2.allTransactions.results[j].amount;
-                                        break;
+            pastBalance = getAccountBalance(MTP.UID);
+            if(pastBalance == null) {pastBalance = 0;}
+            if(useBalance !=0 || useBalance != 0) {
+                if(snapshotData.accounts[i].isAsset == true) {
+                    MTP.BasedOn = 1;
+                    MTP.Section = 2;
+                } else {
+                    MTP.BasedOn = 2;
+                    MTP.Section = 4;
+                }
+                if(MTFlex.Subtotals == 1) {
+                    MTP.PK = snapshotData.accounts[i].subtype.display;
+                } else {
+                    MTP.PK = MTP.BasedOn.toString();
+                }
+                MTP.SKHRef = '/accounts/details/' + MTP.UID;
+                MF_QueueAddRow(MTP);
+                MTFlexRow[MTFlexCR][MTFields] = snapshotData.accounts[i].displayName;
+                MTFlexRow[MTFlexCR][MTFields+1] = snapshotData.accounts[i].subtype.display;
+                MTFlexRow[MTFlexCR][MTFields+2] = snapshotData.accounts[i].displayLastUpdatedAt.substring(0, 10);
+                MTFlexRow[MTFlexCR][MTFields+3] = 0;
+                MTFlexRow[MTFlexCR][MTFields+4] = 0;
+                MTFlexRow[MTFlexCR][MTFields+5] = 0;
+                MTFlexRow[MTFlexCR][MTFields+6] = 0;
+                MTFlexRow[MTFlexCR][MTFields+7] = useBalance;
+                MTFlexRow[MTFlexCR][MTFields+8] = 0;
+                if(snapshotData.accounts[i].hideTransactionsFromReports == false) {
+                    if(MTFlex.Button2 == 0) {
+                        for (let j = 0; j < snapshotData2.allTransactions.results.length; j += 1) {
+                            if(snapshotData2.allTransactions.results[j].hideFromReports == false && snapshotData2.allTransactions.results[j].pending == false) {
+                                if(snapshotData2.allTransactions.results[j].account.id == snapshotData.accounts[i].id) {
+                                    switch (snapshotData2.allTransactions.results[j].category.group.type) {
+                                        case 'income':
+                                            MTFlexRow[MTFlexCR][MTFields+4] += snapshotData2.allTransactions.results[j].amount;
+                                            break;
+                                        case 'expense':
+                                            useAmount = snapshotData2.allTransactions.results[j].amount * -1;
+                                            MTFlexRow[MTFlexCR][MTFields+5] += useAmount;
+                                            MTFlexRow[MTFlexCR][MTFields+5] = parseFloat(MTFlexRow[MTFlexCR][MTFields+5].toFixed(2));
+                                            break;
+                                        case 'transfer':
+                                            MTFlexRow[MTFlexCR][MTFields+6] += snapshotData2.allTransactions.results[j].amount;
+                                            break;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            if(skipTxs == 1 && (snapshotData.accounts[i].subtype.name == 'checking' || snapshotData.accounts[i].subtype.name == 'credit_card')) {
-                if(snapshotData.accounts[i].isAsset == true){
-                    MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] + MTFlexRow[MTFlexCR][MTFields+5] - MTFlexRow[MTFlexCR][MTFields+6];
+                if(skipTxs == 1 && (snapshotData.accounts[i].subtype.name == 'checking' || snapshotData.accounts[i].subtype.name == 'credit_card')) {
+                    if(snapshotData.accounts[i].isAsset == true){
+                        MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] + MTFlexRow[MTFlexCR][MTFields+5] - MTFlexRow[MTFlexCR][MTFields+6];
+                    } else {
+                        MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] - MTFlexRow[MTFlexCR][MTFields+5] + MTFlexRow[MTFlexCR][MTFields+6];
+                    }
                 } else {
-                    MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] - MTFlexRow[MTFlexCR][MTFields+5] + MTFlexRow[MTFlexCR][MTFields+6];
+                    MTFlexRow[MTFlexCR][MTFields+3] = pastBalance;
                 }
-            } else {
-               MTFlexRow[MTFlexCR][MTFields+3] = getAccountBalance(MTP.UID);
-            }
-            if(MTFlexRow[MTFlexCR][MTFields+3] == null) {MTFlexRow[MTFlexCR][MTFields+3] = 0;}
-            if(isToday) {updateAccountBalance(snapshotData.accounts[i].id,MTFlexRow[MTFlexCR][MTFields+3]);}
-            MTFlexRow[MTFlexCR][MTFields+3] = parseFloat(MTFlexRow[MTFlexCR][MTFields+3].toFixed(2));
-            MTFlexRow[MTFlexCR][MTFields+8] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
-            MTFlexRow[MTFlexCR][MTFields+8] = parseFloat(MTFlexRow[MTFlexCR][MTFields+8].toFixed(2));
-            if((snapshotData.accounts[i].subtype.name == 'checking' || snapshotData.accounts[i].subtype.name == 'credit_card') && cards < 5) {
-                MTP = [];
-                MTP.Col = cards;
-                MTP.Title = getDollarValue(MTFlexRow[MTFlexCR][MTFields+7]);
-                MTP.Subtitle = snapshotData.accounts[i].displayName;
-                if(snapshotData.accounts[i].subtype.name == 'checking') {MTP.Style = css_green;} else {MTP.Style = css_red;}
-                MF_QueueAddCard(MTP);
-                cards+=1;
+                if(isToday) {updateAccountBalance(snapshotData.accounts[i].id,MTFlexRow[MTFlexCR][MTFields+3]);}
+                MTFlexRow[MTFlexCR][MTFields+3] = parseFloat(MTFlexRow[MTFlexCR][MTFields+3].toFixed(2));
+                MTFlexRow[MTFlexCR][MTFields+8] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
+                MTFlexRow[MTFlexCR][MTFields+8] = parseFloat(MTFlexRow[MTFlexCR][MTFields+8].toFixed(2));
+                if((snapshotData.accounts[i].subtype.name == 'checking' || snapshotData.accounts[i].subtype.name == 'credit_card') && cards < 5) {
+                    MTP = [];
+                    MTP.Col = cards;
+                    MTP.Title = getDollarValue(MTFlexRow[MTFlexCR][MTFields+7]);
+                    MTP.Subtitle = snapshotData.accounts[i].displayName;
+                    if(snapshotData.accounts[i].subtype.name == 'checking') {MTP.Style = css_green;} else {MTP.Style = css_red;}
+                    MF_QueueAddCard(MTP);
+                    cards+=1;
+                }
             }
         }
     }
