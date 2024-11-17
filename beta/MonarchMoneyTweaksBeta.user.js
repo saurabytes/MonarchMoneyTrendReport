@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.03.01
+// @version      2.03.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.03.01';
+const version = '2.03.02';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -68,8 +68,8 @@ function MM_Init() {
     addStyle('.MTFlexGridTitleCell { border-bottom: 1px solid ' + a3 + ';}');
     addStyle('.MTFlexGridTitleCell2 { text-align: right; border-bottom: 1px solid ' + a3 + ';}');
     addStyle('.MTFlexGridTitleCell:hover, .MTFlexGridTitleCell2:hover, .MTFlexGridDCell:hover, .MTFlexGridSCell:hover, .MThRefClass:hover {cursor:pointer; color: rgb(50, 170, 240);}');
-    addStyle('.MTFlexGridRow { font-size: 14px; font-weight: 500; height: 56px; }');
-    addStyle('.MTFlexGridItem { font-size: 14px; ; height: 28px }');
+    addStyle('.MTFlexGridRow { font-size: 14px; font-weight: 500; height: 54px; }');
+    addStyle('.MTFlexGridItem { font-size: 14px; ; height: 26px }');
     addStyle('.MTFlexGridHCell { }');
     addStyle('.MTFlexGridHCell2 { text-align: right; }');
     addStyle('.MTFlexGridDCell, .MTFlexGridD3Cell {' + a5 +' }');
@@ -658,7 +658,7 @@ async function MenuReportsAccountsGo() {
     MTFlex.Title1 = 'Accounts';
     MTFlex.TriggerEvent = true;
     MTFlex.TriggerEvents = false;
-    MTFlex.Button1Options = ['Show subtotals','Hide subtotals'];
+    MTFlex.Button1Options = ['Hide subtotals','Show subtotals'];
     MTFlex.Button2Options = ['This month','3 months', '6 months', 'This year', '1 year', '2 years', '3 years'];
     MTFlex.Subtotals = MTFlex.Button1;
 
@@ -671,6 +671,7 @@ async function MenuReportsAccountsGo() {
     let useDateRange = ['d_StartofMonth','d_Minus3Months','d_Minus6Months','d_StartOfYear','d_Minus1Year','d_Minus2Years','d_Minus3Years'][MTFlex.Button2];
     let useDate = getDates(useDateRange,AccountsTodayIs);
     let useDate2 = AccountsTodayIs;
+    let cards = 0;
 
     MTFlex.Title2 = getDates('s_FullDate',useDate) + ' - ' + getDates('s_FullDate',useDate2);
 
@@ -768,6 +769,15 @@ async function MenuReportsAccountsGo() {
             MTFlexRow[MTFlexCR][MTFields+3] = parseFloat(MTFlexRow[MTFlexCR][MTFields+3].toFixed(2));
             MTFlexRow[MTFlexCR][MTFields+8] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
             MTFlexRow[MTFlexCR][MTFields+8] = parseFloat(MTFlexRow[MTFlexCR][MTFields+8].toFixed(2));
+            if((snapshotData.accounts[i].subtype.name == 'checking' || snapshotData.accounts[i].subtype.name == 'credit_card') && cards < 5) {
+                MTP = [];
+                MTP.Col = cards;
+                MTP.Title = getDollarValue(MTFlexRow[MTFlexCR][MTFields+7]);
+                MTP.Subtitle = snapshotData.accounts[i].displayName;
+                if(snapshotData.accounts[i].subtype.name == 'checking') {MTP.Style = css_green;} else {MTP.Style = css_red;}
+                MF_QueueAddCard(MTP);
+                cards+=1;
+            }
         }
     }
     MT_GridRollup(1,2,1,'Assets');
@@ -777,7 +787,6 @@ async function MenuReportsAccountsGo() {
     MTFlexReady = true;
 
     function getAccountBalance(inId) {
-
         for (let k = 0; k < snapshotData3.accounts.length; k++) {
             if(snapshotData3.accounts[k].id == inId ) { return snapshotData3.accounts[k].displayBalance; }
         }
@@ -810,7 +819,7 @@ async function MenuReportsTrendsGo() {
     MTFlex.TriggerEvent = true;
     MTFlex.TriggerEvents = true;
     MTFlex.Button1Options = ['By group','By category','By both'];
-    MTFlex.Button2Options = ['By Last Month','By same month','By same quarter'];
+    MTFlex.Button2Options = ['By Last month','By same month','By same quarter'];
     if(MTFlex.Button1 == 2) {MTFlex.Subtotals = true;}
 
     MTP = [];
