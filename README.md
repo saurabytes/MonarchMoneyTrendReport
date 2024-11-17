@@ -28,9 +28,9 @@ Enjoy!
 
 # Features:
 
-* **Reports / Trends** - Summarize your history and compare it to last month, same month last year or same quarter last year.  Drill down to the monthly totals for your categories and export your summarized data. 
+* **Reports / Trends** - Summarize your history and compare it to last month, same month last year or same quarter last year.  Drill down to the monthly and year-to-date totals for your groups & categories, sort & export your summarized data. 
 
-* **Reports / Accounts** - Summarize your Account balances (Beginning of Month to Current), sort and export.
+* **Reports / Accounts** - Summarize all your Account balances on one screen with sorting and exporting.  Compare to different time periods (Month, 3 months, 6 months, etc.)
 
 * Breadcrumbs on **Reports / Income & Spending** allows staying on Reports page instead of going to Transactions connecting _All Categories > Groups > Categories_ 
 
