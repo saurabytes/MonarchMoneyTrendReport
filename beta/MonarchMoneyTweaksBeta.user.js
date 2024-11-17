@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.03.04
+// @version      2.03.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.03.04';
+const version = '2.03.05';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -692,12 +692,16 @@ async function MenuReportsAccountsGo() {
     let pastBalance = 0;
     let useAmount = 0;
     let skipTxs = getCookie('MT_AccountsBalance',true);
+    let skipHidden = getCookie('MT_AccountsHidden',true);
+
     if(MTFlex.Button2 > 2) {skipTxs = 0;} else {snapshotData2 = await GetTransactions(formatQueryDate(useDate),formatQueryDate(useDate2),0);}
 
     snapshotData = await getAccountsData();
     snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
 
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
+
+        if(snapshotData.accounts[i].hideFromList == false || skipHidden == 0) {
 
             MTP = [];
             MTP.isHeader = false;
@@ -781,7 +785,7 @@ async function MenuReportsAccountsGo() {
                     cards+=1;
                 }
             }
-
+        }
     }
     MT_GridRollup(1,2,1,'Assets');
     MT_GridRollup(3,4,2,'Liabilities');
@@ -1740,6 +1744,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Reports / Trends - Hide percentage of Income & Spending','MT_TrendHidePer1','checkbox');
             MenuDisplay_Input('Reports / Trends - Hide percentage of Difference','MT_TrendHidePer2','checkbox');
             MenuDisplay_Input('Reports / Accounts - Use a calculated balance (Income, Expenses & Transfers) for Checking & Credit Cards','MT_AccountsBalance','checkbox');
+            MenuDisplay_Input('Reports / Accounts - Always hide accounts marked as "Hide this account in list"','MT_AccountsHidden','checkbox');
             MenuDisplay_Input('Budget - Panel has smaller compressed grid','MT_PlanCompressed','checkbox');
             MenuDisplay_Input('General - Calendar "Last year" and "Last 12 months" include full month','MT_CalendarEOM','checkbox');
         }
