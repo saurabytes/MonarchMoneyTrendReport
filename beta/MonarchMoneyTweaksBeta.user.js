@@ -102,7 +102,7 @@ function MM_Init() {
 
     addStyle('.MTFlexdown {float: right;  position: relative; display: inline-block; font-weight: 200;}');
     addStyle('.MTFlexdown-content div {font-size: 0px; line-height: 2px; background-color: #ff7369;}');
-    addStyle('.MTFlexdown-content {' + a1 + a5 + ';display:none; margin-top: 12px; padding: 12px; position: absolute; min-width: 210px; overflow: auto; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0; z-index: 1;}');
+    addStyle('.MTFlexdown-content {' + a1 + a5 + ';display:none; margin-top: 12px; padding: 12px; position: absolute; min-width: 210px; overflow: auto; border-radius: 8px; border: 1px solid ' + a3 + '; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0; z-index: 1;}');
     addStyle('.MTFlexdown-content a {' + a1 + a5 + ';font-size: 15px; text-align: left; border-radius: 8px; font-weight: 200; padding: 10px 10px; display: block;}');
 
     addStyle('.MTdropdown a:hover {' + a2 + ' }');
