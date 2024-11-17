@@ -3,7 +3,15 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.01:**
+**Version 2.03: (beta)**
+
+• NEW: Report options are now easier drop-downs
+
+• NEW: Reports / Accounts Net Difference now allows flexible options (Month, 3 months, 6 months, This Year, etc.)
+
+
+
+**Version 2.01-2.02:**
 
 • NEW: Added Income, Expenses and Transfers to Reports / Accounts (Checking and Credit Card can use a Calculated balance based on Display / Settings)
 
