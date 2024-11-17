@@ -711,7 +711,7 @@ async function MenuReportsAccountsGo() {
             if(useBalance == null) {useBalance = 0;}
             pastBalance = getAccountBalance(MTP.UID);
             if(pastBalance == null) {pastBalance = 0;}
-            if(useBalance !=0 || useBalance != 0) {
+            if(useBalance !=0 || pastBalance != 0) {
                 if(snapshotData.accounts[i].isAsset == true) {
                     MTP.BasedOn = 1;
                     MTP.Section = 2;
