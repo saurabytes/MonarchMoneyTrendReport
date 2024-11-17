@@ -34,7 +34,7 @@ Enjoy!
 
 * Breadcrumbs on **Reports / Income & Spending** allows staying on Reports page instead of going to Transactions connecting _All Categories > Groups > Categories_ 
 
-* Save and restore unlimited filters and other report options on **Reports / Datasets**
+* Save and restore your Report filters and other report options on **Reports / Datasets**
 
 * Compressed & Smaller Transactions grid to show more items
 
