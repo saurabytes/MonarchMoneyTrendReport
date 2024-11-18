@@ -7,7 +7,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Report options are now easier drop-downs
 
-• NEW: Reports / Accounts Net Difference now allows flexible options (Month, 3 months, 6 months, This Year, etc.)
+• NEW: Reports / Accounts Net Difference now allows flexible options (Yesterday, This week, This month, 3 months, 6 months, This Year, etc.)
 
 
 
