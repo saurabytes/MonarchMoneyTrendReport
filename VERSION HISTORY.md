@@ -5,11 +5,11 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.03: (beta)**
 
-• NEW: Report options are now easier drop-downs
+• NEW: Report options now have easier drop-down selections
 
 • NEW: Reports / Accounts Net Difference now allows flexible options (Yesterday, This week, This month, 3 months, 6 months, This Year, etc.)
 
-• NEW: Reports / Overtime shows full Monthly Income and Spending, YTD totals and YTD average by Group, by Category, by Both with full sorting and exporting.
+• NEW: Reports / Overtime shows full Monthly Income and Spending, YTD totals and YTD average by Group, by Category, by Both with full sorting and exporting
 
 
 **Version 2.01-2.02:**
@@ -26,7 +26,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW:  Rewrite of Trends including cleaner percentages and better Trend cards at top.
 
-• NEW: Added Accounts to Reports (display & export)   - More enhancements & flexibility to come for Accounts.
+• NEW: Added Accounts to Reports (display & export)  - More enhancements & flexibility to come for Accounts
 
 **Version 1.28:**
 
@@ -70,7 +70,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: **Reports / Trends** module initial release (Uses all data / current date - Future enhancements should allow modifying end date & filters)
 
-• FIX: Returning to Reports Income when breadcrumb is Expense or vice versa will now clear the breadcrumb and no override.
+• FIX: Returning to Reports Income when breadcrumb is Expense or vice versa will now clear the breadcrumb and no override
 
 
 **Versions 1.11/1.12:**
