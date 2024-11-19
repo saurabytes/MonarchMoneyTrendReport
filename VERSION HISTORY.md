@@ -9,8 +9,6 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Reports / Accounts Net Difference now allows flexible options (Yesterday, This week, This month, 3 months, 6 months, This Year, etc.)
 
-• NEW: Reports / Monthly shows full Monthly Income and Spending, YTD totals and YTD average by Group, by Category, by Both with full sorting and exporting
-
 
 **Version 2.01-2.02:**
 
