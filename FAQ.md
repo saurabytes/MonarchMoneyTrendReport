@@ -11,7 +11,7 @@
 6. No data is collected or transmitted outside of the Monarch Money connection.
 7. **Tampermonkey** is a script extension like other script extensions, open-source, with 11+ million users.  It is available for mostly ALL browsers.
 8. **GitHub** is a common source hub used by over 20+ million users, and is the ONLY location this extension is available to download.
-9. This extension has been available now for over 10 months and used by the Monarch Money community.
+9. This extension has been available now for over 10 months with over 130 users in the Monarch Money community.
 10. If there are any issues, help needed or concerns with the extension, please email me: robert @ paresi.net
 
     Enjoy!
