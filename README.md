@@ -28,9 +28,9 @@ Enjoy!
 
 # Features:
 
-* **Reports / Trends** - Summarize your history and compare it to last month, same month last year or same quarter last year.  Drill down to the monthly and year-to-date totals for your groups & categories, sort & export your summarized data. 
+* **Reports / Trends** - Summarize your Monarch Money history comparing to last month, same month last year or same quarter last year.  Display monthly grid of your history for all 12 months This Year, Last Year or Last 12 months including YTD totals and averages.  Drill down to the monthly and year-to-date totals to see trends for your groups & categories, sort & export your summarized data with great flexibility.
 
-* **Reports / Accounts** - Summarize all your Account balances on one screen with sorting and exporting.  Compare to different time periods (Yesterday, This week, This month, 3 months, 6 months, etc.)
+* **Reports / Accounts** - Summarize all your Account balances on one screen with sorting and exporting.  Compare to different time periods (This week, Last two weeks, This month, 3 months, 6 months, 1 year, 2 years and 3 years)
 
 * Breadcrumbs on **Reports / Income & Spending** allows staying on Reports page instead of going to Transactions connecting _All Categories > Groups > Categories_ 
 
