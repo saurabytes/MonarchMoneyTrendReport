@@ -1,4 +1,4 @@
-# Monarch Money Tweaks
+# Monarch Money Tweaks - GET STARTED!
 
 Hello!  I use **Monarch Money**.  
 
