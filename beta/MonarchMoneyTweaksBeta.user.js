@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.03.09
+// @version      2.03.10
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.03.09';
+const version = '2.03.10';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -317,7 +317,9 @@ function MT_GridDrawDetails() {
 
 function MT_GridDrawSort() {
 
-    let useSort = getCookie(MTFlex.Name + MTFlex.Button2 + 'Sort',true);
+    let cn = MTFlex.Name + 'Sort';
+    if(MTFlex.SortSeq != null) {cn = cn + MTFlex.SortSeq[MTFlex.Button2];}
+    let useSort = getCookie(cn,true);
     if(Math.abs(useSort) > MTFlexTitle.length) {useSort = 0;}
     let useCol = MTFields + Math.abs(useSort);
 
@@ -378,7 +380,7 @@ function MT_GridDrawContainer() {
             let div3 = cec('span','MTIcons',div2,'','','','');
             let divContent = cec('div','MTFlexdown-content',div2,'','','id','MTDropdown1');
             for (let i = 0; i < MTFlex.Button1Options.length; i++) {
-                div2 = cec('a','',divContent,MTFlex.Button1Options[i],SaveLocationPathName + "?MTButton1=" + i,'','')
+                div2 = cec('a','',divContent,MTFlex.Button1Options[i],SaveLocationPathName + "?MTButton1=" + i,'','');
             }
         }
         if(MTFlex.Button2Options) {
@@ -387,7 +389,7 @@ function MT_GridDrawContainer() {
             let div3 = cec('span','MTIcons',div2,'','','','');
             let divContent = cec('div','MTFlexdown-content',div2,'','','id','MTDropdown2');
             for (let i = 0; i < MTFlex.Button2Options.length; i++) {
-                div2 = cec('a','',divContent,MTFlex.Button2Options[i],SaveLocationPathName + "?MTButton2=" + i,'','')
+                div2 = cec('a','',divContent,MTFlex.Button2Options[i],SaveLocationPathName + "?MTButton2=" + i,'','');
             }
         }
     }
@@ -816,6 +818,7 @@ async function MenuReportsTrendsGo() {
     MTFlex.TriggerEvents = true;
     MTFlex.Button1Options = ['By group','By category','By both'];
     MTFlex.Button2Options = ['Compare last month','Compare same month','Compare same quarter','This year by month','Last year by month','Last 12 months by month'];
+    MTFlex.SortSeq = ['1','1','1','2','2','2'];
     if(MTFlex.Button1 == 2) {MTFlex.Subtotals = true;}
 
     MTP = [];
@@ -1383,7 +1386,7 @@ function MenuReportsHistoryDraw() {
         let ms = '0' + inMonth.toString();
         ms = ms.slice(-2);
         let ys = inYear.toString();
-        let amt = 0.00
+        let amt = 0.00;
 
         for (let i = 0; i < TrendQueue2.length; i++) {
             if(TrendQueue2[i].MONTH == ms && TrendQueue2[i].YEAR == ys) {
@@ -2052,9 +2055,11 @@ function onClickGridSort() {
     let Column = event.target.getAttribute("column");
     if(Column != '') {
         let elSelected = Number(Column);
-        let elCurrent = getCookie(MTFlex.Name +MTFlex.Button2 + 'Sort',true);
+        let cn = MTFlex.Name + 'Sort';
+        if(MTFlex.SortSeq != null) {cn = cn + MTFlex.SortSeq[MTFlex.Button2];}
+        let elCurrent = getCookie(cn,true);
         if(Math.abs(elCurrent) == Math.abs(elSelected)) { elSelected = elCurrent * -1; }
-        setCookie(MTFlex.Name + MTFlex.Button2 + 'Sort',elSelected);
+        setCookie(cn,elSelected);
         MT_GridDraw(1);
     }
 }
@@ -2199,7 +2204,7 @@ function getDates(InValue,InDate) {
                 return(d);
             case 'd_Minus3Years':
                 d.setFullYear(d.getFullYear() - 3);
-                return(d);;
+                return(d);
             case '12Mths':
                 year-=1;
                 if(getCookie('MT_CalendarEOM') == 1) { day = 1; } else {day = d.getDate();}
