@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.03.07
+// @version      2.03.08
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.03.07';
+const version = '2.03.08';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -704,14 +704,14 @@ async function MenuReportsAccountsGo() {
                     MTP.Section = 4;
                 }
                 if(MTFlex.Subtotals == 1) {
-                    MTP.PK = snapshotData.accounts[i].subtype.display;
+                    MTP.PK = snapshotData.accounts[i].type.display;
                 } else {
                     MTP.PK = MTP.BasedOn.toString();
                 }
                 MTP.SKHRef = '/accounts/details/' + MTP.UID;
                 MF_QueueAddRow(MTP);
                 MTFlexRow[MTFlexCR][MTFields] = snapshotData.accounts[i].displayName;
-                MTFlexRow[MTFlexCR][MTFields+1] = snapshotData.accounts[i].subtype.display;
+                MTFlexRow[MTFlexCR][MTFields+1] = snapshotData.accounts[i].type.display;
                 MTFlexRow[MTFlexCR][MTFields+2] = snapshotData.accounts[i].displayLastUpdatedAt.substring(0, 10);
                 MTFlexRow[MTFlexCR][MTFields+3] = 0;
                 MTFlexRow[MTFlexCR][MTFields+4] = 0;
@@ -2052,9 +2052,9 @@ function onClickGridSort() {
     let Column = event.target.getAttribute("column");
     if(Column != '') {
         let elSelected = Number(Column);
-        let elCurrent = getCookie(MTFlex.Name +MTFlex.Button2 + "Sort",true);
+        let elCurrent = getCookie(MTFlex.Name +MTFlex.Button2 + 'Sort',true);
         if(Math.abs(elCurrent) == Math.abs(elSelected)) { elSelected = elCurrent * -1; }
-        setCookie(MTFlex.Name + MTFlex.Button2 + "Sort",elSelected);
+        setCookie(MTFlex.Name + MTFlex.Button2 + 'Sort',elSelected);
         MT_GridDraw(1);
     }
 }
@@ -2455,12 +2455,12 @@ async function getAccountsData() {
     const options = callGraphQL({
     operationName: 'GetAccounts',
     variables: { },
-      query: "query GetAccounts {\n accounts {\n id\n displayName\n deactivatedAt\n isHidden\n isAsset\n isManual\n mask\n displayLastUpdatedAt\n currentBalance\n displayBalance\n hideFromList\n hideTransactionsFromReports\n order\n icon\n logoUrl\n deactivatedAt \n subtype {\n name\n display\n }\n }}\n"
+      query: "query GetAccounts {\n accounts {\n id\n displayName\n deactivatedAt\n isHidden\n isAsset\n isManual\n mask\n displayLastUpdatedAt\n currentBalance\n displayBalance\n hideFromList\n hideTransactionsFromReports\n order\n icon\n logoUrl\n deactivatedAt \n type {\n      name\n      display\n      group\n    }\n subtype {\n name\n display\n }\n }}\n"
       });
 
   return fetch(graphql, options)
     .then((response) => response.json())
-    .then((data) => { return data.data;  }).catch((error) => { console.error(version,error); });
+    .then((data) => { return data.data; }).catch((error) => { console.error(version,error); });
 }
 
 async function getCategoryData() {
