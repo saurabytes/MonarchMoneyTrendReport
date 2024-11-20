@@ -5,7 +5,7 @@
 
 1. Anyone who understands coding can read the code and know exactly what this extension is doing.
 2. This extension uses the Monarch Money graphQl API which is part of the Monarch Money source and system.
-3. This extension uses NO external libraries (besides Tampermonkey) and NO external sources to provide the best security.
+3. This extension uses NO external libraries (besides Tampermonkey) and NO external sources to provide the best transparancy and security.
 4. The Monarch Money graphQl API is created by Monarch Money and is used by their mobile framework, report graphs and more.
 5. The connection uses the same Monarch Money security token from their storage location.
 6. No data is collected or transmitted outside of the Monarch Money connection.
