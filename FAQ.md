@@ -9,7 +9,7 @@
 4. The Monarch Money graphQl API is created by Monarch Money and is used by their mobile framework, report graphs and more.
 5. The connection uses the same Monarch Money security token from their storage location.
 6. No data is collected or transmitted outside of the Monarch Money connection.
-7. **Tampermonkey** is a script extension like other script extensions, open-source, with 11+ million users.  It is available for most browsers and goes through the same security requires that Microsoft & Safari require for all their extensions.
+7. **Tampermonkey** is a script extension like other script extensions, open-source, with 11+ million users.  It is available for most browsers and goes through the same security requirements that Microsoft & Safari require for all their extensions.
 8. **GitHub** is a common source hub used by over 20+ million users, and is the ONLY location this extension is available to download.
 9. This extension has been available now for over 10 months to users in the Monarch Money community.
 10. If there are any issues, help needed or concerns with the extension, please email me: robert @ paresi.net
