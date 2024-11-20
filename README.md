@@ -56,11 +56,11 @@ Finally, Refresh/Reload the Monarch Money webpage and select **Settings / Displa
 
 Please read each option carefully before turning it on/off to fully understand what it does. 
 
+![Settings](/images/MM_SettingsDeveloper.png)
+
 Enjoy!
 
 # SCREENSHOTS:
-
-![Settings](/images/MM_SettingsDeveloper.png)
 
 **Monarch Money Tweaks Display / Settings panel**
 ![Settings](/images/MM_Settings.png)
