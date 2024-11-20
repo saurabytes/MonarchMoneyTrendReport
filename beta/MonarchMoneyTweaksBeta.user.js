@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.03.06
+// @version      2.03.07
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.03.06';
+const version = '2.03.07';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -536,7 +536,7 @@ function MT_GridCalcRange(inCol,inStart,inEnd,inOp) {
            useValue = useValue + MTFlexRow[i][MTFields + j];
        }
         if(inOp == 'Add') {MTFlexRow[i][MTFields + inCol] = useValue;}
-        if(inOp == 'Avg') {MTFlexRow[i][MTFields + inCol] = useValue / (inEnd-inStart + 1);}
+        if(inOp == 'Avg') { MTFlexRow[i][MTFields + inCol] = useValue / (inEnd-inStart+1);}
     }
 }
 
@@ -832,7 +832,7 @@ async function MenuReportsTrendsGo() {
         let newCol = 1;
         switch(MTFlex.Button2) {
             case 3:
-                if(getCookie('MT_TrendCurrentMonth',true) == 1) { MTFlex.Title3 = '* Average includes Current Month'; }
+                if(getCookie('MT_TrendIgnoreCurrent',true) == 1) { MTFlex.Title3 = '* Average ignores Current Month'; }
                 for (let i = 0; i < 12; i += 1) {
                     MTP.Column = newCol; MTP.Title = getMonthName(i,true);
                     newCol+=1;
@@ -851,7 +851,7 @@ async function MenuReportsTrendsGo() {
                 }
                 break;
             case 5:
-                if(getCookie('MT_TrendCurrentMonth',true) == 1) { MTFlex.Title3 = '* Average includes Current Month'; }
+                if(getCookie('MT_TrendIgnoreCurrent',true) == 1) { MTFlex.Title3 = '* Average ignores Current Month'; }
                 for (let i = month2 + 1; i < 12; i += 1) {
                     MTP.Column = newCol; MTP.Title = getMonthName(i,true);
                     newCol+=1;
@@ -981,7 +981,7 @@ async function MenuReportsTrendsGo() {
 
 async function WriteMonthlyData() {
 
-    let useDesc = '';
+    let useDesc = '',lowestMonth = 13;
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         let retGroup = await getCategoryGroup(MTFlexRow[i].UID);
         if(retGroup.TYPE == 'transfer') {
@@ -992,6 +992,7 @@ async function WriteMonthlyData() {
                 MTFlexRow[i].Section = 4;
                 for (let j = 1; j < MTFlexTitle.length; j += 1) {
                     if(MTFlexRow[i][MTFields + j] != 0) {
+                        if(j < lowestMonth) {lowestMonth = j;}
                         MTFlexRow[i][MTFields + j] = MTFlexRow[i][MTFields + j] * -1;
                     }
                 }
@@ -1023,14 +1024,17 @@ async function WriteMonthlyData() {
         if(MTFlexRow[i].UID == '') {const x = MTFlexRow.splice(i, 1);}
     }
     let mm = getDates('n_CurMonth') + 1;
-    MT_GridCalcRange(13,1,mm,'Add');
-    if(MTFlex.Button2 == 3 && mm == 0) {MTFlexTitle[14].isHidden = true;}
+    if(MTFlex.Button2 == 3 && mm == 1) {MTFlexTitle[14].isHidden = true;
+        MT_GridCalcRange(13,1,1,'Add');}
     else if(MTFlex.Button2 == 3) {
-        if(getCookie('MT_TrendCurrentMonth',true)) {MT_GridCalcRange(14,1,mm,'Avg');} else { MT_GridCalcRange(14,1,mm-1,'Avg');}}
+        MT_GridCalcRange(13,1,mm,'Add');
+        if(getCookie('MT_TrendIgnoreCurrent',true) == 1) {MT_GridCalcRange(14,lowestMonth,mm-1,'Avg');} else { MT_GridCalcRange(14,lowestMonth,mm,'Avg');}}
     else if(MTFlex.Button2 == 4) {
-        MT_GridCalcRange(14,1,12,'Avg');}
+        MT_GridCalcRange(13,1,12,'Add');
+        MT_GridCalcRange(14,lowestMonth,12,'Avg');}
     else if(MTFlex.Button2 == 5) {
-        if(getCookie('MT_TrendCurrentMonth',true)) {MT_GridCalcRange(14,1,12,'Avg');} else { MT_GridCalcRange(14,1,11,'Avg');}
+        MT_GridCalcRange(13,1,12,'Add');
+        if(getCookie('MT_TrendIgnoreCurrent',true == 1)) {MT_GridCalcRange(14,lowestMonth,11,'Avg');} else { MT_GridCalcRange(14,lowestMonth,12,'Avg');}
     }
     MT_GridRollup(1,2,1,'Income');
     MT_GridRollup(3,4,2,'Spending');
@@ -1195,6 +1199,7 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
                         mm = (12 - sm + 1) + mm;
                     }
                 }
+                useAmount = Math.round(useAmount);
                 MT_GridUpdateUID(useID,mm,useAmount);
             } else { Trend_UpdateQueue(useID,useAmount,inCol); }
         }
@@ -1856,7 +1861,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Reports - Add drill-down & breadcrumbs for Groups to Categories in Income/Spending','MT_ReportsDrilldown','checkbox');
             MenuDisplay_Input('Reports - Hide chart tooltip Difference amount','MT_HideTipDiff','checkbox');
             MenuDisplay_Input('Reports / Trends - Always compare to End of Month','MT_TrendFullPeriod','checkbox');
-            MenuDisplay_Input('Reports / Trends - By Month "Avg" includes Current Month','MT_TrendCurrentMonth','checkbox');
+            MenuDisplay_Input('Reports / Trends - By Month "Avg" ignores Current Month','MT_TrendIgnoreCurrent','checkbox');
             MenuDisplay_Input('Reports / Trends - Hide percentage of Income & Spending','MT_TrendHidePer1','checkbox');
             MenuDisplay_Input('Reports / Trends - Hide percentage of Difference','MT_TrendHidePer2','checkbox');
             MenuDisplay_Input('Reports / Accounts - Use a calculated balance (Income, Expenses & Transfers) for Checking & Credit Cards','MT_AccountsBalance','checkbox');
