@@ -317,7 +317,7 @@ function MT_GridDrawDetails() {
 
 function MT_GridDrawSort() {
 
-    let useSort = getCookie(MTFlex.Name + 'Sort',true);
+    let useSort = getCookie(MTFlex.Name + MTFlex.Button2 + 'Sort',true);
     if(Math.abs(useSort) > MTFlexTitle.length) {useSort = 0;}
     let useCol = MTFields + Math.abs(useSort);
 
@@ -2052,9 +2052,9 @@ function onClickGridSort() {
     let Column = event.target.getAttribute("column");
     if(Column != '') {
         let elSelected = Number(Column);
-        let elCurrent = getCookie(MTFlex.Name + "Sort",true);
+        let elCurrent = getCookie(MTFlex.Name +MTFlex.Button2 + "Sort",true);
         if(Math.abs(elCurrent) == Math.abs(elSelected)) { elSelected = elCurrent * -1; }
-        setCookie(MTFlex.Name + "Sort",elSelected);
+        setCookie(MTFlex.Name + MTFlex.Button2 + "Sort",elSelected);
         MT_GridDraw(1);
     }
 }
