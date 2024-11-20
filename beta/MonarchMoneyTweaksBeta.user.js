@@ -654,7 +654,7 @@ async function MenuReportsAccountsGo() {
     let useDateRange = ['d_MinusWeek','d_Minus2Weeks','d_StartofMonth','d_Minus3Months','d_Minus6Months','d_StartOfYear','d_Minus1Year','d_Minus2Years','d_Minus3Years'][MTFlex.Button2];
     let useDate = getDates(useDateRange,AccountsTodayIs);
     let useDate2 = AccountsTodayIs;
-    let cards = 0;
+    let cards = 1,onCredit = 0;
 
     MTFlex.Title2 = getDates('s_FullDate',useDate) + ' - ' + getDates('s_FullDate',useDate2);
 
@@ -755,6 +755,9 @@ async function MenuReportsAccountsGo() {
                 MTFlexRow[MTFlexCR][MTFields+3] = parseFloat(MTFlexRow[MTFlexCR][MTFields+3].toFixed(2));
                 MTFlexRow[MTFlexCR][MTFields+8] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
                 MTFlexRow[MTFlexCR][MTFields+8] = parseFloat(MTFlexRow[MTFlexCR][MTFields+8].toFixed(2));
+                if(snapshotData.accounts[i].subtype.name == 'credit_card') {
+                    onCredit=onCredit + MTFlexRow[MTFlexCR][MTFields+7];
+                }
                 if((snapshotData.accounts[i].subtype.name == 'checking' || snapshotData.accounts[i].subtype.name == 'credit_card') && cards < 5) {
                     MTP = [];
                     MTP.Col = cards;
@@ -766,6 +769,15 @@ async function MenuReportsAccountsGo() {
                 }
             }
         }
+    }
+
+    if(onCredit != 0) {
+        MTP = [];
+        MTP.Col = 0;
+        MTP.Title = getDollarValue(onCredit);
+        MTP.Subtitle = 'Total Credit Cards';
+        MTP.Style = css_red;
+        MF_QueueAddCard(MTP);
     }
     MT_GridRollup(1,2,1,'Assets');
     MT_GridRollup(3,4,2,'Liabilities');
