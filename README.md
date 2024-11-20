@@ -12,7 +12,7 @@ I found there were opportunities to enhance the Monarch Money web application wi
 
 * Breadcrumbs on **Reports / Income & Spending** allows staying on Reports page instead of going to Transactions connecting _All Categories > Groups > Categories_ 
 
-* Save and restore your Report filters and other report options on **Reports / Datasets**
+* Save and restore your Report filters and other report options on **Reports / Datasets**.  Never have to redo your filters over each time!
 
 * Compressed & Smaller Transactions grid to show more items
 
