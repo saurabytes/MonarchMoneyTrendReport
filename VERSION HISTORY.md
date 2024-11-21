@@ -3,11 +3,13 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.03: (beta)**
+**Version 2.03:**
 
 • NEW: Report options now have easier drop-down selections
 
-• NEW: Reports / Accounts Net Difference now allows flexible options (Yesterday, This week, This month, 3 months, 6 months, This Year, etc.)
+• NEW: Reports / Accounts Net Difference now allows flexible options (This week, Two Weeks, This month, 3 months, 6 months, This Year, etc.)
+
+
 
 
 **Version 2.01-2.02:**
