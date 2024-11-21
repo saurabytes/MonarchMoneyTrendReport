@@ -820,8 +820,8 @@ async function MenuReportsTrendsGo() {
     MTFlex.TriggerEvent = true;
     MTFlex.TriggerEvents = true;
     MTFlex.Button1Options = ['By group','By category','By both'];
-    MTFlex.Button2Options = ['Compare last month','Compare same month','Compare same quarter','This year by month','Last year by month','Last 12 months by month'];
-    MTFlex.SortSeq = ['1','1','1','2','2','2'];
+    MTFlex.Button2Options = ['Compare last month','Compare same month','Compare same quarter','This year by month','Last year by month','Last 12 months by month', 'Two years ago', 'Three years ago'];
+    MTFlex.SortSeq = ['1','1','1','2','2','2','2','2'];
     if(MTFlex.Button1 == 2) {MTFlex.Subtotals = true;}
 
     MTP = [];
@@ -836,46 +836,45 @@ async function MenuReportsTrendsGo() {
         MF_QueueAddTitle(MTP);
         MTFlex.Title1 = 'Net Income Trend Report by Month';
         let newCol = 1;
-        switch(MTFlex.Button2) {
-            case 3:
-                if(getCookie('MT_TrendIgnoreCurrent',true) == 1) { MTFlex.Title3 = '* Average ignores Current Month'; }
-                for (let i = 0; i < 12; i += 1) {
-                    MTP.Column = newCol; MTP.Title = getMonthName(i,true);
-                    newCol+=1;
-                    if(i > month2) {MTP.isHidden = true;}
-                    MF_QueueAddTitle(MTP);
-                }
-                break;
-            case 4:
-                year-=1;
-                lowerDate.setFullYear(year);
-                higherDate.setFullYear(year,11,31);
-                for (let i = 0; i < 12; i += 1) {
-                    MTP.Column = newCol; MTP.Title = getMonthName(i,true);
-                    newCol+=1;
-                    MF_QueueAddTitle(MTP);
-                }
-                break;
-            case 5:
-                if(getCookie('MT_TrendIgnoreCurrent',true) == 1) { MTFlex.Title3 = '* Average ignores Current Month'; }
-                for (let i = month2 + 1; i < 12; i += 1) {
-                    MTP.Column = newCol; MTP.Title = getMonthName(i,true);
-                    newCol+=1;
-                    MF_QueueAddTitle(MTP);
-                }
-                for (let i = 0; i <= month2; i += 1) {
-                    MTP.Column = newCol; MTP.Title = getMonthName(i,true);
-                    newCol+=1;
-                    MF_QueueAddTitle(MTP);
-                }
-                if(month2 < 11) {
-                    month2+=1;
-                    lowerDate.setMonth(month2);
-                    year2-=1;
-                    lowerDate.setFullYear(year2);
-                }
-                break;
+        if(MTFlex.Button2 == 3) {
+            if(getCookie('MT_TrendIgnoreCurrent',true) == 1) { MTFlex.Title3 = '* Average ignores Current Month'; }
+            for (let i = 0; i < 12; i += 1) {
+                MTP.Column = newCol; MTP.Title = getMonthName(i,true);
+                newCol+=1;
+                if(i > month2) {MTP.isHidden = true;}
+                MF_QueueAddTitle(MTP);
+            }
+        } else if (MTFlex.Button2 == 4 || MTFlex.Button2 == 6 || MTFlex.Button2 == 7) {
+            year-=1;
+            if(MTFlex.Button2 == 6) {year-=1;}
+            if(MTFlex.Button2 == 7) {year-=2;}
+            lowerDate.setFullYear(year);
+            higherDate.setFullYear(year,11,31);
+            for (let i = 0; i < 12; i += 1) {
+                MTP.Column = newCol; MTP.Title = getMonthName(i,true);
+                newCol+=1;
+                MF_QueueAddTitle(MTP);
+            }
+        } else if (MTFlex.Button2 == 5) {
+            if(getCookie('MT_TrendIgnoreCurrent',true) == 1) { MTFlex.Title3 = '* Average ignores Current Month'; }
+            for (let i = month2 + 1; i < 12; i += 1) {
+                MTP.Column = newCol; MTP.Title = getMonthName(i,true);
+                newCol+=1;
+                MF_QueueAddTitle(MTP);
+            }
+            for (let i = 0; i <= month2; i += 1) {
+                MTP.Column = newCol; MTP.Title = getMonthName(i,true);
+                newCol+=1;
+                MF_QueueAddTitle(MTP);
+            }
+            if(month2 < 11) {
+                month2+=1;
+                lowerDate.setMonth(month2);
+                year2-=1;
+                lowerDate.setFullYear(year2);
+            }
         }
+
         MTFlex.Title2 = getDates('s_FullDate',lowerDate) + ' - ' + getDates('s_FullDate',higherDate);
         await BuildTrendData('ot',MTFlex.Button1,'month',lowerDate,higherDate,'');
         await WriteMonthlyData();
