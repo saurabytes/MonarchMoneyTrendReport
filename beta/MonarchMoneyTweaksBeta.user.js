@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.03.10
+// @version      2.03.11
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.03.10';
+const version = '2.03.11';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -499,6 +499,14 @@ function MT_GridDrawEmbed(inSection,inCol,inValue, inDesc) {
     return '';
 }
 
+function MT_GridGetUID(inSec,inUID,inCol) {
+    for (let i = 0; i < MTFlexRow.length; i += 1) {
+        if(MTFlexRow[i].UID == inUID && MTFlexRow[i].Section == inSec) {
+            return MTFlexRow[i][MTFields + inCol];
+    } }
+    return 0;
+}
+
 function MT_GridUpdateUID(inUID,inCol,inValue) {
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         if(MTFlexRow[i].UID == inUID) {
@@ -774,12 +782,7 @@ async function MenuReportsAccountsGo() {
     }
 
     if(onCredit != 0) {
-        MTP = [];
-        MTP.Col = 0;
-        MTP.Title = getDollarValue(onCredit);
-        MTP.Subtitle = 'Total Credit Cards';
-        MTP.Style = css_red;
-        MF_QueueAddCard(MTP);
+        MTP = [];MTP.Col = 0; MTP.Title = getDollarValue(onCredit);MTP.Subtitle = 'Total Credit Cards';MTP.Style = css_red;MF_QueueAddCard(MTP);
     }
     MT_GridRollup(1,2,1,'Assets');
     MT_GridRollup(3,4,2,'Liabilities');
@@ -1042,6 +1045,10 @@ async function WriteMonthlyData() {
     MT_GridRollup(1,2,1,'Income');
     MT_GridRollup(3,4,2,'Spending');
     MT_GridRollDifference(5,1,3,1,'Savings',1);
+    MTP = [];MTP.Col = 0; MTP.Title = getDollarValue(MT_GridGetUID(1,null,13));MTP.Subtitle = 'Total Income';MTP.Style = css_green;MF_QueueAddCard(MTP);
+    MTP = [];MTP.Col = 1; MTP.Title = getDollarValue(MT_GridGetUID(3,null,13));MTP.Subtitle = 'Total Expenses';MTP.Style = css_red;MF_QueueAddCard(MTP);
+    MTP = [];MTP.Col = 2; MTP.Title = getDollarValue(MT_GridGetUID(5,null,13));MTP.Subtitle = 'Total Savings';MTP.Style = css_green;MF_QueueAddCard(MTP);
+    if(MTFlexCard[2].Title.charAt(0) == '-') {MTFlexCard[2].Style = css_red;}
 }
 
 async function WriteTrendData() {
