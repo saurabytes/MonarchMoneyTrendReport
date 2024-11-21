@@ -9,6 +9,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Reports / Accounts Net Difference now allows flexible options (This week, Two Weeks, This month, 3 months, 6 months, This Year, etc.)
 
+• NEW: Reports / Trends now has Monthly Grid (Jan-Dec) display with full column sorting and exporting.
 
 
 
