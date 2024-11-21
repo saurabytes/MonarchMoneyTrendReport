@@ -63,19 +63,19 @@ Enjoy!
 # SCREENSHOTS:
 
 **Monarch Tweaks Trends**
-![Settings](/images/MM20301.png)
+![Settings](/images/MT20301.png)
 
 **Monarch Tweaks Accounts**
-![Settings](/images/MM20302.png)
+![Settings](/images/MT20302.png)
 
 **Monarch Tweaks Configuration Options**
-![Settings](/images/MM20303.png)
+![Settings](/images/MT20303.png)
 
 **Monarch Tweaks Trend Same Month, Last Month, Same Quarter**
-![Settings](/images/MM20304.png)
+![Settings](/images/MT20304.png)
 
 **Monarch Tweaks show by Group, Category, or Both**
-![Settings](/images/MM20305.png)
+![Settings](/images/MT20305.png)
 
 **Monarch Tweaks show Monthly History up to three years**
-![Settings](/images/MM20306.png)
+![Settings](/images/MT20306.png)
