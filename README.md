@@ -62,20 +62,20 @@ Enjoy!
 
 # SCREENSHOTS:
 
-**Monarch Money Tweaks Display / Settings panel**
-![Settings](/images/MM_Settings.png)
+**Monarch Tweaks Trends**
+![Settings](/images/MM20301.png)
 
+**Monarch Tweaks Accounts**
+![Settings](/images/MM20302.png)
 
-**Monarch Money Tweaks Reports / Trends panel**
-![Trends](/images/MM_Trends.png)
+**Monarch Tweaks Configuration Options**
+![Settings](/images/MM20303.png)
 
+**Monarch Tweaks Trend Same Month, Last Month, Same Quarter**
+![Settings](/images/MM20304.png)
 
-**Monarch Money Tweaks Reports / Trends / Monthly History panel**
-![Trends Monthly History](/images/MM_Month_History.png)
+**Monarch Tweaks show by Group, Category, or Both**
+![Settings](/images/MM20305.png)
 
-
-**Monarch Money Tweaks Reports / Trends / Monthly History panel**
-![Trends Monthly History](/images/MM_Month_History2.png)
-
-
-
+**Monarch Tweaks show Monthly History up to three years**
+![Settings](/images/MM20306.png)
