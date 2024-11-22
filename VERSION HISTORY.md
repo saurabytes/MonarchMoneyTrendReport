@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.03-2.04:**
+**Version 2.03-2.05:**
 
 • NEW: Report options now have easier drop-down selections
 
@@ -13,6 +13,7 @@ Email any issues directly:  robert @ paresi.net
 
 • FIX: Reports / Trends - If YTD previous was negative and current year positive, shading would not occur.
 
+• CHANGE: Reports / Accounts - Added percentage to Difference column.
 
 **Version 2.01-2.02:**
 
