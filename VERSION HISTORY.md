@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.03:**
+**Version 2.03-2.04:**
 
 • NEW: Report options now have easier drop-down selections
 
@@ -11,6 +11,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Reports / Trends now has Monthly Grid (Jan-Dec) display with full column sorting and exporting.
 
+• FIX: Reports / Trends - If YTD previous was negative and current year positive, shading would not occur.
 
 
 **Version 2.01-2.02:**
