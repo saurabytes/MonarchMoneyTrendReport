@@ -6,9 +6,20 @@ I found there were opportunities to enhance the Monarch Money web application wi
 
 # FEATURES:
 
-* **Reports / Trends** - Summarize your Monarch Money history comparing to Last month, Same month last year or Same quarter last year.  Display a monthly grid of your history for This Year, Last Year or Last 12 months including YTD totals and Monthly average. Customize if you want the comparison and averages to include the current month.  Drill down to monthly and year-to-date totals to see trends for your groups & categories. Sort the data by any column and export your data to Excel or Numbers.
+* **Reports / Trends**
+    - Summarize your Monarch Money history comparing to Last month, Same month last year or Same quarter last year
+    - Display a monthly grid of your history for This Year, Last Year or Last 12 months including YTD totals and Monthly average
+    - Customize if you want the comparison and averages to include the current month
+    - Different highlights for spending > 25%, > 50% and > 100%
+    - Drill down to monthly and year-to-date totals to see trends for your groups & categories
+    - Sort the data by any column and export your data to Excel or Numbers
 
-* **Reports / Accounts** - Summarize all your Account balances on one screen with sorting and exporting.  Compare to different time periods (This week, Last two weeks, This month, 3 months, 6 months, 1 year, 2 years and 3 years)
+* **Reports / Accounts**
+     - Summarize all your Account balances on one screen with sorting and exporting
+     - Compare to different time periods (This week, Last two weeks, This month, 3 months, 6 months, 1 year, 2 years and 3 years)
+     - Quickly see total amount owed on credit cards
+     - Sort the data by any column and export your data to Excel or Numbers
+       
 
 * Breadcrumbs on **Reports / Income & Spending** allows staying on Reports page instead of going to Transactions connecting _All Categories > Groups > Categories_ 
 
