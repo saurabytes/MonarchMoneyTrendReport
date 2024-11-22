@@ -15,9 +15,10 @@ I found there were opportunities to enhance the Monarch Money web application wi
     - Sort the data by any column and export your data to Excel or Numbers
 
 * **Reports / Accounts**
-     - Summarize all your Account balances on one screen with sorting and exporting
+     - Summarize all your Account balances on one screen
      - Compare to different time periods (This week, Last two weeks, This month, 3 months, 6 months, 1 year, 2 years and 3 years)
-     - Quickly see total amount owed on credit cards
+     - Quickly see total amount owed on credit cards and other Checking and Credit card balances
+     - See Income, Expenses and Transfers done by Account for the current month
      - Sort the data by any column and export your data to Excel or Numbers
        
 
