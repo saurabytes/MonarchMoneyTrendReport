@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.04
+// @version      2.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.04';
+const version = '2.05';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -279,6 +279,11 @@ function MT_GridDrawDetails() {
                     switch (MTFlexTitle[j].ShowPercent) {
                         case 1:
                             pct = MT_GridPercent(useRow[j + MTFields - 2],useRow[j + MTFields - 1],MTFlexTitle[j].ShowPercentShade,1,useRow.IgnoreShade);
+                            useValue2 = useValue2 + ' ' + pct[0];
+                            useStyle2 = pct[1];
+                            break;
+                        case 3:
+                            pct = MT_GridPercent(useRow[j + MTFields - 5],useRow[j + MTFields - 1],MTFlexTitle[j].ShowPercentShade,1,useRow.IgnoreShade);
                             useValue2 = useValue2 + ' ' + pct[0];
                             useStyle2 = pct[1];
                             break;
@@ -678,8 +683,8 @@ async function MenuReportsAccountsGo() {
     MTP.Column = 5; MTP.Title = 'Expenses'; MF_QueueAddTitle(MTP);
     MTP.Column = 6; MTP.Title = 'Transfers'; MF_QueueAddTitle(MTP);
     MTP.isHidden = false;
-    MTP.Column = 7; MTP.Title = 'Balance'; MF_QueueAddTitle(MTP);
-    MTP.Column = 8; MTP.Title = 'Net Change'; MTP.ShowPercent = 0; MF_QueueAddTitle(MTP);
+    MTP.Column = 7; MTP.Title = 'Balance';MF_QueueAddTitle(MTP);
+    MTP.Column = 8; MTP.Title = 'Net Change'; MTP.ShowPercent = 3; MF_QueueAddTitle(MTP);
 
     let useBalance = 0, pastBalance = 0, useAmount = 0;
     let skipTxs = getCookie('MT_AccountsBalance',true);
