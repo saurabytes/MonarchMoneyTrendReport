@@ -1056,6 +1056,7 @@ async function WriteMonthlyData() {
         MT_GridCalcRange(14,lowestMonth,12,'Avg');
         for(let i = 1; i <= 12; i++){ if(i < lowestMonth) {MTFlexTitle[i].isHidden = true;}}
         MTFlex.Title2 = MTFlex.Title2.substring(0, 7) + MTFlexTitle[lowestMonth].Title + MTFlex.Title2.substring(11);
+        MTFlex.Title1 = 'Net Income Trend Report by Year';
     }
     else if(MTFlex.Button2 == 5) {
         MT_GridCalcRange(13,1,12,'Add');
