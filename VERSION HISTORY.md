@@ -11,7 +11,7 @@ Email any issues directly:  robert @ paresi.net
 
 • CHANGE: Reports / Trends - Better column header formatting.
 
-• ADDED: Reports / Trends - Added "All Years by Years" to Trends to see ALL your Trend history by year.
+• ADDED: Reports / Trends - Added "All years by year" to Trends to see all your Trend history by year.
 
 
 **Version 2.03:**
