@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.05
+// @version      2.06
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.05';
+const version = '2.06';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -55,7 +55,7 @@ function MM_Init() {
     addStyle('.MTFlexGridTitleCell { border-bottom: 1px solid ' + a3 + ';}');
     addStyle('.MTFlexGridTitleCell2 { text-align: right; border-bottom: 1px solid ' + a3 + ';}');
     addStyle('.MTFlexGridTitleCell:hover, .MTFlexGridTitleCell2:hover, .MTFlexGridDCell:hover, .MTFlexGridSCell:hover, .MThRefClass:hover {cursor:pointer; color: rgb(50, 170, 240);}');
-    addStyle('.MTFlexGridRow { font-size: 14px; font-weight: 500; height: 48px; }');
+    addStyle('.MTFlexGridRow { font-size: 14px; font-weight: 500; height: 40px; vertical-align: bottom;}');
     addStyle('.MTFlexGridItem { font-size: 14px; ; height: 26px }');
     addStyle('.MTFlexGridHCell { }');
     addStyle('.MTFlexGridHCell2 { text-align: right; }');
@@ -825,8 +825,8 @@ async function MenuReportsTrendsGo() {
     MTFlex.TriggerEvent = true;
     MTFlex.TriggerEvents = true;
     MTFlex.Button1Options = ['By group','By category','By both'];
-    MTFlex.Button2Options = ['Compare last month','Compare same month','Compare same quarter','This year by month','Last year by month','Last 12 months by month', 'Two years ago', 'Three years ago'];
-    MTFlex.SortSeq = ['1','1','1','2','2','2','2','2'];
+    MTFlex.Button2Options = ['Compare last month','Compare same month','Compare same quarter','This year by month','Last year by month','Last 12 months by month', 'Two years ago by month', 'Three years ago by month', 'All years by year'];
+    MTFlex.SortSeq = ['1','1','1','2','2','2','2','2','2'];
     if(MTFlex.Button1 == 2) {MTFlex.Subtotals = true;}
 
     MTP = [];
@@ -860,6 +860,13 @@ async function MenuReportsTrendsGo() {
                 newCol+=1;
                 MF_QueueAddTitle(MTP);
             }
+        } else if (MTFlex.Button2 == 8) {
+            lowerDate.setFullYear(year - 12);
+            for (let i = year - 11; i <= year; i += 1) {
+                MTP.Column = newCol; MTP.Title = i.toString();
+                newCol+=1;
+                MF_QueueAddTitle(MTP);
+            }
         } else if (MTFlex.Button2 == 5) {
             if(getCookie('MT_TrendIgnoreCurrent',true) == 1) { MTFlex.Title3 = '* Average ignores Current Month'; }
             for (let i = month2 + 1; i < 12; i += 1) {
@@ -881,7 +888,11 @@ async function MenuReportsTrendsGo() {
         }
 
         MTFlex.Title2 = getDates('s_FullDate',lowerDate) + ' - ' + getDates('s_FullDate',higherDate);
-        await BuildTrendData('ot',MTFlex.Button1,'month',lowerDate,higherDate,'');
+        if(MTFlex.Button2 == 8) {
+            await BuildTrendData('oy',MTFlex.Button1,'year',lowerDate,higherDate,'');
+        } else {
+            await BuildTrendData('ot',MTFlex.Button1,'month',lowerDate,higherDate,'');
+        }
         await WriteMonthlyData();
     } else {
         MTFlex.Title1 = 'Net Income Trend Report';
@@ -1030,9 +1041,7 @@ async function WriteMonthlyData() {
             MTFlexRow[i][MTFields] = useDesc;
         }
     }
-    for(let i = MTFlexRow.length - 1; i >= 0; i--){
-        if(MTFlexRow[i].UID == '') {const x = MTFlexRow.splice(i, 1);}
-    }
+    for(let i = MTFlexRow.length - 1; i >= 0; i--){ if(MTFlexRow[i].UID == '') {const x = MTFlexRow.splice(i, 1);}}
     let mm = getDates('n_CurMonth') + 1;
     if(MTFlex.Button2 == 3 && mm == 1) {MTFlexTitle[14].isHidden = true;
         MT_GridCalcRange(13,1,1,'Add');}
@@ -1042,6 +1051,12 @@ async function WriteMonthlyData() {
     else if(MTFlex.Button2 == 4) {
         MT_GridCalcRange(13,1,12,'Add');
         MT_GridCalcRange(14,lowestMonth,12,'Avg');}
+    else if(MTFlex.Button2 == 8) {
+        MT_GridCalcRange(13,1,12,'Add');
+        MT_GridCalcRange(14,lowestMonth,12,'Avg');
+        for(let i = 1; i <= 12; i++){ if(i < lowestMonth) {MTFlexTitle[i].isHidden = true;}}
+        MTFlex.Title2 = MTFlex.Title2.substring(0, 7) + MTFlexTitle[lowestMonth].Title + MTFlex.Title2.substring(11);
+    }
     else if(MTFlex.Button2 == 5) {
         MT_GridCalcRange(13,1,12,'Add');
         if(getCookie('MT_TrendIgnoreCurrent',true == 1)) {MT_GridCalcRange(14,lowestMonth,11,'Avg');} else { MT_GridCalcRange(14,lowestMonth,12,'Avg');}
@@ -1164,7 +1179,8 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
     let useID = '', useType = '';
     let snapshotData = null;
     let retGroups = [];
-    let sm = getDates('n_CurMonth',lowerDate) + 1;
+    let s_ndx = 0;
+    if(MTFlex.Button2 == 8) {s_ndx = getDates('n_CurYear',lowerDate);} else {s_ndx = getDates('n_CurMonth',lowerDate) + 1;}
 
     if(inID) { useType = getCategoryGroup(inID).TYPE; }
     inGrouping = Number(inGrouping);
@@ -1202,23 +1218,30 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
                 let mm = useDate.substring(5,7);
                 if(useType == 'expense') { useAmount = useAmount * -1;}
                 TrendQueue2.push({"YEAR": yy, "MONTH": mm,"AMOUNT": useAmount, "DESC": retGroups.NAME});
-            } else if (inCol == 'ot') {
+            } else if (inCol == 'oy') {
+                let useDate = snapshotData.aggregates[i].groupBy.year;
+                let ndx = Number(useDate.substring(0,4));
+                ndx = ndx - s_ndx;
+                let Amount = Math.round(useAmount);
+                MT_GridUpdateUID(useID,ndx,useAmount);}
+            else if (inCol == 'ot') {
                 let useDate = snapshotData.aggregates[i].groupBy.month;
-                let mm = Number(useDate.substring(5,7));
-                if(MTFlex.Button2 == 5 && sm != 1) {
-                    if(mm >= sm) {
-                        mm = mm - sm;
-                        mm+=1;
+                let ndx = Number(useDate.substring(5,7));
+                if(MTFlex.Button2 == 5 && s_ndx != 1) {
+                    if(ndx >= s_ndx) {
+                        ndx = ndx - s_ndx;
+                        ndx+=1;
                     } else {
-                        mm = (12 - sm + 1) + mm;
+                        ndx = (12 - s_ndx + 1) + ndx;
                     }
                 }
                 useAmount = Math.round(useAmount);
-                MT_GridUpdateUID(useID,mm,useAmount);
+                MT_GridUpdateUID(useID,ndx,useAmount);
             } else { Trend_UpdateQueue(useID,useAmount,inCol); }
         }
     }
     if(inCol == 'hs') {MTFlexReady = 2;}
+    // console.log(firstDate,lastDate,snapshotData);
 }
 
 function Trend_UpdateQueue(useID,useAmount,inCol) {
