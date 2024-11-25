@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.07.02
+// @version      2.07.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.07.02';
+const version = '2.07.03';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -693,11 +693,7 @@ async function MenuReportsAccountsGo() {
     snapshotData = await getAccountsData();
     snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
 
-    if(getCookie('MT_AccountsCard1',0) == 1) {cards+=1;}
-    if(getCookie('MT_AccountsCard2',0) == 1) {cards+=1;}
-    if(getCookie('MT_AccountsCard3',0) == 1) {cards+=1;}
-    if(getCookie('MT_AccountsCard4',0) == 1) {cards+=1;}
-    if(getCookie('MT_AccountsCard5',0) == 1) {cards+=1;}
+    for (let i = 0; i < 5; i += 1) { if(getCookie('MT_AccountsCard' + i.toString(),0) == 1) {cards+=1;}}
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
 
         if(snapshotData.accounts[i].hideFromList == false || skipHidden == 0) {
