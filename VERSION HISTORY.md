@@ -3,7 +3,18 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.03-2.06:**
+**Version 2.04-2.06:**
+
+• FIX: Reports / Trends - If YTD previous was negative and current year positive, shading would not occur.
+
+• CHANGE: Reports / Accounts - Added percentage to Difference column.
+
+• CHANGE: Reports / Trends - Better column header formatting.
+
+• ADDED: Reports / Trends - Added "All Years by Years" to Trends to see ALL your Trend history by year.
+
+
+**Version 2.03:**
 
 • NEW: Report options now have easier drop-down selections
 
@@ -11,11 +22,6 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Reports / Trends now has Monthly Grid (Jan-Dec) display with full column sorting and exporting.
 
-• FIX: Reports / Trends - If YTD previous was negative and current year positive, shading would not occur.
-
-• CHANGE: Reports / Accounts - Added percentage to Difference column.
-
-• ADDED: Reports / Trends - Added "All Years by Years" to Trends to see ALL your Trend history by year.
 
 **Version 2.01-2.02:**
 
