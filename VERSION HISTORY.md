@@ -3,6 +3,11 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 2.07 (beta):**
+
+• NEW: Reports / Accounts - Ability to select which total cards to show at top (Checking, Savings, Credit Card, Investments) - Unused cards will be filled with individual credit card accounts.
+
+
 **Version 2.04-2.06:**
 
 • FIX: Reports / Trends - If YTD previous was negative and current year positive, shading would not occur.
