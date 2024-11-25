@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.07.01
+// @version      2.07.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.07.01';
+const version = '2.07.02';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -667,7 +667,7 @@ async function MenuReportsAccountsGo() {
     let useDateRange = ['d_MinusWeek','d_Minus2Weeks','d_StartofMonth','d_Minus3Months','d_Minus6Months','d_StartOfYear','d_Minus1Year','d_Minus2Years','d_Minus3Years'][MTFlex.Button2];
     let useDate = getDates(useDateRange,AccountsTodayIs);
     let useDate2 = AccountsTodayIs;
-    let cards = 0,acard=[0,0,0,0];
+    let cards = 0,acard=[0,0,0,0,0];
 
     MTFlex.Title2 = getDates('s_FullDate',useDate) + ' - ' + getDates('s_FullDate',useDate2);
 
@@ -697,6 +697,7 @@ async function MenuReportsAccountsGo() {
     if(getCookie('MT_AccountsCard2',0) == 1) {cards+=1;}
     if(getCookie('MT_AccountsCard3',0) == 1) {cards+=1;}
     if(getCookie('MT_AccountsCard4',0) == 1) {cards+=1;}
+    if(getCookie('MT_AccountsCard5',0) == 1) {cards+=1;}
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
 
         if(snapshotData.accounts[i].hideFromList == false || skipHidden == 0) {
@@ -774,6 +775,7 @@ async function MenuReportsAccountsGo() {
                 if(snapshotData.accounts[i].subtype.name == 'savings') {acard[1] = acard[1] + MTFlexRow[MTFlexCR][MTFields+7];}
                 if(snapshotData.accounts[i].subtype.name == 'credit_card') {acard[2] = acard[2] + MTFlexRow[MTFlexCR][MTFields+7];}
                 if(snapshotData.accounts[i].type.display == 'Investments') {acard[3] = acard[3] + MTFlexRow[MTFlexCR][MTFields+7];}
+                if(snapshotData.accounts[i].subtype.name == '401k') {acard[4] = acard[4] + MTFlexRow[MTFlexCR][MTFields+7];}
                 if((snapshotData.accounts[i].subtype.name == 'credit_card') && cards < 5) {
                     MTP = [];MTP.Col = cards;
                     MTP.Title = getDollarValue(MTFlexRow[MTFlexCR][MTFields+7]);
@@ -787,8 +789,8 @@ async function MenuReportsAccountsGo() {
     }
 
     cards=0;
-    for (let i = 0; i < 4; i += 1) {
-        if(getCookie('MT_AccountsCard' + i.toString(),0) == 1) {MTP = [];MTP.Col = cards;MTP.Title = getDollarValue(acard[i]);MTP.Subtitle = 'Total ' + ['Checking', 'Savings', 'Credit Cards', 'Investments'][i];MTP.Style = [css_green,css_green,css_red,css_green][i];MF_QueueAddCard(MTP);}
+    for (let i = 0; i < 5; i += 1) {
+        if(getCookie('MT_AccountsCard' + i.toString(),0) == 1) {MTP = [];MTP.Col = cards;MTP.Title = getDollarValue(acard[i]);MTP.Subtitle = 'Total ' + ['Checking', 'Savings', 'Credit Cards', 'Investments','401k'][i];MTP.Style = [css_green,css_green,css_red,css_green,css_green][i];MF_QueueAddCard(MTP);}
     }
 
     MT_GridRollup(1,2,1,'Assets');
@@ -1909,6 +1911,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Reports / Accounts - Show total Savings card','MT_AccountsCard1','checkbox');
             MenuDisplay_Input('Reports / Accounts - Show total Credit Card Liability card','MT_AccountsCard2','checkbox');
             MenuDisplay_Input('Reports / Accounts - Show total Investments card','MT_AccountsCard3','checkbox');
+            MenuDisplay_Input('Reports / Accounts - Show total 401k card','MT_AccountsCard4','checkbox');
             MenuDisplay_Input('','','spacer');
             MenuDisplay_Input('Budget - Panel has smaller compressed grid','MT_PlanCompressed','checkbox');
             MenuDisplay_Input('','','spacer');
