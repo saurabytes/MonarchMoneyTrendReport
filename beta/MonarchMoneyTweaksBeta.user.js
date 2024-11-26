@@ -783,7 +783,7 @@ async function MenuReportsAccountsGo() {
             }
         }
     }
- console.log(snapshotData.accounts);
+
     cards=0;
     for (let i = 0; i < 5; i += 1) {
         if(getCookie('MT_AccountsCard' + i.toString(),0) == 1) {MTP = [];MTP.Col = cards;MTP.Title = getDollarValue(acard[i]);MTP.Subtitle = 'Total ' + ['Checking', 'Savings', 'Credit Cards', 'Investments','401k'][i];MTP.Style = [css_green,css_green,css_red,css_green,css_green][i];MF_QueueAddCard(MTP);}
