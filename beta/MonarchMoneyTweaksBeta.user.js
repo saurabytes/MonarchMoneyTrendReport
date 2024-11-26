@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.07.03
+// @version      2.07.04
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.07.03';
+const version = '2.07.04';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -771,7 +771,7 @@ async function MenuReportsAccountsGo() {
                 if(snapshotData.accounts[i].subtype.name == 'savings') {acard[1] = acard[1] + MTFlexRow[MTFlexCR][MTFields+7];}
                 if(snapshotData.accounts[i].subtype.name == 'credit_card') {acard[2] = acard[2] + MTFlexRow[MTFlexCR][MTFields+7];}
                 if(snapshotData.accounts[i].type.display == 'Investments') {acard[3] = acard[3] + MTFlexRow[MTFlexCR][MTFields+7];}
-                if(snapshotData.accounts[i].subtype.name == '401k') {acard[4] = acard[4] + MTFlexRow[MTFlexCR][MTFields+7];}
+                if(snapshotData.accounts[i].subtype.display == '401k') {acard[4] = acard[4] + MTFlexRow[MTFlexCR][MTFields+7];}
                 if((snapshotData.accounts[i].subtype.name == 'credit_card') && cards < 5) {
                     MTP = [];MTP.Col = cards;
                     MTP.Title = getDollarValue(MTFlexRow[MTFlexCR][MTFields+7]);
@@ -783,7 +783,7 @@ async function MenuReportsAccountsGo() {
             }
         }
     }
-
+ console.log(snapshotData.accounts);
     cards=0;
     for (let i = 0; i < 5; i += 1) {
         if(getCookie('MT_AccountsCard' + i.toString(),0) == 1) {MTP = [];MTP.Col = cards;MTP.Title = getDollarValue(acard[i]);MTP.Subtitle = 'Total ' + ['Checking', 'Savings', 'Credit Cards', 'Investments','401k'][i];MTP.Style = [css_green,css_green,css_red,css_green,css_green][i];MF_QueueAddCard(MTP);}
