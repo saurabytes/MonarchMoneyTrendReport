@@ -1518,7 +1518,7 @@ function MenuReportsDataset() {
         const elements=document.querySelectorAll('div.WithIndicatorContainer__Root-sc-1gqsonh-0');
         if(elements) {
             for (const li of elements) {
-                if(li.innerText == '\uf11e\nFilters') {
+                if(li.innerText.includes('Filters') == true) {
 
                     const cn = li.childNodes[0].className;
                     const div = document.createElement('div');
