@@ -7,6 +7,8 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Reports / Accounts - Ability to select which total cards to show at top (Checking, Savings, Credit Card, Investments) - Unused cards will be filled with individual credit card accounts.
 
+• FIX: Reports / Accounts - If beginning balance for account was zero and ending balance was also zero, but there were transfers for the current month, the account would not show in the list.  
+
 
 **Version 2.04-2.06:**
 
