@@ -3,11 +3,13 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.07 (beta):**
+**Version 2.07:**
 
 • NEW: Reports / Accounts - Ability to select which total cards to show at top (Checking, Savings, Credit Card, Investments) - Unused cards will be filled with individual credit card accounts.
 
 • FIX: Reports / Accounts - If beginning balance for account was zero and ending balance was also zero, but there were transfers for the current month, the account would not show in the list.  
+
+• FIX: Reports [Datasets] button stopped appearing in Safari browser.
 
 
 **Version 2.04-2.06:**
