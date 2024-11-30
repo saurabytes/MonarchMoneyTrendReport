@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.07.04
+// @version      2.07.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.07.04';
+const version = '2.07.05';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -688,9 +688,8 @@ async function MenuReportsAccountsGo() {
     let skipTxs = getCookie('MT_AccountsBalance',true);
     let skipHidden = getCookie('MT_AccountsHidden',true);
 
-    if(MTFlex.Button2 > 2) {skipTxs = 0;} else {snapshotData2 = await GetTransactions(formatQueryDate(useDate),formatQueryDate(useDate2),0);}
-
     snapshotData = await getAccountsData();
+    snapshotData2 = await GetTransactions(formatQueryDate(useDate),formatQueryDate(useDate2),0);
     snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
 
     for (let i = 0; i < 5; i += 1) { if(getCookie('MT_AccountsCard' + i.toString(),0) == 1) {cards+=1;}}
@@ -709,7 +708,7 @@ async function MenuReportsAccountsGo() {
             if(useBalance == null) {useBalance = 0;}
             pastBalance = getAccountBalance(MTP.UID);
             if(pastBalance == null) {pastBalance = 0;}
-            if(useBalance !=0 || pastBalance != 0) {
+            if(useBalance !=0 || getAccountUsed(MTP.UID) == true ) {
                 if(snapshotData.accounts[i].isAsset == true) {
                     MTP.BasedOn = 1;MTP.Section = 2;
                 } else {
@@ -801,6 +800,14 @@ async function MenuReportsAccountsGo() {
         }
         return 0;
     }
+
+    function getAccountUsed(inId) {
+        for (let k = 0; k < snapshotData2.allTransactions.results.length; k++) {
+            if(snapshotData2.allTransactions.results[k].account.id == inId) { return true; }
+        }
+        return false;
+    }
+
 }
 
 async function MenuReportsTrendsGo() {
