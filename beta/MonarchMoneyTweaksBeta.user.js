@@ -152,6 +152,7 @@ async function MF_GridInit(inName) {
     MTFlex = [];
     MTFlexTitle = [];
     MTFlexRow = []; MTFlexCR = 0;
+    MTFlexCard = [];
     MTFlexReady = false;
     MTFlex.Name = inName;
 
