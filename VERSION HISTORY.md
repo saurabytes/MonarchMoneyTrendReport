@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.07:**
+**Version 2.07-2.08:**
 
 • NEW: Reports / Accounts - Ability to select which total cards to show at top (Checking, Savings, Credit Card, Investments) - Unused cards will be filled with individual credit card accounts.
 
@@ -11,6 +11,7 @@ Email any issues directly:  robert @ paresi.net
 
 • FIX: Reports [Datasets] button stopped appearing in Safari browser.
 
+• CHANGE: Nicer Settings / Display menu
 
 **Version 2.04-2.06:**
 
