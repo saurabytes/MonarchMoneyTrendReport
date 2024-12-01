@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.07
+// @version      2.08
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.07';
+const version = '2.08';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -1887,38 +1887,41 @@ function MenuDisplay(OnFocus) {
         }
         if(OnFocus == true) {
             MenuDisplay_Input('Monarch Money Tweaks - ' + version,'','header');
-            MenuDisplay_Input('Lowest Calendar/Data year','MT_LowCalendarYear','number');
-            MenuDisplay_Input('','','spacer');
-            MenuDisplay_Input('Menu - Hide Budget','MT_Budget','checkbox');
-            MenuDisplay_Input('Menu - Hide Recurring','MT_Recurring','checkbox');
-            MenuDisplay_Input('Menu - Hide Goals','MT_Goals','checkbox');
-            MenuDisplay_Input('Menu - Hide Investments','MT_Investments','checkbox');
-            MenuDisplay_Input('Menu - Hide Advice','MT_Advice','checkbox');
-            MenuDisplay_Input('Menu - Hide Monarch Ads','MT_Ads','checkbox');
-            MenuDisplay_Input('','','spacer');
-            MenuDisplay_Input('Accounts - Hide Accounts Net Worth Graph panel','MT_HideAccountsGraph','checkbox');
-            MenuDisplay_Input('','','spacer');
-            MenuDisplay_Input('Transactions - Transactions panel has smaller compressed grid','MT_CompressedTx','checkbox');
-            MenuDisplay_Input('Transactions - Show Pending Transactions in red (Preferences / "Allow Pending Edits" must be off)','MT_PendingIsRed','checkbox');
-            MenuDisplay_Input('Transactions - Hide Create Rule pop-up','MT_HideToaster','checkbox');
-            MenuDisplay_Input('','','spacer');
-            MenuDisplay_Input('Reports - Add drill-down & breadcrumbs for Groups to Categories in Income/Spending','MT_ReportsDrilldown','checkbox');
-            MenuDisplay_Input('Reports - Hide chart tooltip Difference amount','MT_HideTipDiff','checkbox');
-            MenuDisplay_Input('Reports / Trends - Always compare to End of Month','MT_TrendFullPeriod','checkbox');
-            MenuDisplay_Input('Reports / Trends - By Month "Avg" ignores Current Month','MT_TrendIgnoreCurrent','checkbox');
-            MenuDisplay_Input('Reports / Trends - Hide percentage of Income & Spending','MT_TrendHidePer1','checkbox');
-            MenuDisplay_Input('Reports / Trends - Hide percentage of Difference','MT_TrendHidePer2','checkbox');
-            MenuDisplay_Input('Reports / Accounts - Use a calculated balance (Income, Expenses & Transfers) for Checking & Credit Cards','MT_AccountsBalance','checkbox');
-            MenuDisplay_Input('Reports / Accounts - Hide accounts marked as "Hide this account in list"','MT_AccountsHidden','checkbox');
-            MenuDisplay_Input('Reports / Accounts - Show total Checking card','MT_AccountsCard0','checkbox');
-            MenuDisplay_Input('Reports / Accounts - Show total Savings card','MT_AccountsCard1','checkbox');
-            MenuDisplay_Input('Reports / Accounts - Show total Credit Card Liability card','MT_AccountsCard2','checkbox');
-            MenuDisplay_Input('Reports / Accounts - Show total Investments card','MT_AccountsCard3','checkbox');
-            MenuDisplay_Input('Reports / Accounts - Show total 401k card','MT_AccountsCard4','checkbox');
-            MenuDisplay_Input('','','spacer');
-            MenuDisplay_Input('Budget - Panel has smaller compressed grid','MT_PlanCompressed','checkbox');
-            MenuDisplay_Input('','','spacer');
-            MenuDisplay_Input('General - Calendar "Last year" and "Last 12 months" include full month','MT_CalendarEOM','checkbox');
+            MenuDisplay_Input('Lowest Calendar/Data year','','spacer');
+            MenuDisplay_Input('','MT_LowCalendarYear','number');
+            MenuDisplay_Input('General','','spacer');
+            MenuDisplay_Input('Calendar "Last year" and "Last 12 months" include full month','MT_CalendarEOM','checkbox');
+            MenuDisplay_Input('Menu','','spacer');
+            MenuDisplay_Input('Hide Budget','MT_Budget','checkbox');
+            MenuDisplay_Input('Hide Recurring','MT_Recurring','checkbox');
+            MenuDisplay_Input('Hide Goals','MT_Goals','checkbox');
+            MenuDisplay_Input('Hide Investments','MT_Investments','checkbox');
+            MenuDisplay_Input('Hide Advice','MT_Advice','checkbox');
+            MenuDisplay_Input('Hide Monarch Ads','MT_Ads','checkbox');
+            MenuDisplay_Input('Accounts','','spacer');
+            MenuDisplay_Input('Hide Accounts Net Worth Graph panel','MT_HideAccountsGraph','checkbox');
+            MenuDisplay_Input('Transactions','','spacer');
+            MenuDisplay_Input('Transactions panel has smaller compressed grid','MT_CompressedTx','checkbox');
+            MenuDisplay_Input('Show Pending Transactions in red (Preferences / "Allow Pending Edits" must be off)','MT_PendingIsRed','checkbox');
+            MenuDisplay_Input('Hide Create Rule pop-up','MT_HideToaster','checkbox');
+            MenuDisplay_Input('Reports','','spacer');
+            MenuDisplay_Input('Add drill-down & breadcrumbs for Groups to Categories in Income/Spending','MT_ReportsDrilldown','checkbox');
+            MenuDisplay_Input('Hide chart tooltip Difference amount','MT_HideTipDiff','checkbox');
+            MenuDisplay_Input('Reports / Trends','','spacer');
+            MenuDisplay_Input('Always compare to End of Month','MT_TrendFullPeriod','checkbox');
+            MenuDisplay_Input('By Month "Avg" ignores Current Month','MT_TrendIgnoreCurrent','checkbox');
+            MenuDisplay_Input('Hide percentage of Income & Spending','MT_TrendHidePer1','checkbox');
+            MenuDisplay_Input('Hide percentage of Difference','MT_TrendHidePer2','checkbox');
+            MenuDisplay_Input('Reports / Accounts','','spacer');
+            MenuDisplay_Input('Use calculated balance (Income, Expenses & Transfers) for Checking & Credit Cards','MT_AccountsBalance','checkbox');
+            MenuDisplay_Input('Hide accounts marked as "Hide this account in list"','MT_AccountsHidden','checkbox');
+            MenuDisplay_Input('Show total Checking card','MT_AccountsCard0','checkbox');
+            MenuDisplay_Input('Show total Savings card','MT_AccountsCard1','checkbox');
+            MenuDisplay_Input('Show total Credit Card Liability card','MT_AccountsCard2','checkbox');
+            MenuDisplay_Input('Show total Investments card','MT_AccountsCard3','checkbox');
+            MenuDisplay_Input('Show total 401k card','MT_AccountsCard4','checkbox');
+            MenuDisplay_Input('Budget','','spacer');
+            MenuDisplay_Input('Panel has smaller compressed grid','MT_PlanCompressed','checkbox');
         }
     }
 }
@@ -1933,14 +1936,19 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
         if(inType == 'spacer') {
             e1.className = 'MTSpacerClass';
             qs.after(e1);
+
+            qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2');
+            qs = qs.firstChild.lastChild;
+            e1 = document.createElement('div');
+            e1.style = 'font-size: 14px; font-weight: 500;margin-left:24px;';
+            e1.innerText = inValue;
+            qs.after(e1);
             return;
         }
 
         if(inType == 'header') {
             e1.innerText = inValue;
-            let x = document.querySelector('div.CardHeader__Root-r0eoe3-0');
-            if(x){ e1.className = x.className; }
-            e1.style = 'font-size: 18px; font-weight: 500; display: inline-block';
+            e1.style = 'font-size: 18px; font-weight: 500;margin-left:24px;';
         } else {
             e1.style = 'margin: 11px 25px;';
         }
