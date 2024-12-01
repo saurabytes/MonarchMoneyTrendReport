@@ -13,6 +13,8 @@ Email any issues directly:  robert @ paresi.net
 
 • CHANGE: Nicer Settings / Display menu
 
+• FIX: Repprts / Accounts - Going back to previous month would dupicate Cards
+
 **Version 2.04-2.06:**
 
 • FIX: Reports / Trends - If YTD previous was negative and current year positive, shading would not occur.
