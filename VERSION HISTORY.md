@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.07-2.08:**
+**Version 2.07-2.09:**
 
 • NEW: Reports / Accounts - Ability to select which total cards to show at top (Checking, Savings, Credit Card, Investments) - Unused cards will be filled with individual credit card accounts.
 
@@ -14,6 +14,8 @@ Email any issues directly:  robert @ paresi.net
 • CHANGE: Nicer Settings / Display menu
 
 • FIX: Reports / Accounts - Going back to previous month would duplicate Cards
+
+• FIX: Reports / Accounts - Fixed Accounts that may not appear with pastBalance <> 0
 
 **Version 2.04-2.06:**
 
