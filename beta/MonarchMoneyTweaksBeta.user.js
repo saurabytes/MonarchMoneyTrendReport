@@ -101,10 +101,9 @@ function MM_Init() {
     }
     if(getCookie('MT_PendingIsRed') == 1) {addStyle('.cxLoFP {color:red;}');}
     if(getCookie('MT_CompressedTx') == 1) {
-        addStyle('.dHdtJt {font-size: 14px;}');
-        addStyle('.hDZmpo {font-size: 14px;}');
-        addStyle('.dnAUzj {font-size: 14px; padding: 2px;}');
-        addStyle('.kphLtI {height: 28px;}');
+       addStyle('.eFfssS {font-size: 14px;}');
+        addStyle('.cUFnTv {font-size: 14px;}');
+        addStyle('.ebKZOI {font-size: 14px; height: 40px;}');
     }
     MM_MenuFix();
 }
@@ -709,6 +708,7 @@ async function MenuReportsAccountsGo() {
             if(useBalance == null) {useBalance = 0;}
             pastBalance = getAccountBalance(MTP.UID);
             if(pastBalance == null) {pastBalance = 0;}
+
             if(useBalance !=0 || getAccountUsed(MTP.UID) == true || pastBalance != 0) {
                 if(snapshotData.accounts[i].isAsset == true) {
                     MTP.BasedOn = 1;MTP.Section = 2;
@@ -754,7 +754,7 @@ async function MenuReportsAccountsGo() {
                         }
                     }
                 }
-                if(skipTxs == 1 && (snapshotData.accounts[i].subtype.name == 'checking' || snapshotData.accounts[i].subtype.name == 'credit_card')) {
+                if(skipTxs == 1 && MTFlex.Button2 < 3 && (snapshotData.accounts[i].subtype.name == 'checking' || snapshotData.accounts[i].subtype.name == 'credit_card')) {
                     if(snapshotData.accounts[i].isAsset == true){
                         MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] + MTFlexRow[MTFlexCR][MTFields+5] - MTFlexRow[MTFlexCR][MTFields+6];
                     } else {
@@ -767,6 +767,7 @@ async function MenuReportsAccountsGo() {
                 MTFlexRow[MTFlexCR][MTFields+3] = parseFloat(MTFlexRow[MTFlexCR][MTFields+3].toFixed(2));
                 MTFlexRow[MTFlexCR][MTFields+8] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
                 MTFlexRow[MTFlexCR][MTFields+8] = parseFloat(MTFlexRow[MTFlexCR][MTFields+8].toFixed(2));
+
                 if(snapshotData.accounts[i].subtype.name == 'checking') {acard[0] = acard[0] + MTFlexRow[MTFlexCR][MTFields+7];}
                 if(snapshotData.accounts[i].subtype.name == 'savings') {acard[1] = acard[1] + MTFlexRow[MTFlexCR][MTFields+7];}
                 if(snapshotData.accounts[i].subtype.name == 'credit_card') {acard[2] = acard[2] + MTFlexRow[MTFlexCR][MTFields+7];}
@@ -1250,6 +1251,7 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
         }
     }
     if(inCol == 'hs') {MTFlexReady = 2;}
+
 }
 
 function Trend_UpdateQueue(useID,useAmount,inCol) {
@@ -1288,6 +1290,7 @@ function Trend_UpdateQueue(useID,useAmount,inCol) {
             TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_CURRENTM": 0, "N_LASTM": useAmount});
             break;
     }
+
 }
 // =======================================
 function MenuReportsHistory(inType,inID) {
