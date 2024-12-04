@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.09
+// @version      2.10.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.09';
+const version = '2.10.01';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -954,6 +954,9 @@ async function MenuReportsTrendsGo() {
         await BuildTrendData('cm',MTFlex.Button1,'year',lowerDate,higherDate,'');
 
         // Last Period --------------
+        let forceEOM = false;
+        if(daysInMonth(month,year) == day2) { forceEOM = true; }
+
         useTitle = '';
         if(MTFlex.Button2 == 0) {
             month-=1;
@@ -964,7 +967,8 @@ async function MenuReportsTrendsGo() {
             higherDate.setFullYear(year2,month2,1);
 
             let x = daysInMonth(month,year);
-            if(day2 > x) {day2 = x;}
+            if(day2 > x) { day2 = x; }
+            if(forceEOM == true) {day2 = x;}
             higherDate.setDate(day2);
             MTFlex.TitleShort = 'Last Month';
             useTitle = getMonthName(month2,true) + ' ' + year;
@@ -1251,6 +1255,7 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
         }
     }
     if(inCol == 'hs') {MTFlexReady = 2;}
+    //console.log(firstDate,lastDate,snapshotData);
 
 }
 
