@@ -3,6 +3,13 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 2.10 (beta):**
+
+• FIX: Changes in Monarch style sheet caused Transaction compress grid to stop working.
+
+• CHANGE: When on last day of current month (11/30) and comparing to last month, last month will now compare to 10/31 instead of 10/30.
+
+
 **Version 2.07-2.09:**
 
 • NEW: Reports / Accounts - Ability to select which total cards to show at top (Checking, Savings, Credit Card, Investments) - Unused cards will be filled with individual credit card accounts.
