@@ -8,7 +8,7 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.10.01';
+const version = '2.10.02';
 const css_currency = 'USD';
 const css_green = 'color: #489d8c;';
 const css_red = 'color: #ed5987;';
@@ -17,8 +17,8 @@ const graphql = 'https://api.monarchmoney.com/graphql';
 let r_Init = false;
 let SaveLocationHRefName = '', SaveLocationPathName = '';
 let r_headStyle = null;
-let r_DatePickerActive = false, r_DatasetActive = false, r_FlexButtonActive = false;
-let r_spawn = 0, r_eventListener = null;
+let r_DatasetActive = false, r_FlexButtonActive = false;
+let r_eventListener = null;
 let accountGroups = [], accountBalances = [];
 let AccountsTodayIs = new Date(), TrendTodayIs = new Date();
 let TrendQueue = [], TrendQueue2 = [];
@@ -101,8 +101,7 @@ function MM_Init() {
     }
     if(getCookie('MT_PendingIsRed') == 1) {addStyle('.cxLoFP {color:red;}');}
     if(getCookie('MT_CompressedTx') == 1) {
-       addStyle('.eFfssS {font-size: 14px;}');
-        addStyle('.cUFnTv {font-size: 14px;}');
+        addStyle('.fKLqRU, .dHdtJt, .cUFnTv, .eFfssS {font-size: 14px;}');
         addStyle('.ebKZOI {font-size: 14px; height: 40px;}');
     }
     MM_MenuFix();
@@ -606,9 +605,7 @@ function MenuReports(OnFocus) {
         }
        if(OnFocus == true) {
            MenuReportsDataset();
-           MenuReportBreadcrumbListener();
            MenuReportsCustom();
-           r_spawn = 1;
         }
     }
 }
@@ -1689,143 +1686,6 @@ function MM_FixCalendarDropdown(InList) {
     }
 }
 
-// [ Breadcrumbs ]
-function MenuReportBreadcrumbListener() {
-
-    if (SaveLocationPathName.endsWith('/income') || SaveLocationPathName.endsWith('/spending')) {
-        if(getCookie("MT_ReportsDrilldown") == 1) {
-            if(r_eventListener == null) {
-                r_eventListener = window.addEventListener('click', event => {
-                    const cl = event.target.parentNode;
-                    if(cl) {
-                        const CheckLegend = cl.attributes[0].value;
-                        if(CheckLegend) {
-                            if(CheckLegend.includes("PieChartWithLegend") == true) {
-                                event.stopImmediatePropagation();
-                                event.stopPropagation();
-                                event.preventDefault();
-                                const parentAsearch = cl.parentNode.parentNode.search;
-                                r_spawn = -1;
-                                MenuReportBreadcrumbGo(parentAsearch);
-                            }
-                        }
-                    }
-                }, true);
-            }
-        }
-    }
-    buildCategoryGroups();
-}
-
-function MenuReportBreadcrumbGo(Parms) {
-
-    if(getCookie("MT_ReportsDrilldown",true) == 0) {return;}
-
-    let bcl = '', retGroups = [];
-
-    retGroups.GROUPNAME = '';
-    retGroups.GROUP = '';
-    retGroups.ID = '';
-    retGroups.TYPE = '';
-
-    if(Parms) {
-        const params = new URLSearchParams(Parms);
-        const categorygroups = params.get('categoryGroups');
-        const categories = params.get('categories');
-
-        if(categories || categorygroups) {
-            let storedStr = localStorage.getItem('persist:reports');
-            let x = storedStr.indexOf('}",');
-            if(x > 0) {
-
-                // Remove current categories
-                let newStoredStr = removeAllEncompass(storedStr,',\"categories\":','\"]');
-
-                newStoredStr = newStoredStr.substring(0,x) + ',\\"categories\\":[';
-
-                if(categorygroups) {
-                    for (let i = 0; i < accountGroups.length; i++) {
-                        if(accountGroups[i].GROUP == categorygroups) {
-                            if(bcl == '1') { newStoredStr = newStoredStr + ',';}
-                            bcl = '1';
-                            newStoredStr = newStoredStr + '\\"' + accountGroups[i].ID + '\\"';
-                            retGroups.GROUPNAME = accountGroups[i].GROUPNAME;
-                            retGroups.GROUP = accountGroups[i].GROUP;
-                            retGroups.ID = accountGroups[i].ID;
-                            retGroups.TYPE = accountGroups[i].TYPE;
-                        }
-                    }
-                } else
-                {
-                    newStoredStr = newStoredStr + '\\"' + categories + '\\"';
-                    bcl = '2';
-                    retGroups = getCategoryGroup(categories);
-                }
-
-                newStoredStr = newStoredStr + ']' + storedStr.substring(x);
-                newStoredStr = newStoredStr.replace('"category_group','"category');
-
-                localStorage.setItem("persist:reports", newStoredStr);
-                localStorage.setItem("persist:breadcrumb",retGroups.GROUP + '/:/' + retGroups.GROUPNAME + '/:/' + bcl + '/:/' + retGroups.NAME + '/:/' + retGroups.TYPE );
-
-                // Redirect back to page
-                window.location.replace(SaveLocationPathName);
-            }
-        }
-    }
-
-    if(r_spawn > -1) {
-        const div = document.querySelector('div.ReportsPieChart__Root-a4nd0f-0');
-        if(div) {
-            let groupStoredStr = localStorage.getItem('persist:breadcrumb');
-            if(groupStoredStr) {
-                const GroupStuff = groupStoredStr.split('/:/');
-                retGroups.GROUP = GroupStuff[0];
-                retGroups.GROUPNAME = GroupStuff[1];
-                bcl = GroupStuff[2];
-                retGroups.NAME = GroupStuff[3];
-                retGroups.TYPE = GroupStuff[4];
-                if((retGroups.TYPE == 'income' && SaveLocationPathName.includes("spending")) || (retGroups.TYPE == 'expense' && SaveLocationPathName.includes("income")) ) {
-                    return;
-                }
-            }
-
-            if(retGroups.GROUP && retGroups != 'undefined') {
-                if(bcl == '2') {
-                    let bc = document.createElement('button');
-                    bc.className = 'MTlink';
-                    bc.innerText = retGroups.GROUPNAME + ' »';
-                    div.prepend(bc);
-                    bc.addEventListener('click', () => {
-                        window.location.replace(SaveLocationPathName + '?categoryGroups=' + retGroups.GROUP);
-                    });
-                } else
-                {
-                    let bc = document.createElement('span');
-                    bc.className = 'MTlink2';
-                    bc.innerText = '/ ' + retGroups.GROUPNAME;
-                    div.prepend(bc);
-                }
-            }
-
-            if(document.querySelector('button.MTlink3') == null) {
-                let bc3 = document.createElement('button');
-                bc3.className = 'MTlink3';
-                bc3.innerText = 'Clear Categories »';
-                div.prepend(bc3);
-                bc3.addEventListener('click', () => {
-                    const storedStr = localStorage.getItem('persist:reports');
-                    let newStoredStr = removeAllEncompass(storedStr,',\\"categories\\":','\"]');
-                    newStoredStr = newStoredStr.replace('"\\"category\\""','"\\"category_group\\""');
-                    localStorage.setItem('persist:reports',newStoredStr);
-                    localStorage.removeItem('persist:breadcrumb');
-                    window.location.replace(SaveLocationPathName);
-                });
-            }
-        }
-    }
-}
-
 function removeAllEncompass(InValue,InStart,InEnd) {
 
     let result = InValue;
@@ -1875,7 +1735,7 @@ function MM_SplitTransaction() {
 function MenuTransactions(OnFocus) {
 
     if (SaveLocationPathName.startsWith('/transactions')) {
-        if(OnFocus == true) { r_spawn = 1; }
+       
     }
 }
 
@@ -1914,7 +1774,6 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Show Pending Transactions in red (Preferences / "Allow Pending Edits" must be off)','MT_PendingIsRed','checkbox');
             MenuDisplay_Input('Hide Create Rule pop-up','MT_HideToaster','checkbox');
             MenuDisplay_Input('Reports','','spacer');
-            MenuDisplay_Input('Add drill-down & breadcrumbs for Groups to Categories in Income/Spending','MT_ReportsDrilldown','checkbox');
             MenuDisplay_Input('Hide chart tooltip Difference amount','MT_HideTipDiff','checkbox');
             MenuDisplay_Input('Reports / Trends','','spacer');
             MenuDisplay_Input('Always compare to End of Month','MT_TrendFullPeriod','checkbox');
@@ -2002,9 +1861,6 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
 
 function MenuCheckSpawnProcess() {
 
-    if(r_DatePickerActive == true) {
-        MM_FixCalendarYears();
-    }
 
     switch(MTFlexReady) {
         case true:
@@ -2015,14 +1871,6 @@ function MenuCheckSpawnProcess() {
             MTFlexReady = false;
             MenuReportsHistoryDraw();
             break;
-    }
-
-    if(r_spawn > 0) {
-        r_spawn+=1;
-        if(r_spawn > 3) {
-            r_spawn = 0;
-            MenuReportBreadcrumbGo(window.location.search);
-        }
     }
 }
 
@@ -2419,35 +2267,33 @@ function addStyle(aCss) {
 
     setInterval(() => {
 
-        if(r_spawn > -1) {
+        if(SaveLocationHRefName != window.location.href) { MM_MenuFix();}
 
-            if(SaveLocationHRefName != window.location.href) { MM_MenuFix();}
+        if(window.location.pathname != SaveLocationPathName) {
 
-            if(window.location.pathname != SaveLocationPathName) {
-
-                // Lose Focus on a page
-                if(SaveLocationPathName) {
-                    MenuLogin(false);
-                    MenuReports(false);
-                    MenuDisplay(false);
-                    MenuTransactions(false);
-                }
-
-                if(r_Init == false) {
-                    MM_Init();
-                    r_Init = true;
-                }
-
-                SaveLocationPathName = window.location.pathname;
-                SaveLocationHRefName = window.location.href;
-
-                // Gain Focus on a Page
-                MenuReports(true);
-                MenuDisplay(true);
-                MenuTransactions(true);
+            // Lose Focus on a page
+            if(SaveLocationPathName) {
+                MenuLogin(false);
+                MenuReports(false);
+                MenuDisplay(false);
+                MenuTransactions(false);
             }
-            MenuCheckSpawnProcess();
+
+            if(r_Init == false) {
+                MM_Init();
+                r_Init = true;
+            }
+
+            SaveLocationPathName = window.location.pathname;
+            SaveLocationHRefName = window.location.href;
+
+            // Gain Focus on a Page
+            MenuReports(true);
+            MenuDisplay(true);
+            MenuTransactions(true);
         }
+        MenuCheckSpawnProcess();
+
     },400);
 }());
 
