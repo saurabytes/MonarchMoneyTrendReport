@@ -1,16 +1,16 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.10.03
+// @version      2.10.04
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.10.03';
+const version = '2.10.04';
 const css_currency = 'USD';
-const css_green = 'color: #579965;';
+const css_green = 'color: rgb(42, 126, 59);';
 const css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
 
@@ -34,19 +34,18 @@ function MM_Init() {
     const panelBackground = 'background-color: ' + ['#FFFFFF;','#222221;'][a];
     const panelText = 'color: ' + ['rgb(119, 117, 115);','#989691;'][a];
     const transText = 'color: ' + ['rgb(34, 32, 29);','#FFFFFF;'][a];
-
-    const a2 = 'background-color: ' + ['#14457a;','#eaf6fd;'][a];
-    const a3 = ['rgb(228, 225, 222)','e4e9f0'][a];
-    const a4 = 'background: ' + ['#082043;','aliceblue;'][a];
-    const a5 = 'color: ' + ['rgb(34, 32, 29);','#082864;'][a];
+    const standardText = 'color: ' + ['rgb(34, 32, 29);','#082864;'][a];
+    const sidepanelBackground = 'background: ' + ['#def7f9;','#def7f9;'][a];
+    const selectBackground = 'background-color: ' + ['#def7f9;','#def7f9;'][a];
+    const selectForground = 'color: ' + ['#107d98;','#107d98;'][a];
+    const borderColor = ['rgb(228, 225, 222)','e4e9f0'][a];
 
     addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
     addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
     addStyle('.MTCheckboxClass {width: 20px; height: 20px;}');
-    addStyle('.MTSpacerClass {margin-top: 10px; margin-bottom: 10px;; border-bottom: 1px solid ' + a3 +';}');
-    addStyle('.MThRefClass {' + a5 + '}');
-
-    addStyle('.MTFlexButtonExport, .MTFlexButton1, .MTFlexButton2 {' + panelBackground + transText + 'margin-left: 20px; font-weight: 500; border: 1px solid ' + a3 + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px; font-size: 14px; padding: 7.5px 12px;cursor: pointer;border-radius: 4px;line-height: 150%;}');
+    addStyle('.MTSpacerClass {margin-top: 10px; margin-bottom: 10px;; border-bottom: 1px solid ' + borderColor +';}');
+    addStyle('.MThRefClass {' + standardText + '}');
+    addStyle('.MTFlexButtonExport, .MTFlexButton1, .MTFlexButton2 {' + panelBackground + transText + 'margin-left: 20px; font-weight: 500; border: 1px solid ' + borderColor + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px; font-size: 14px; padding: 7.5px 12px;cursor: pointer;border-radius: 4px;line-height: 150%;}');
     addStyle('.MTFlexContainer {display:block; padding: 20px;}');
     addStyle('.MTFlexContainer2 {margin: 0px;  gap: 20px;  display: flex; }');
     addStyle('.MTFlexContainerPanel { display: flex; flex-flow: column; place-content: stretch flex-start; ' + panelBackground + 'border-radius: 8px; box-shadow: rgba(8, 40, 100, 0.04) 0px 4px 8px;}');
@@ -55,45 +54,46 @@ function MM_Init() {
     addStyle('.MTFlexGrid th, td { padding-right: 8px;}');
     addStyle('.MTFlexTitle2 {display: flex; flex-flow: column;}');
     addStyle('.MTFlexGridTitleRow { font-size: 16px; font-weight: 500; height: 56px; position: sticky; top: 0; ' + panelBackground + '}');
-    addStyle('.MTFlexGridTitleCell { border-bottom: 1px solid ' + a3 + ';}');
-    addStyle('.MTFlexGridTitleCell2 { text-align: right; border-bottom: 1px solid ' + a3 + ';}');
+    addStyle('.MTFlexGridTitleCell { border-bottom: 1px solid ' + borderColor + ';}');
+    addStyle('.MTFlexGridTitleCell2 { text-align: right; border-bottom: 1px solid ' + borderColor + ';}');
     addStyle('.MTFlexGridTitleCell:hover, .MTFlexGridTitleCell2:hover, .MTFlexGridDCell:hover, .MTFlexGridSCell:hover, .MThRefClass:hover {cursor:pointer; color: rgb(50, 170, 240);}');
     addStyle('.MTFlexGridRow { font-size: 14px; font-weight: 500; height: 40px; vertical-align: bottom;}');
     addStyle('.MTFlexGridItem { font-size: 14px; ; height: 26px }');
     addStyle('.MTFlexGridHCell { }');
     addStyle('.MTFlexGridHCell2 { text-align: right; }');
-    addStyle('.MTFlexGridDCell, .MTFlexGridD3Cell {' + a5 +' }');
+    addStyle('.MTFlexGridDCell, .MTFlexGridD3Cell {' + standardText +' }');
     addStyle('.MTFlexGridDCell2 { text-align: right; }');
-    addStyle('.MTFlexGridSCell,.MTFlexGridS3Cell { padding-bottom: 18px; vertical-align:top; height: 36px;' + a5 + ' font-weight: 500; border-top: 1px solid ' + a3 + ';}');
-    addStyle('.MTFlexGridSCell2 { text-align: right; padding-bottom: 18px; vertical-align:top; height: 36px;' + a5 + ' font-weight: 500; border-top: 1px solid ' + a3 + ';}');
+    addStyle('.MTFlexGridSCell,.MTFlexGridS3Cell { padding-bottom: 18px; vertical-align:top; height: 36px;' + standardText + ' font-weight: 500; border-top: 1px solid ' + borderColor + ';}');
+    addStyle('.MTFlexGridSCell2 { text-align: right; padding-bottom: 18px; vertical-align:top; height: 36px;' + standardText + ' font-weight: 500; border-top: 1px solid ' + borderColor + ';}');
 
-    addStyle('.MTFlexBig {font-size: 20px; ' + transText + 'font-weight: 500; padding-top: 8px;}');
+    addStyle('.MTFlexCardBig {font-size: 20px; ' + transText + 'font-weight: 500; padding-top: 8px;}');
+    addStyle('.MTFlexBig {font-size: 18px; ' + transText + 'font-weight: 500; padding-top: 8px;}');
     addStyle('.MTFlexSmall {font-size: 12px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
     addStyle('.MTFlexLittle {font-size: 10px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
 
-    addStyle('.MTFlexCellArrow, .MTTrendCellArrow, .MTTrendCellArrow2 {' + panelBackground + a5 + 'width: 24px; height:24px; font-size: 16px; font-family: MonarchIcons, sans-serif; transition: 0.1s ease-out; cursor: pointer; border-radius: 100%; border-style: none;}');
-    addStyle('.MTFlexCellArrow:hover {border: 1px solid ' + a4 + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;}');
+    addStyle('.MTFlexCellArrow, .MTTrendCellArrow, .MTTrendCellArrow2 {' + panelBackground + standardText + 'width: 24px; height:24px; font-size: 16px; font-family: MonarchIcons, sans-serif; transition: 0.1s ease-out; cursor: pointer; border-radius: 100%; border-style: none;}');
+    addStyle('.MTFlexCellArrow:hover {border: 1px solid ' + sidepanelBackground + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;}');
     addStyle('.MTIcons {font-family: MonarchIcons; margin-left: 4px; vertical-align:middle;}');
 
     addStyle('.MTSideDrawerRoot {position: absolute;  inset: 0px;  display: flex;  -moz-box-pack: end;  justify-content: flex-end;}');
-    addStyle('.MTSideDrawerContainer {overflow: hidden; padding: 12px; width: 640px; -moz-box-pack: end; ' + a4 + ' position: relative; overflow:auto;}');
+    addStyle('.MTSideDrawerContainer {overflow: hidden; padding: 12px; width: 640px; -moz-box-pack: end; ' + sidepanelBackground + ' position: relative; overflow:auto;}');
     addStyle('.MTSideDrawerMotion {display: flex; flex-direction: column; transform:none;}');
-    addStyle('.MTSideDrawerHeader { ' + a5 + ' padding: 12px; }');
+    addStyle('.MTSideDrawerHeader { ' + standardText + ' padding: 12px; }');
     addStyle('.MTSideDrawerItem { font-size: 14px;  margin-bottom: 10px;  place-content: stretch space-between;  display: flex;');
-    addStyle('.MTSideDrawerDetail { ' + a5 + ' width: 24%; text-align: right; font-size: 13px; }');
-    addStyle('.MTSideDrawerDetail2 { ' + a5 + ' width: 24%; text-align: right; font-size: 12px; }');
-    addStyle('.MTSideDrawerDetail3 { ' + a5 + ' width: 13px; text-align: center; font-size: 13px; font-family: MonarchIcons, sans-serif !important; }');
-    addStyle('.dropbtn {' + panelBackground + a5 + '; border: none; cursor: pointer;}');
-    addStyle('.dropbtn:hover, .dropbtn:focus {' + a2 + '}');
+    addStyle('.MTSideDrawerDetail { ' + standardText + ' width: 24%; text-align: right; font-size: 13px; }');
+    addStyle('.MTSideDrawerDetail2 { ' + standardText + ' width: 24%; text-align: right; font-size: 12px; }');
+    addStyle('.MTSideDrawerDetail3 { ' + standardText + ' width: 13px; text-align: center; font-size: 13px; font-family: MonarchIcons, sans-serif !important; }');
+    addStyle('.dropbtn {' + panelBackground + standardText + '; border: none; cursor: pointer;}');
+    addStyle('.dropbtn:hover, .dropbtn:focus {' + selectBackground + selectForground + '}');
     addStyle('.MTdropdown {float: right;  position: relative; display: inline-block; font-weight: 200;}');
     addStyle('.MTdropdown-content div {font-size: 0px; line-height: 2px; background-color: #ff7369;}');
-    addStyle('.MTdropdown-content {' + panelBackground + a5 + ';display:none; position: absolute; min-width: 300px; overflow: auto; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0; z-index: 1;}');
-    addStyle('.MTdropdown-content a {' + panelBackground + a5 + ';font-size: 15px; padding: 10px 10px; display: block;}');
+    addStyle('.MTdropdown-content {' + panelBackground + standardText + ';display:none; position: absolute; min-width: 300px; overflow: auto; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0; z-index: 1;}');
+    addStyle('.MTdropdown-content a {' + panelBackground + standardText + ';font-size: 16px; padding: 10px 10px; display: block;}');
     addStyle('.MTFlexdown {float: right;  position: relative; display: inline-block; font-weight: 200;}');
     addStyle('.MTFlexdown-content div {font-size: 0px; line-height: 2px; background-color: #ff7369;}');
-    addStyle('.MTFlexdown-content {' + panelBackground + a5 + ';display:none; margin-top: 12px; padding: 12px; position: absolute; min-width: 260px; overflow: auto; border-radius: 8px; border: 1px solid ' + a3 + '; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0; z-index: 1;}');
-    addStyle('.MTFlexdown-content a {' + panelBackground + a5 + ';font-size: 15px; text-align: left; border-radius: 8px; font-weight: 200; padding: 10px 10px; display: block;}');
-    addStyle('.MTdropdown a:hover {' + a2 + ' }');
+    addStyle('.MTFlexdown-content {' + panelBackground + standardText + ';display:none; margin-top: 12px; padding: 12px; position: absolute; min-width: 260px; overflow: auto; border-radius: 8px; border: 1px solid ' + borderColor + '; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0; z-index: 1;}');
+    addStyle('.MTFlexdown-content a {' + panelBackground + standardText + ';font-size: 16px; text-align: left; border-radius: 8px; font-weight: 200; padding: 10px 10px; display: block;}');
+    addStyle('.MTdropdown a:hover {' + selectBackground + selectForground + ' }');
     addStyle('.show {display: block;}');
 
     addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster"),'block;') + '}');
@@ -412,7 +412,7 @@ function MT_GridDrawCards() {
         topDiv = cec('div','MTFlexContainer2',div,'','','','');
         for (let i = 0; i < MTFlexCard.length; i++) {
             let div2 = cec('div','MTFlexContainerCard',topDiv,'','','style','flex-flow: column;');
-            cec('span','MTFlexBig',div2,MTFlexCard[i].Title,'','style',MTFlexCard[i].Style);
+            cec('span','MTFlexCardBig',div2,MTFlexCard[i].Title,'','style',MTFlexCard[i].Style);
             cec('span','MTFlexSmall',div2,MTFlexCard[i].Subtitle,'','style','text-align:center');
         }
     }
@@ -437,10 +437,10 @@ function MT_GridPercent(inA,inB,inHighlight, inPercent, inIgnoreShade) {
 
         if(inHighlight == true && inIgnoreShade != true) {
             if(p[0] > 100) {
-                p[1] = 'background-color: #e68691; color: black;';
+                p[1] = 'background-color: #e54d2e; color: black;';
             } else {
-                if(p[0] > 50) {p[1] = 'background-color: #ffc7ce; color: black;';} else {
-                    if(p[0] > 25 ) {p[1] = 'background-color: #fff3f4; color: black;';}
+                if(p[0] > 50) {p[1] = 'background-color: #fdd4bc; color: black;';} else {
+                    if(p[0] > 25 ) {p[1] = 'background-color: #FFE4D7; color: black;';}
                 }
             }
             if(p[1]) {p[1] = p[1] + 'border-radius: 6px;';}
