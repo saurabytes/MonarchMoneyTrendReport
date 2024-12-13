@@ -437,10 +437,10 @@ function MT_GridPercent(inA,inB,inHighlight, inPercent, inIgnoreShade) {
 
         if(inHighlight == true && inIgnoreShade != true) {
             if(p[0] > 100) {
-                p[1] = 'background-color: #e54d2e; color: black;';
+                p[1] = 'background-color: #f7752d; color: black;';
             } else {
-                if(p[0] > 50) {p[1] = 'background-color: #fdd4bc; color: black;';} else {
-                    if(p[0] > 25 ) {p[1] = 'background-color: #FFE4D7; color: black;';}
+                if(p[0] > 50) {p[1] = 'background-color: #f89155; color: black;';} else {
+                    if(p[0] > 25 ) {p[1] = 'background-color: #fde0cf; color: black;';}
                 }
             }
             if(p[1]) {p[1] = p[1] + 'border-radius: 6px;';}
