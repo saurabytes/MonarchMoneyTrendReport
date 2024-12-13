@@ -5,8 +5,6 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.10:**
 
-• FIX: Transactions - Changes in Monarch style sheet caused Transaction compress grid to stop working.
-
 • CHANGE: Reports / Trends - When on last day of current month (11/30) and comparing to last month, last month will now compare to last day of month (10/31 instead of 10/30).
 
 • FIX: Monarch new color scheme corrections.
