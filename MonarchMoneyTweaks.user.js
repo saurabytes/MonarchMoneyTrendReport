@@ -10,7 +10,7 @@
 
 const version = '2.10';
 const css_currency = 'USD';
-const css_green = 'color: rgb(42, 126, 59);';
+const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
 
@@ -32,14 +32,14 @@ function MM_Init() {
 
     const a = getStyle();
     const panelBackground = 'background-color: ' + ['#FFFFFF;','#222221;'][a];
-    const panelText = 'color: ' + ['rgb(119, 117, 115);','#989691;'][a];
-    const transText = 'color: ' + ['rgb(34, 32, 29);','#FFFFFF;'][a];
-    const standardText = 'color: ' + ['rgb(34, 32, 29);','#FFFFFF;'][a];
+    const panelText = 'color: ' + ['#777573;','#989691;'][a];
+    const transText = 'color: ' + ['#22201d;','#FFFFFF;'][a];
+    const standardText = 'color: ' + ['#22201d;','#FFFFFF;'][a];
     const sidepanelBackground = 'background: ' + ['#def7f9;','#222221;'][a];
     const selectBackground = 'background-color: ' + ['#def7f9;','#082c36;'][a];
     const selectForground = 'color: ' + ['#107d98;','#4ccce6;'][a];
     const lineForground = ['#107d98','#363532'][a];
-    const borderColor = ['rgb(228, 225, 222)','#363532'][a];
+    const borderColor = ['#e4e1de','#363532'][a];
 
     addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
     addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
