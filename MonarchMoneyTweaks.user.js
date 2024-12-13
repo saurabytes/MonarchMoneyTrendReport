@@ -38,8 +38,8 @@ function MM_Init() {
     const sidepanelBackground = 'background: ' + ['#def7f9;','#222221;'][a];
     const selectBackground = 'background-color: ' + ['#def7f9;','#082c36;'][a];
     const selectForground = 'color: ' + ['#107d98;','#4ccce6;'][a];
-    const lineForground = ['#107d98','#363532'][a];
-    const borderColor = ['#e4e1de','#363532'][a];
+    const lineForground = ['#f4f3f2','#363532'][a];
+    const borderColor = ['#e4e1de','rgb(98, 96, 93)'][a];
 
     addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
     addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
