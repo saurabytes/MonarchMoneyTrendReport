@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.10.04
+// @version      2.10
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.10.04';
+const version = '2.10';
 const css_currency = 'USD';
 const css_green = 'color: rgb(42, 126, 59);';
 const css_red = 'color: #d13415;';
@@ -34,16 +34,17 @@ function MM_Init() {
     const panelBackground = 'background-color: ' + ['#FFFFFF;','#222221;'][a];
     const panelText = 'color: ' + ['rgb(119, 117, 115);','#989691;'][a];
     const transText = 'color: ' + ['rgb(34, 32, 29);','#FFFFFF;'][a];
-    const standardText = 'color: ' + ['rgb(34, 32, 29);','#082864;'][a];
-    const sidepanelBackground = 'background: ' + ['#def7f9;','#def7f9;'][a];
-    const selectBackground = 'background-color: ' + ['#def7f9;','#def7f9;'][a];
-    const selectForground = 'color: ' + ['#107d98;','#107d98;'][a];
-    const borderColor = ['rgb(228, 225, 222)','e4e9f0'][a];
+    const standardText = 'color: ' + ['rgb(34, 32, 29);','#FFFFFF;'][a];
+    const sidepanelBackground = 'background: ' + ['#def7f9;','#222221;'][a];
+    const selectBackground = 'background-color: ' + ['#def7f9;','#082c36;'][a];
+    const selectForground = 'color: ' + ['#107d98;','#4ccce6;'][a];
+    const lineForground = ['#107d98','#363532'][a];
+    const borderColor = ['rgb(228, 225, 222)','#363532'][a];
 
     addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
     addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
     addStyle('.MTCheckboxClass {width: 20px; height: 20px;}');
-    addStyle('.MTSpacerClass {margin-top: 10px; margin-bottom: 10px;; border-bottom: 1px solid ' + borderColor +';}');
+    addStyle('.MTSpacerClass {margin-top: 4px; margin-bottom: 4px; border-bottom: 1px solid ' + lineForground +';}');
     addStyle('.MThRefClass {' + standardText + '}');
     addStyle('.MTFlexButtonExport, .MTFlexButton1, .MTFlexButton2 {' + panelBackground + transText + 'margin-left: 20px; font-weight: 500; border: 1px solid ' + borderColor + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px; font-size: 14px; padding: 7.5px 12px;cursor: pointer;border-radius: 4px;line-height: 150%;}');
     addStyle('.MTFlexContainer {display:block; padding: 20px;}');
@@ -71,7 +72,7 @@ function MM_Init() {
     addStyle('.MTFlexSmall {font-size: 12px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
     addStyle('.MTFlexLittle {font-size: 10px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
 
-    addStyle('.MTFlexCellArrow, .MTTrendCellArrow, .MTTrendCellArrow2 {' + panelBackground + standardText + 'width: 24px; height:24px; font-size: 16px; font-family: MonarchIcons, sans-serif; transition: 0.1s ease-out; cursor: pointer; border-radius: 100%; border-style: none;}');
+    addStyle('.MTFlexCellArrow, .MTTrendCellArrow, .MTTrendCellArrow2 {' + panelBackground + standardText + 'width: 24px; height:24px; font-size: 18px; font-family: MonarchIcons, sans-serif; transition: 0.1s ease-out; cursor: pointer; border-radius: 100%; border-style: none;}');
     addStyle('.MTFlexCellArrow:hover {border: 1px solid ' + sidepanelBackground + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;}');
     addStyle('.MTIcons {font-family: MonarchIcons; margin-left: 4px; vertical-align:middle;}');
 
@@ -1319,7 +1320,7 @@ function MenuReportsHistory(inType,inID) {
         if(inType == 'category-groups') {
             div2 = cec('button','MTTrendCellArrow2',div,['',''][getCookie('MTC_div.TrendHistoryDetail',true)],'','style','float:right;margin-right: 16px;');
         }
-        div2 = cec('div','MTFlexBig',div,'Monthly Summary');
+        div2 = cec('div','MTFlexCardBig',div,'Monthly Summary');
         div = cec('span','MTSideDrawerHeader',div4,'','','','');
         div2 = cec('div','MTFlexSmall',div, retGroups.TYPE,'','style','float:right;');
 
