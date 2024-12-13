@@ -9,7 +9,7 @@ Email any issues directly:  robert @ paresi.net
 
 • CHANGE: Reports / Trends - When on last day of current month (11/30) and comparing to last month, last month will now compare to last day of month (10/31 instead of 10/30).
 
-• DEPRECATED: Reports Breadcrumbs functionality removed.  Monarch Money now does it.  Yea!
+• DEPRECATED: Reports Breadcrumbs and compressed transaction grid functionality removed.  Monarch Money now does it.  Yea!
 
 
 **Version 2.07-2.09:**
