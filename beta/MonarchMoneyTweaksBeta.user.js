@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.10
+// @version      2.11.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.10';
+const version = '2.11.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -1882,57 +1882,70 @@ window.onclick = function(event) {
     const cn = event.target.className;
     const pcn = event.target.parentNode.className;
 
-    // console.log(cn,event.target,pcn,event.target.parentNode);
+    //console.log(cn,event.target,pcn,event.target.parentNode);
 
-    switch (cn) {
-        case 'MTSideDrawerRoot':
-            removeAllSections('div.MTSideDrawerRoot');
-            return;
-        case 'MTTrendCellArrow':
-            removeAllSections('div.MTSideDrawerRoot');
-            return;
-        case 'MTTrendCellArrow2':
-            flipAllSections('div.TrendHistoryDetail');
-            event.target.innerText = ['',''][getCookie('MTC_div.TrendHistoryDetail',true)];
-            return;
-        case 'MTlink':
-            if(pcn == 'MTSideDrawerHeader') {MenuReportsHistoryExport();}
-            return;
-        case 'MTFlexBig MThRefClass':
-            onClickMTFlexBig();
-            return;
-        case 'MTFlexButton1':
-            if(r_FlexButtonActive == 2) {document.getElementById("MTDropdown2").className = 'MTFlexdown-content';}
-            if(document.getElementById("MTDropdown1").classList.toggle("show") == true) { r_FlexButtonActive = 1;} else { r_FlexButtonActive = 0;}
-            return;
-        case 'MTFlexButton2':
-            if(r_FlexButtonActive == 1) {document.getElementById("MTDropdown1").className = 'MTFlexdown-content';}
-            if(document.getElementById("MTDropdown2").classList.toggle("show") == true) { r_FlexButtonActive = 2;} else { r_FlexButtonActive = 0;}
-            return;
-        case 'MTFlexButtonExport':
-            MT_GridExport();
+    if(cn) {
+        switch (cn) {
+            case 'MTSideDrawerRoot':
+                removeAllSections('div.MTSideDrawerRoot');
+                return;
+            case 'MTTrendCellArrow':
+                removeAllSections('div.MTSideDrawerRoot');
+                return;
+            case 'MTTrendCellArrow2':
+                flipAllSections('div.TrendHistoryDetail');
+                event.target.innerText = ['',''][getCookie('MTC_div.TrendHistoryDetail',true)];
+                return;
+            case 'MTlink':
+                if(pcn == 'MTSideDrawerHeader') {MenuReportsHistoryExport();}
+                return;
+            case 'MTFlexBig MThRefClass':
+                onClickMTFlexBig();
+                return;
+            case 'MTFlexButton1':
+                if(r_FlexButtonActive == 2) {document.getElementById("MTDropdown2").className = 'MTFlexdown-content';}
+                if(document.getElementById("MTDropdown1").classList.toggle("show") == true) { r_FlexButtonActive = 1;} else { r_FlexButtonActive = 0;}
+                return;
+            case 'MTFlexButton2':
+                if(r_FlexButtonActive == 1) {document.getElementById("MTDropdown1").className = 'MTFlexdown-content';}
+                if(document.getElementById("MTDropdown2").classList.toggle("show") == true) { r_FlexButtonActive = 2;} else { r_FlexButtonActive = 0;}
+                return;
+            case 'MTFlexButtonExport':
+                MT_GridExport();
+        }
+        if(cn.includes('AbstractButton')) {
+            if(event.target.innerText.startsWith('\uf10b')) {
+                MM_FixCalendarShortcuts();
+                return;
+            }
+        }
     }
-    switch (pcn) {
-        case 'MTFlexGridTitleRow':
-            onClickGridSort();
-            return;
-        case 'MTFlexCellArrow':
-            onClickMTFlexArrow();
-            return;
-        case 'MTdropdown':
-            onClickFilter();
-            return;
-    }
-    if(cn.includes('Text-qcxgyd-0') && pcn.includes('TransactionDrawerBody')) {
-        if(event.target.innerText = 'Split') { MM_SplitTransaction();}
-    }
-    if(pcn.includes('AbstractButton')) {
-       if(event.target.parentNode.innerText.startsWith('\uf10b')) {
-           MM_FixCalendarShortcuts();
-       }
-    }
-    if(cn.startsWith('DateInput_') && pcn.startsWith('DateInput')) {
-        MM_FixCalendarYears();
+    if(pcn) {
+        switch (pcn) {
+            case 'MTFlexGridTitleRow':
+                onClickGridSort();
+                return;
+            case 'MTFlexCellArrow':
+                onClickMTFlexArrow();
+                return;
+            case 'MTdropdown':
+                onClickFilter();
+                return;
+        }
+        if(pcn.includes('AbstractButton')) {
+            if(event.target.parentNode.innerText.startsWith('\uf10b')) {
+                MM_FixCalendarShortcuts();
+                return;
+            }
+        }
+        if(cn) {
+            if(cn.startsWith('DateInput_') && pcn.startsWith('DateInput')) {
+                MM_FixCalendarYears();
+            }
+            if(cn.includes('Text-qcxgyd-0') && pcn.includes('TransactionDrawerBody')) {
+                if(event.target.innerText = 'Split') { MM_SplitTransaction();}
+            }
+        }
     }
     if(r_DatasetActive == true) {onClickFilter();}
     if(r_FlexButtonActive > 0) {
