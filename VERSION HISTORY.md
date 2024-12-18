@@ -3,9 +3,9 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.11 (beta):**
+**Version 2.11:**
 
-• CHANGE: Reports / Trends & Accounts - Better font sizes
+• CHANGE: Reports / Trends & Accounts - Better font sizes, faster, less flicker
 
 • FIX: Clicking on outside border of "Date" button would not load custom three date ranges.
 
