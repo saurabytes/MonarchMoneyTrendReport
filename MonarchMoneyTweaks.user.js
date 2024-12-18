@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.10
+// @version      2.11
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.10';
+const version = '2.11';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -60,8 +60,8 @@ function MM_Init() {
     addStyle('.MTFlexGridTitleCell:hover, .MTFlexGridTitleCell2:hover, .MTFlexGridDCell:hover, .MTFlexGridSCell:hover, .MThRefClass:hover {cursor:pointer; color: rgb(50, 170, 240);}');
     addStyle('.MTFlexGridRow { font-size: 14px; font-weight: 500; height: 40px; vertical-align: bottom;}');
     addStyle('.MTFlexGridItem { font-size: 14px; ; height: 26px }');
-    addStyle('.MTFlexGridHCell { }');
-    addStyle('.MTFlexGridHCell2 { text-align: right; }');
+    addStyle('.MTFlexGridHCell { font-size: 15px;}');
+    addStyle('.MTFlexGridHCell2 { text-align: right; font-size: 15px;}');
     addStyle('.MTFlexGridDCell, .MTFlexGridD3Cell {' + standardText +' }');
     addStyle('.MTFlexGridDCell2 { text-align: right; }');
     addStyle('.MTFlexGridSCell,.MTFlexGridS3Cell { padding-bottom: 18px; vertical-align:top; height: 36px;' + standardText + ' font-weight: 500; border-top: 1px solid ' + borderColor + ';}');
@@ -71,11 +71,9 @@ function MM_Init() {
     addStyle('.MTFlexBig {font-size: 18px; ' + transText + 'font-weight: 500; padding-top: 8px;}');
     addStyle('.MTFlexSmall {font-size: 12px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
     addStyle('.MTFlexLittle {font-size: 10px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
-
     addStyle('.MTFlexCellArrow, .MTTrendCellArrow, .MTTrendCellArrow2 {' + panelBackground + standardText + 'width: 24px; height:24px; font-size: 18px; font-family: MonarchIcons, sans-serif; transition: 0.1s ease-out; cursor: pointer; border-radius: 100%; border-style: none;}');
     addStyle('.MTFlexCellArrow:hover {border: 1px solid ' + sidepanelBackground + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;}');
     addStyle('.MTIcons {font-family: MonarchIcons; margin-left: 4px; vertical-align:middle;}');
-
     addStyle('.MTSideDrawerRoot {position: absolute;  inset: 0px;  display: flex;  -moz-box-pack: end;  justify-content: flex-end;}');
     addStyle('.MTSideDrawerContainer {overflow: hidden; padding: 12px; width: 640px; -moz-box-pack: end; ' + sidepanelBackground + ' position: relative; overflow:auto;}');
     addStyle('.MTSideDrawerMotion {display: flex; flex-direction: column; transform:none;}');
@@ -96,7 +94,6 @@ function MM_Init() {
     addStyle('.MTFlexdown-content a {' + panelBackground + standardText + ';font-size: 16px; text-align: left; border-radius: 8px; font-weight: 200; padding: 10px 10px; display: block;}');
     addStyle('.MTdropdown a:hover {' + selectBackground + selectForground + ' }');
     addStyle('.show {display: block;}');
-
     addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster"),'block;') + '}');
     addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff"),'block;') + '}');
     addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph"),'block;') + '}');
@@ -1882,57 +1879,70 @@ window.onclick = function(event) {
     const cn = event.target.className;
     const pcn = event.target.parentNode.className;
 
-    // console.log(cn,event.target,pcn,event.target.parentNode);
+    //console.log(cn,event.target,pcn,event.target.parentNode);
 
-    switch (cn) {
-        case 'MTSideDrawerRoot':
-            removeAllSections('div.MTSideDrawerRoot');
-            return;
-        case 'MTTrendCellArrow':
-            removeAllSections('div.MTSideDrawerRoot');
-            return;
-        case 'MTTrendCellArrow2':
-            flipAllSections('div.TrendHistoryDetail');
-            event.target.innerText = ['',''][getCookie('MTC_div.TrendHistoryDetail',true)];
-            return;
-        case 'MTlink':
-            if(pcn == 'MTSideDrawerHeader') {MenuReportsHistoryExport();}
-            return;
-        case 'MTFlexBig MThRefClass':
-            onClickMTFlexBig();
-            return;
-        case 'MTFlexButton1':
-            if(r_FlexButtonActive == 2) {document.getElementById("MTDropdown2").className = 'MTFlexdown-content';}
-            if(document.getElementById("MTDropdown1").classList.toggle("show") == true) { r_FlexButtonActive = 1;} else { r_FlexButtonActive = 0;}
-            return;
-        case 'MTFlexButton2':
-            if(r_FlexButtonActive == 1) {document.getElementById("MTDropdown1").className = 'MTFlexdown-content';}
-            if(document.getElementById("MTDropdown2").classList.toggle("show") == true) { r_FlexButtonActive = 2;} else { r_FlexButtonActive = 0;}
-            return;
-        case 'MTFlexButtonExport':
-            MT_GridExport();
+    if(cn) {
+        switch (cn) {
+            case 'MTSideDrawerRoot':
+                removeAllSections('div.MTSideDrawerRoot');
+                return;
+            case 'MTTrendCellArrow':
+                removeAllSections('div.MTSideDrawerRoot');
+                return;
+            case 'MTTrendCellArrow2':
+                flipAllSections('div.TrendHistoryDetail');
+                event.target.innerText = ['',''][getCookie('MTC_div.TrendHistoryDetail',true)];
+                return;
+            case 'MTlink':
+                if(pcn == 'MTSideDrawerHeader') {MenuReportsHistoryExport();}
+                return;
+            case 'MTFlexBig MThRefClass':
+                onClickMTFlexBig();
+                return;
+            case 'MTFlexButton1':
+                if(r_FlexButtonActive == 2) {document.getElementById("MTDropdown2").className = 'MTFlexdown-content';}
+                if(document.getElementById("MTDropdown1").classList.toggle("show") == true) { r_FlexButtonActive = 1;} else { r_FlexButtonActive = 0;}
+                return;
+            case 'MTFlexButton2':
+                if(r_FlexButtonActive == 1) {document.getElementById("MTDropdown1").className = 'MTFlexdown-content';}
+                if(document.getElementById("MTDropdown2").classList.toggle("show") == true) { r_FlexButtonActive = 2;} else { r_FlexButtonActive = 0;}
+                return;
+            case 'MTFlexButtonExport':
+                MT_GridExport();
+        }
+        if(cn.includes('AbstractButton')) {
+            if(event.target.innerText.startsWith('\uf10b')) {
+                MM_FixCalendarShortcuts();
+                return;
+            }
+        }
     }
-    switch (pcn) {
-        case 'MTFlexGridTitleRow':
-            onClickGridSort();
-            return;
-        case 'MTFlexCellArrow':
-            onClickMTFlexArrow();
-            return;
-        case 'MTdropdown':
-            onClickFilter();
-            return;
-    }
-    if(cn.includes('Text-qcxgyd-0') && pcn.includes('TransactionDrawerBody')) {
-        if(event.target.innerText = 'Split') { MM_SplitTransaction();}
-    }
-    if(pcn.includes('AbstractButton')) {
-       if(event.target.parentNode.innerText.startsWith('\uf10b')) {
-           MM_FixCalendarShortcuts();
-       }
-    }
-    if(cn.startsWith('DateInput_') && pcn.startsWith('DateInput')) {
-        MM_FixCalendarYears();
+    if(pcn) {
+        switch (pcn) {
+            case 'MTFlexGridTitleRow':
+                onClickGridSort();
+                return;
+            case 'MTFlexCellArrow':
+                onClickMTFlexArrow();
+                return;
+            case 'MTdropdown':
+                onClickFilter();
+                return;
+        }
+        if(pcn.includes('AbstractButton')) {
+            if(event.target.parentNode.innerText.startsWith('\uf10b')) {
+                MM_FixCalendarShortcuts();
+                return;
+            }
+        }
+        if(cn) {
+            if(cn.startsWith('DateInput_') && pcn.startsWith('DateInput')) {
+                MM_FixCalendarYears();
+            }
+            if(cn.includes('Text-qcxgyd-0') && pcn.includes('TransactionDrawerBody')) {
+                if(event.target.innerText = 'Split') { MM_SplitTransaction();}
+            }
+        }
     }
     if(r_DatasetActive == true) {onClickFilter();}
     if(r_FlexButtonActive > 0) {
@@ -2297,7 +2307,7 @@ function addStyle(aCss) {
         }
         MenuCheckSpawnProcess();
 
-    },400);
+    },300);
 }());
 
 function getGraphqlToken() {
