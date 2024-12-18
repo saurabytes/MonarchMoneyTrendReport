@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.11.02
+// @version      2.11
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.11.02';
+const version = '2.11';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -2307,7 +2307,7 @@ function addStyle(aCss) {
         }
         MenuCheckSpawnProcess();
 
-    },400);
+    },300);
 }());
 
 function getGraphqlToken() {
