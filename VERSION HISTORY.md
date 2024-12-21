@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.12 (beta):**
 
-• CHANGE: Reports / Trends - Left two columns were comparing to End of Month regardless of setting.
+• FIX: Reports / Trends - Left two columns were comparing to End of Month regardless of setting.
 
 **Version 2.11:**
 
