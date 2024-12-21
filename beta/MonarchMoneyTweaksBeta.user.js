@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.11
+// @version      2.12.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.11';
+const version = '2.12.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -939,8 +939,10 @@ async function MenuReportsTrendsGo() {
             if(month != month2) {useTitle = getMonthName(month,true) + ' - ';}
         }
         if(MTFlex.Button2 == 1) {
-            day2 = daysInMonth(month2,year2);
-            higherDate.setDate(day2);
+            if(TrendFullPeriod == 1) {
+                day2 = daysInMonth(month2,year2);
+                higherDate.setDate(day2);
+            }
         }
 
         useTitle = useTitle + getMonthName(month2,true) + ' ' + year;
