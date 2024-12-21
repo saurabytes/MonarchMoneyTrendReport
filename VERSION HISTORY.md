@@ -3,6 +3,10 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 2.12 (beta):**
+
+• CHANGE: Reports / Trends - Left two columns were comparing to End of Month regardless of setting.
+
 **Version 2.11:**
 
 • CHANGE: Reports / Trends & Accounts - Better font sizes, faster, less flicker
