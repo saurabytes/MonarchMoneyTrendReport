@@ -7,7 +7,7 @@ Email any issues directly:  robert @ paresi.net
 
 • REGRESSION: Reports / Trends - Left two columns were comparing to End of Month regardless of setting.
 
-• REGRESSION: The calendar was not always working properly (Last 12 months, Last year YTD, This quarter) depending on Calendarinclude full month configuration.
+• REGRESSION: The calendar was not always working properly (Last 12 months, Last year YTD, This quarter) depending on Calendar "include full month" configuration.
 
 **Version 2.11:**
 
