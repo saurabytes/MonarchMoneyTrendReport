@@ -9,6 +9,8 @@ Email any issues directly:  robert @ paresi.net
 
 • REGRESSION: The calendar was not always working properly (Last 12 months, Last year YTD, This quarter) depending on Calendar "include full month" configuration.
 
+• FIX: Some rounding could be $1 different between the screen of data versus export of data. (Export was not rounding)
+
 **Version 2.11:**
 
 • CHANGE: Reports / Trends & Accounts - Better font sizes, faster, less flicker
