@@ -5,7 +5,9 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.12 (beta):**
 
-• FIX: Reports / Trends - Left two columns were comparing to End of Month regardless of setting.
+• REGRESSION: Reports / Trends - Left two columns were comparing to End of Month regardless of setting.
+
+• REGRESSION: The calendar was not always working properly (Last 12 months, Last year YTD, This quarter) depending on Calendarinclude full month configuration.
 
 **Version 2.11:**
 
