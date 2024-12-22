@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.12.02
+// @version      2.12.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.12.02';
+const version = '2.12.03';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -467,11 +467,18 @@ function MT_GridExport() {
         for (let j = MTFields; j < MTFieldsEnd; j += 1) {
             useValue = '';
             if(MTFlexRow[i][j] != undefined) {
-                if(MTFlexTitle[k].Format > 0) {
-                    useValue = Number(MTFlexRow[i][j]);
-                    useValue = useValue.toFixed(2);
-                } else {
-                    useValue = MTFlexRow[i][j];
+                switch(MTFlexTitle[k].Format) {
+                    case 1:
+                        useValue = Number(MTFlexRow[i][j]);
+                        useValue = useValue.toFixed(2);
+                        break;
+                    case 2:
+                        useValue = Number(MTFlexRow[i][j]);
+                        useValue = Math.round(useValue);
+                        useValue = useValue.toFixed(0);
+                        break;
+                    default:
+                        useValue = MTFlexRow[i][j];
                 }
             }
             k+=1;
@@ -1235,7 +1242,6 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
                 let useDate = snapshotData.aggregates[i].groupBy.year;
                 let ndx = Number(useDate.substring(0,4));
                 ndx = ndx - s_ndx;
-                let Amount = Math.round(useAmount);
                 MT_GridUpdateUID(useID,ndx,useAmount);}
             else if (inCol == 'ot') {
                 let useDate = snapshotData.aggregates[i].groupBy.month;
@@ -1248,7 +1254,6 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
                         ndx = (12 - s_ndx + 1) + ndx;
                     }
                 }
-                useAmount = Math.round(useAmount);
                 MT_GridUpdateUID(useID,ndx,useAmount);
             } else { Trend_UpdateQueue(useID,useAmount,inCol); }
         }
@@ -2214,6 +2219,7 @@ function getCleanValue(inValue,inDec) {
 function getDollarValue(InValue,ignoreCents) {
 
     if(InValue === -0 || isNaN(InValue)) {InValue = 0;}
+    if(ignoreCents == true) { InValue = Math.round(InValue);}
     let useValue = InValue.toLocaleString("en-US", {style:"currency", currency:css_currency});
     if(ignoreCents == true) { useValue = useValue.substring(0, useValue.length-3);}
     return useValue;
