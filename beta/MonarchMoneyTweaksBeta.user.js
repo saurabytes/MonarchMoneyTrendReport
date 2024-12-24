@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.12.04
+// @version      2.12
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.12.04';
+const version = '2.12';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -41,6 +41,15 @@ function MM_Init() {
     const lineForground = ['#f4f3f2','#363532'][a];
     const borderColor = ['#e4e1de','rgb(98, 96, 93)'][a];
 
+    MM_MenuFix();
+    if(getCookie('MT_PlanCompressed') == 1) {
+        addStyle('.sTiBE {height: 69px;}');
+        addStyle('.jWyZIM {height: 45px;}');
+        addStyle('.fAcQtX {margin-bottom: 2px;}');
+    }
+    if(getCookie('MT_CompressedTx') == 1) {addStyle('.oRgik, .bVcoEc, .XbVLi {font-size: 15px;}');}
+    if(getCookie('MT_PendingIsRed') == 1) {addStyle('.cxLoFP {color:red;}');}
+
     addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
     addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
     addStyle('.MTCheckboxClass {width: 20px; height: 20px;}');
@@ -66,7 +75,6 @@ function MM_Init() {
     addStyle('.MTFlexGridDCell2 { text-align: right; }');
     addStyle('.MTFlexGridSCell,.MTFlexGridS3Cell { padding-bottom: 18px; vertical-align:top; height: 36px;' + standardText + ' font-weight: 500; border-top: 1px solid ' + borderColor + ';}');
     addStyle('.MTFlexGridSCell2 { text-align: right; padding-bottom: 18px; vertical-align:top; height: 36px;' + standardText + ' font-weight: 500; border-top: 1px solid ' + borderColor + ';}');
-
     addStyle('.MTFlexCardBig {font-size: 20px; ' + transText + 'font-weight: 500; padding-top: 8px;}');
     addStyle('.MTFlexBig {font-size: 18px; ' + transText + 'font-weight: 500; padding-top: 8px;}');
     addStyle('.MTFlexSmall {font-size: 12px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
@@ -97,33 +105,20 @@ function MM_Init() {
     addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster"),'block;') + '}');
     addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff"),'block;') + '}');
     addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph"),'block;') + '}');
-    if(getCookie('MT_PlanCompressed') == 1) {
-        addStyle('.sTiBE {height: 69px;}');
-        addStyle('.jWyZIM {height: 45px;}');
-        addStyle('.fAcQtX {margin-bottom: 2px;}');
-    }
-    if(getCookie('MT_CompressedTx') == 1) {addStyle('.oRgik, .bVcoEc, .XbVLi {font-size: 15px;}');}
-    if(getCookie('MT_PendingIsRed') == 1) {addStyle('.cxLoFP {color:red;}');}
-    MM_MenuFix();
 }
 
 function MM_MenuFix() {
-
     MM_hideElement("[href~='/settings/referrals']",getCookie('MT_Ads'));
     MM_hideElement("[href~='/advice']",getCookie('MT_Advice'));
     MM_hideElement("[href~='/investments']",getCookie('MT_Investments'));
     MM_hideElement("[href~='/objectives']",getCookie('MT_Goals'));
     MM_hideElement("[href~='/recurring']",getCookie('MT_Recurring'));
     MM_hideElement("[href~='/plan']",getCookie('MT_Budget'));
-
 }
 
 function MM_hideElement(InList,InValue) {
-
     const els = document.querySelectorAll(InList);
-    for (const el of els) {
-        InValue == 1 ? el.style.display = 'none' : el.style.display = '';
-    }
+    for (const el of els) { InValue == 1 ? el.style.display = 'none' : el.style.display = ''; }
 }
 
 // [ Flex Queue ]
@@ -1885,10 +1880,8 @@ window.onclick = function(event) {
 
     const cn = event.target.className;
     const pcn = event.target.parentNode.className;
-
     //console.log(cn,event.target,pcn,event.target.parentNode);
-
-    if(typeof(cn) === 'string') {
+    if(typeof cn === 'string') {
         switch (cn) {
             case 'MTSideDrawerRoot':
                 removeAllSections('div.MTSideDrawerRoot');
@@ -1924,7 +1917,7 @@ window.onclick = function(event) {
             }
         }
     }
-     if(typeof(pcn) === 'string') {
+     if(typeof pcn === 'string') {
         switch (pcn) {
             case 'MTFlexGridTitleRow':
                 onClickGridSort();
@@ -2242,12 +2235,8 @@ function getCookie(cname,isNum) {
     let ca = document.cookie.split(';');
     for(let i = 0; i < ca.length; i++) {
         let c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
+        while (c.charAt(0) == ' ') { c = c.substring(1); }
+        if (c.indexOf(name) == 0) { return c.substring(name.length, c.length);}
     }
     if(isNum == true) {return 0;}
     return '';
@@ -2284,14 +2273,10 @@ function addStyle(aCss) {
 }
 
 (function() {
-
     setInterval(() => {
-
-        if(SaveLocationHRefName != window.location.href) { MM_MenuFix();}
-
+        if(SaveLocationHRefName != window.location.href) {MM_MenuFix();}
         if(window.location.pathname != SaveLocationPathName) {
 
-            // Lose Focus on a page
             if(SaveLocationPathName) {
                 MenuLogin(false);
                 MenuReports(false);
@@ -2299,21 +2284,16 @@ function addStyle(aCss) {
                 MenuTransactions(false);
             }
 
-            if(r_Init == false) {
-                MM_Init();
-                r_Init = true;
-            }
+            if(r_Init == false) {MM_Init();r_Init = true;}
 
             SaveLocationPathName = window.location.pathname;
             SaveLocationHRefName = window.location.href;
 
-            // Gain Focus on a Page
             MenuReports(true);
             MenuDisplay(true);
             MenuTransactions(true);
         }
         MenuCheckSpawnProcess();
-
     },300);
 }());
 
