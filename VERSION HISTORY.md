@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.13 beta:**
 
-• NEW: Ability to compress Trends and Acconts grid.
+• NEW: Ability to compress Reports / Trends & Accounts grid.
 
 • FIX: Export History Grid might throw exception creating file name.
 
