@@ -3,6 +3,11 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 2.13 beta:**
+
+• NEW: Nicer Trends & Accounts grid. (You can turn this back to compressed in Settings / Display /  **Trends and Accounts has compress grid**)
+
+
 **Version 2.12:**
 
 • REGRESSION: Reports / Trends - Left two columns were comparing to End of Month regardless of setting.
