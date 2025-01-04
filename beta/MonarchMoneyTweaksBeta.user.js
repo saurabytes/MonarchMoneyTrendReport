@@ -1525,7 +1525,7 @@ function MenuReportsHistoryExport() {
         }
     });
 
-    downloadFile('Monarch Trends History ' + getDates('today'),csvContent);
+    downloadFile('Monarch Trends History ' + getDates('s_FullDate'),csvContent);
 }
 
 // Datasets Menu
