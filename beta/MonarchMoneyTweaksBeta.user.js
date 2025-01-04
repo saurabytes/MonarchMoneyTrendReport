@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.12
+// @version      2.13.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.12';
+const version = '2.13.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -38,8 +38,8 @@ function MM_Init() {
     const sidepanelBackground = 'background: ' + ['#def7f9;','#222221;'][a];
     const selectBackground = 'background-color: ' + ['#def7f9;','#082c36;'][a];
     const selectForground = 'color: ' + ['#107d98;','#4ccce6;'][a];
-    const lineForground = ['#f4f3f2','#363532'][a];
-    const borderColor = ['#e4e1de','rgb(98, 96, 93)'][a];
+    const lineForground = ['#F6F5F3','#363532'][a];
+    const borderColor = ['#e4e1de','#62605D'][a];
 
     MM_MenuFix();
     if(getCookie('MT_PlanCompressed') == 1) {
@@ -54,6 +54,8 @@ function MM_Init() {
     addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
     addStyle('.MTCheckboxClass {width: 20px; height: 20px;}');
     addStyle('.MTSpacerClass {margin-top: 4px; margin-bottom: 4px; border-bottom: 1px solid ' + lineForground +';}');
+    addStyle('.MTSpacerClassTR {padding: 0px 0px 0px 0px; }');
+    addStyle('.MTSpacerClass2 {margin-bottom: 0px;border-bottom: 1px solid ' + borderColor +';}');
     addStyle('.MThRefClass {' + standardText + '}');
     addStyle('.MTFlexButtonExport, .MTFlexButton1, .MTFlexButton2 {' + panelBackground + transText + 'margin-left: 20px; font-weight: 500; border: 1px solid ' + borderColor + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px; font-size: 14px; padding: 7.5px 12px;cursor: pointer;border-radius: 4px;line-height: 150%;}');
     addStyle('.MTFlexContainer {display:block; padding: 20px;}');
@@ -105,6 +107,7 @@ function MM_Init() {
     addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster"),'block;') + '}');
     addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff"),'block;') + '}');
     addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph"),'block;') + '}');
+
 }
 
 function MM_MenuFix() {
@@ -182,6 +185,7 @@ function MT_GridDrawDetails() {
     let rowNdx = 0, RowI = 0;
     let Subtotals = [], Grouptotals = [], SubtotalsNdx = 0;
     let ArrowSpacing = 'width: 34px; padding-left: 0px;';
+    let MT_TrendCompress = getCookie('MT_TrendCompress',true);
 
     MT_GridDrawClear();
     MT_GridDrawTitles();
@@ -225,6 +229,11 @@ function MT_GridDrawDetails() {
                 Subtotals[SubtotalsNdx] = RowI;
                 SubtotalsNdx+=1;
             } else {
+                if(MT_TrendCompress != 1) {
+                    let el2 = cec('tr','',Header);
+                    let el3 = cec('td','MTSpacerClassTR',el2,'','','colspan',MTFlexTitle.length);
+                    cec('div','MTSpacerClass2',el3);
+                }
                 el = cec('tr','MTFlexGridItem',Header,'','','','');
                 useStyle = 'MTFlexGridDCell';
             }
@@ -689,6 +698,7 @@ async function MenuReportsAccountsGo() {
 
     snapshotData = await getAccountsData();
     snapshotData2 = await GetTransactions(formatQueryDate(useDate),formatQueryDate(useDate2),0);
+    console.log(snapshotData2);
     snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
 
     for (let i = 0; i < 5; i += 1) { if(getCookie('MT_AccountsCard' + i.toString(),0) == 1) {cards+=1;}}
@@ -1777,6 +1787,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Hide Create Rule pop-up','MT_HideToaster','checkbox');
             MenuDisplay_Input('Reports','','spacer');
             MenuDisplay_Input('Hide chart tooltip Difference amount','MT_HideTipDiff','checkbox');
+            MenuDisplay_Input('Trends and Accounts has compress grid','MT_TrendCompress','checkbox');
             MenuDisplay_Input('Reports / Trends','','spacer');
             MenuDisplay_Input('Always compare to End of Month','MT_TrendFullPeriod','checkbox');
             MenuDisplay_Input('By Month "Avg" ignores Current Month','MT_TrendIgnoreCurrent','checkbox');
