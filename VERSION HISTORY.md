@@ -7,7 +7,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Nicer Trends & Accounts grid. (You can turn this back to compressed in Settings / Display /  **Trends and Accounts has compress grid**)
 
-• FIX: Export History Grid might throw exception.
+• FIX: Export History Grid might throw exception creating file name.
 
 
 **Version 2.12:**
