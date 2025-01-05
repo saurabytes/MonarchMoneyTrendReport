@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.12
+// @version      2.13
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.12';
+const version = '2.13';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -30,37 +30,35 @@ let MTFlexCR = 0, MTFlexDetails = null, MTFlexReady = false, MTP = null;
 
 function MM_Init() {
 
-    const a = getStyle();
+    const a = isDarkMode();
     const panelBackground = 'background-color: ' + ['#FFFFFF;','#222221;'][a];
     const panelText = 'color: ' + ['#777573;','#989691;'][a];
-    const transText = 'color: ' + ['#22201d;','#FFFFFF;'][a];
     const standardText = 'color: ' + ['#22201d;','#FFFFFF;'][a];
     const sidepanelBackground = 'background: ' + ['#def7f9;','#222221;'][a];
     const selectBackground = 'background-color: ' + ['#def7f9;','#082c36;'][a];
     const selectForground = 'color: ' + ['#107d98;','#4ccce6;'][a];
-    const lineForground = ['#f4f3f2','#363532'][a];
-    const borderColor = ['#e4e1de','rgb(98, 96, 93)'][a];
+    const lineForground = ['#F6F5F3','#363532'][a];
+    const borderColor = ['#e4e1de','#62605D'][a];
+    const accentColor = ['#ff692d','#ff692d'][a];
 
     MM_MenuFix();
-    if(getCookie('MT_PlanCompressed') == 1) {
-        addStyle('.sTiBE {height: 69px;}');
-        addStyle('.jWyZIM {height: 45px;}');
-        addStyle('.fAcQtX {margin-bottom: 2px;}');
-    }
+    if(getCookie('MT_PlanCompressed') == 1) {addStyle('.sTiBE {height: 69px;}');addStyle('.jWyZIM {height: 45px;}');addStyle('.fAcQtX {margin-bottom: 2px;}');}
     if(getCookie('MT_CompressedTx') == 1) {addStyle('.oRgik, .bVcoEc, .XbVLi {font-size: 15px;}');}
-    if(getCookie('MT_PendingIsRed') == 1) {addStyle('.cxLoFP {color:red;}');}
+    if(getCookie('MT_PendingIsRed') == 1) {addStyle('.cxLoFP {color:' + accentColor + '}');}
 
     addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
     addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
-    addStyle('.MTCheckboxClass {width: 20px; height: 20px;}');
+    addStyle('.MTCheckboxClass, .MTFlexCheckbox {width: 19px; height: 19px; margin-right: 10px;float: inline-start; accent-color: ' + accentColor + '}');
     addStyle('.MTSpacerClass {margin-top: 4px; margin-bottom: 4px; border-bottom: 1px solid ' + lineForground +';}');
+    addStyle('.MTSpacerClassTR {padding: 0px 0px 0px 0px; }');
+    addStyle('.MTSpacerClass2 {margin-bottom: 0px;border-bottom: 1px solid ' + borderColor +';}');
     addStyle('.MThRefClass {' + standardText + '}');
-    addStyle('.MTFlexButtonExport, .MTFlexButton1, .MTFlexButton2 {' + panelBackground + transText + 'margin-left: 20px; font-weight: 500; border: 1px solid ' + borderColor + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px; font-size: 14px; padding: 7.5px 12px;cursor: pointer;border-radius: 4px;line-height: 150%;}');
+    addStyle('.MTFlexButtonExport, .MTFlexButton1, .MTFlexButton2 {' + panelBackground + standardText + 'margin-left: 20px; font-weight: 500; border: 1px solid ' + borderColor + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px; font-size: 14px; padding: 7.5px 12px;cursor: pointer;border-radius: 4px;line-height: 150%;}');
     addStyle('.MTFlexContainer {display:block; padding: 20px;}');
     addStyle('.MTFlexContainer2 {margin: 0px;  gap: 20px;  display: flex; }');
     addStyle('.MTFlexContainerPanel { display: flex; flex-flow: column; place-content: stretch flex-start; ' + panelBackground + 'border-radius: 8px; box-shadow: rgba(8, 40, 100, 0.04) 0px 4px 8px;}');
     addStyle('.MTFlexContainerCard {  display: flex; flex: 1 1 0%; justify-content: space-between; padding: 16px 24px; align-items: center;' + panelBackground + 'border-radius: 8px; box-shadow: rgba(8, 40, 100, 0.04) 0px 4px 8px;}');
-    addStyle('.MTFlexGrid {' + panelBackground + 'padding: 20px;  border-spacing: 8px;}');
+    addStyle('.MTFlexGrid {' + panelBackground + 'padding: 20px;border-spacing: 8px;}');
     addStyle('.MTFlexGrid th, td { padding-right: 8px;}');
     addStyle('.MTFlexTitle2 {display: flex; flex-flow: column;}');
     addStyle('.MTFlexGridTitleRow { font-size: 16px; font-weight: 500; height: 56px; position: sticky; top: 0; ' + panelBackground + '}');
@@ -75,8 +73,8 @@ function MM_Init() {
     addStyle('.MTFlexGridDCell2 { text-align: right; }');
     addStyle('.MTFlexGridSCell,.MTFlexGridS3Cell { padding-bottom: 18px; vertical-align:top; height: 36px;' + standardText + ' font-weight: 500; border-top: 1px solid ' + borderColor + ';}');
     addStyle('.MTFlexGridSCell2 { text-align: right; padding-bottom: 18px; vertical-align:top; height: 36px;' + standardText + ' font-weight: 500; border-top: 1px solid ' + borderColor + ';}');
-    addStyle('.MTFlexCardBig {font-size: 20px; ' + transText + 'font-weight: 500; padding-top: 8px;}');
-    addStyle('.MTFlexBig {font-size: 18px; ' + transText + 'font-weight: 500; padding-top: 8px;}');
+    addStyle('.MTFlexCardBig {font-size: 20px; ' + standardText + 'font-weight: 500; padding-top: 8px;}');
+    addStyle('.MTFlexBig {font-size: 18px; ' + standardText + 'font-weight: 500; padding-top: 8px;}');
     addStyle('.MTFlexSmall {font-size: 12px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
     addStyle('.MTFlexLittle {font-size: 10px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
     addStyle('.MTFlexCellArrow, .MTTrendCellArrow, .MTTrendCellArrow2 {' + panelBackground + standardText + 'width: 24px; height:24px; font-size: 18px; font-family: MonarchIcons, sans-serif; transition: 0.1s ease-out; cursor: pointer; border-radius: 100%; border-style: none;}');
@@ -159,8 +157,8 @@ async function MF_GridInit(inName) {
 
     MTFlex.Button1 = Number(getCookie(inName + 'Button1',true));
     MTFlex.Button2 = Number(getCookie(inName + 'Button2',true));
+    MTFlex.Button3 = getCookie(inName + 'Button3',false);
     await buildCategoryGroups();
-
 }
 
 function MT_GridDraw(inRedraw) {
@@ -182,6 +180,7 @@ function MT_GridDrawDetails() {
     let rowNdx = 0, RowI = 0;
     let Subtotals = [], Grouptotals = [], SubtotalsNdx = 0;
     let ArrowSpacing = 'width: 34px; padding-left: 0px;';
+    let hide = getChecked(MTFlex.Button3,'');
 
     MT_GridDrawClear();
     MT_GridDrawTitles();
@@ -196,9 +195,7 @@ function MT_GridDrawDetails() {
         }
     }
 
-    function MT_GridDrawClear() {
-        for (let j=0; j < MTFlexTitle.length; j += 1) {Grouptotals[j] = 0;}
-    }
+    function MT_GridDrawClear() { for (let j=0; j < MTFlexTitle.length; j += 1) {Grouptotals[j] = 0;}}
 
     function MT_GridDrawTitles() {
 
@@ -225,6 +222,11 @@ function MT_GridDrawDetails() {
                 Subtotals[SubtotalsNdx] = RowI;
                 SubtotalsNdx+=1;
             } else {
+
+                let el2 = cec('tr','MTSpacerClassTR',Header,'','','style',hide);
+                let el3 = cec('td','MTSpacerClassTR',el2,'','','colspan',MTFlexTitle.length);
+                cec('div','MTSpacerClass2',el3,'','','','');
+
                 el = cec('tr','MTFlexGridItem',Header,'','','','');
                 useStyle = 'MTFlexGridDCell';
             }
@@ -389,6 +391,10 @@ function MT_GridDrawContainer() {
                 div2 = cec('a','',divContent,MTFlex.Button2Options[i],SaveLocationPathName + "?MTButton2=" + i,'','');
             }
         }
+        div2 = cec('div','MTdropdown',tbs,'','','','');
+        div2 = cec('div','',div2,'Compress Grid','','style','margin-top: 12px; font-size: 14px; font-weight:500');
+        div2 = cec('input','MTFlexCheckbox',div2,'','','style','margin-top: 2px;');
+        div2.type = 'checkbox';if(MTFlex.Button3 == 'true') {div2.checked = 'true';}
     }
 }
 
@@ -450,9 +456,7 @@ function MT_GridExport() {
     const CRLF = String.fromCharCode(13,10);
     const c = ',';
     const MTFieldsEnd = MTFields + MTFlexTitle.length;
-    let csvContent = '';
-    let useValue = '';
-    let k = 0;
+    let csvContent = '',useValue = '',k = 0;
 
     for (let i = 0; i < MTFlexTitle.length; i += 1) { csvContent = csvContent + '"' + MTFlexTitle[i].Title + '"' + c;}
     csvContent = csvContent + CRLF;
@@ -485,7 +489,6 @@ function MT_GridExport() {
 }
 
 function MT_GridDrawEmbed(inSection,inCol,inValue, inDesc) {
-
     switch (MTFlex.Name) {
         case 'MTTrend':
             if(MTFlex.Option2 < 3) {
@@ -507,7 +510,7 @@ function MT_GridGetUID(inSec,inUID,inCol) {
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         if(MTFlexRow[i].UID == inUID && MTFlexRow[i].Section == inSec) {
             return MTFlexRow[i][MTFields + inCol];
-    } }
+    }}
     return 0;
 }
 
@@ -516,7 +519,7 @@ function MT_GridUpdateUID(inUID,inCol,inValue) {
         if(MTFlexRow[i].UID == inUID) {
             MTFlexRow[i][MTFields + inCol] = inValue;
             return;
-    } }
+    }}
     let p = [];
     p.UID = inUID;
     MF_QueueAddRow(p);
@@ -532,7 +535,7 @@ function MT_GridRollup(inNew,inRoll,inBasedOn,inName) {
     for (let i = 0; i < MTFlexRow.length; i += 1) {
          if(MTFlexRow[i].Section == inRoll) {
              for (let j = 1; j < MTFlexTitle.length; j += 1) { if(MTFlexTitle[j].Format > 0) {Subtotals[j] += MTFlexRow[i][MTFields + j];} }
-    } }
+    }}
     MTP = [];
     MTP.isHeader = true; MTP.IgnoreShade = true;MTP.Section = inNew;MTP.BasedOn = inBasedOn;MF_QueueAddRow(MTP);
     MTFlexRow[MTFlexCR][MTFields] = inName;
@@ -575,7 +578,6 @@ function MT_GridCalcDifference(inA,inB,inC,inCols,inOp) {
 function MT_GridRollDifference(inNew,inA,inB,inBasedOn,inName,inOp) {
 
     let p1 = null, p2 = null;
-
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         if(MTFlexRow[i].Section == inA) {p1 = i;}
         if(MTFlexRow[i].Section == inB) {p2 = i;}
@@ -808,7 +810,6 @@ async function MenuReportsAccountsGo() {
         }
         return false;
     }
-
 }
 
 async function MenuReportsTrendsGo() {
@@ -816,16 +817,13 @@ async function MenuReportsTrendsGo() {
     TrendQueue = [];
     await MF_GridInit('MTTrend');
     let TrendFullPeriod = getCookie('MT_TrendFullPeriod',true);
-
     let lowerDate = new Date(TrendTodayIs);
     let higherDate = new Date(TrendTodayIs);
     lowerDate.setDate(1);
     lowerDate.setMonth(0);
-
     let month = lowerDate.getMonth();
     let day = lowerDate.getDate();
     let year = lowerDate.getFullYear();
-
     let month2 = higherDate.getMonth();
     let day2 = higherDate.getDate();
     let year2 = higherDate.getFullYear();
@@ -927,7 +925,7 @@ async function MenuReportsTrendsGo() {
         MF_QueueAddTitle(MTP);
         await BuildTrendData('lp',MTFlex.Button1,'year',lowerDate,higherDate,'');
 
-        // This Period --------------
+        // This Period
         let useTitle = '';
         year+=1;
         month = month2;
@@ -954,7 +952,7 @@ async function MenuReportsTrendsGo() {
         MF_QueueAddTitle(MTP);
         await BuildTrendData('cm',MTFlex.Button1,'year',lowerDate,higherDate,'');
 
-        // Last Period --------------
+        // Last Period
         let forceEOM = false;
         if(daysInMonth(month,year) == day2) { forceEOM = true; }
 
@@ -1190,7 +1188,6 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
 
     const firstDate = formatQueryDate(lowerDate);
     const lastDate = formatQueryDate(higherDate);
-
     let useID = '', useType = '';
     let snapshotData = null;
     let retGroups = [];
@@ -1254,8 +1251,6 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
         }
     }
     if(inCol == 'hs') {MTFlexReady = 2;}
-    //console.log(firstDate,lastDate,snapshotData);
-
 }
 
 function Trend_UpdateQueue(useID,useAmount,inCol) {
@@ -1264,17 +1259,13 @@ function Trend_UpdateQueue(useID,useAmount,inCol) {
         if(TrendQueue[i].ID == useID) {
             switch(inCol) {
                 case 'cp':
-                    TrendQueue[i].N_CURRENT = useAmount;
-                    break;
+                    TrendQueue[i].N_CURRENT = useAmount;break;
                case 'lp':
-                    TrendQueue[i].N_LAST = useAmount;
-                    break;
+                    TrendQueue[i].N_LAST = useAmount;break;
                case 'cm':
-                    TrendQueue[i].N_CURRENTM = useAmount;
-                    break;
+                    TrendQueue[i].N_CURRENTM = useAmount;break;
                case 'lm':
-                    TrendQueue[i].N_LASTM = useAmount;
-                    break;
+                    TrendQueue[i].N_LASTM = useAmount;break;
             }
             return;
         }
@@ -1282,17 +1273,13 @@ function Trend_UpdateQueue(useID,useAmount,inCol) {
 
     switch(inCol) {
         case 'cp':
-            TrendQueue.push({"ID": useID,"N_CURRENT": useAmount,"N_LAST": 0, "N_CURRENTM": 0, "N_LASTM": 0});
-            break;
+            TrendQueue.push({"ID": useID,"N_CURRENT": useAmount,"N_LAST": 0, "N_CURRENTM": 0, "N_LASTM": 0});break;
         case 'lp':
-            TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": useAmount, "N_CURRENTM": 0, "N_LASTM": 0});
-            break;
+            TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": useAmount, "N_CURRENTM": 0, "N_LASTM": 0});break;
         case 'cm':
-            TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_CURRENTM": useAmount, "N_LASTM": 0});
-            break;
+            TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_CURRENTM": useAmount, "N_LASTM": 0});break;
         case 'lm':
-            TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_CURRENTM": 0, "N_LASTM": useAmount});
-            break;
+            TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_CURRENTM": 0, "N_LASTM": useAmount});break;
     }
 
 }
@@ -1304,7 +1291,6 @@ function MenuReportsHistory(inType,inID) {
 
         const lowerDate = new Date("2022-01-01");
         const higherDate = new Date();
-
         let retGroups = getCategoryGroup(inID);
         let inGroup = 1;
 
@@ -1345,13 +1331,9 @@ function MenuReportsHistoryDraw() {
     const startYear = Number(getDates('n_CurYear') - 2);
     const curYear = Number(getDates('n_CurYear'));
     const curMonth = Number(getDates('n_CurMonth'));
-    let curYears = 1;
-    let skiprow = false;
-    let inGroup = 1;
-    let useArrow = 0;
-    let c_r = 'red', c_g = 'green';
-
+    let curYears = 1,skiprow = false,inGroup = 1,useArrow = 0,c_r = 'red', c_g = 'green';
     let topDiv = document.querySelector('div.MTSideDrawerMotion');
+
     if(topDiv) {
         if(topDiv.getAttribute("grouptype") == 'category-groups') { inGroup = 2;}
         if(topDiv.getAttribute("cattype") == 'income') { c_g = 'red'; c_r = 'green'; }
@@ -1377,7 +1359,6 @@ function MenuReportsHistoryDraw() {
         div3 = cec('span','MTSpacerClass',div2,'','','','');
 
         let T = ['Total',0,0,0,0];
-
         for (let i = 0; i < 12; i++) {
             if(i > 0 && i == curMonth) {
                 div2 = cec('div','MTSideDrawerItem',div,'','','style',os2);
@@ -1492,14 +1473,11 @@ function MenuReportsHistoryDraw() {
 
 function MenuReportsHistoryExport() {
 
-    const CRLF = String.fromCharCode(13,10);
-    const c = ',';
+    const CRLF = String.fromCharCode(13,10),c = ',';
     let csvContent = '';
-
     const spans = document.querySelectorAll('span.MTSideDrawerDetail' + [',span.MTSideDrawerDetail2',''][getCookie('MTC_div.TrendHistoryDetail',true)]);
 
-    let j = 0;
-    let Cols = 0;
+    let j = 0,Cols = 0;
 
     spans.forEach(span => {
         j=j+1;
@@ -1515,7 +1493,7 @@ function MenuReportsHistoryExport() {
         }
     });
 
-    downloadFile('Monarch Trends History ' + getDates('today'),csvContent);
+    downloadFile('Monarch Trends History ' + getDates('s_FullDate'),csvContent);
 }
 
 // Datasets Menu
@@ -1688,7 +1666,7 @@ function MM_FixCalendarDropdown(InList) {
     }
 }
 
-function removeAllEncompass(InValue,InStart,InEnd) {
+function replaceBetweenWith(InValue,InStart,InEnd,InReplaceWith) {
 
     let result = InValue;
     if(InValue != null) {
@@ -1697,7 +1675,7 @@ function removeAllEncompass(InValue,InStart,InEnd) {
             let b = InValue.indexOf(InEnd,a+1);
             if(b > a) {
                 b = b + InEnd.length;
-                result = InValue.substring(0, a) + InValue.substring(b);
+                result = InValue.substring(0, a) + InReplaceWith + InValue.substring(b);
             }
         }
     }
@@ -1737,7 +1715,6 @@ function MM_SplitTransaction() {
 function MenuTransactions(OnFocus) {
 
     if (SaveLocationPathName.startsWith('/transactions')) {
-
     }
 }
 
@@ -1752,9 +1729,7 @@ function MenuDisplay(OnFocus) {
 
     if (SaveLocationPathName.startsWith('/settings/display')) {
         if(OnFocus == false) {
-            if(r_Init == false) {
-                window.location.replace(window.location.pathname);
-            }
+            if(r_Init == false) { window.location.replace(window.location.pathname);}
         }
         if(OnFocus == true) {
             MenuDisplay_Input('Monarch Money Tweaks - ' + version,'','header');
@@ -1773,7 +1748,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Hide Accounts Net Worth Graph panel','MT_HideAccountsGraph','checkbox');
             MenuDisplay_Input('Transactions','','spacer');
             MenuDisplay_Input('Transactions panel has smaller font','MT_CompressedTx','checkbox');
-            MenuDisplay_Input('Show Pending Transactions in red (Preferences / "Allow Pending Edits" must be off)','MT_PendingIsRed','checkbox');
+            MenuDisplay_Input('Highlight Pending Transactions (Preferences / "Allow Pending Edits" must be off)','MT_PendingIsRed','checkbox');
             MenuDisplay_Input('Hide Create Rule pop-up','MT_HideToaster','checkbox');
             MenuDisplay_Input('Reports','','spacer');
             MenuDisplay_Input('Hide chart tooltip Difference amount','MT_HideTipDiff','checkbox');
@@ -1823,11 +1798,9 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
             e1.style = 'margin: 11px 25px;';
         }
         qs.after(e1);
-        let e2 = null;
-        let e3 = null;
+        let e2 = null,e3 = null;
         const OldValue = getCookie(inCookie);
-        const d = new Date();
-        const year = d.getFullYear();
+        const d = new Date(),year = d.getFullYear();
 
         if(inType == 'checkbox') {
             e2 = document.createElement('input');
@@ -1884,21 +1857,17 @@ window.onclick = function(event) {
     if(typeof cn === 'string') {
         switch (cn) {
             case 'MTSideDrawerRoot':
-                removeAllSections('div.MTSideDrawerRoot');
-                return;
+                removeAllSections('div.MTSideDrawerRoot');return;
             case 'MTTrendCellArrow':
-                removeAllSections('div.MTSideDrawerRoot');
-                return;
+                removeAllSections('div.MTSideDrawerRoot');return;
             case 'MTTrendCellArrow2':
                 flipAllSections('div.TrendHistoryDetail');
                 event.target.innerText = ['',''][getCookie('MTC_div.TrendHistoryDetail',true)];
                 return;
             case 'MTlink':
-                if(pcn == 'MTSideDrawerHeader') {MenuReportsHistoryExport();}
-                return;
+                if(pcn == 'MTSideDrawerHeader') {MenuReportsHistoryExport();};return;
             case 'MTFlexBig MThRefClass':
-                onClickMTFlexBig();
-                return;
+                onClickMTFlexBig();return;
             case 'MTFlexButton1':
                 if(r_FlexButtonActive == 2) {document.getElementById("MTDropdown2").className = 'MTFlexdown-content';}
                 if(document.getElementById("MTDropdown1").classList.toggle("show") == true) { r_FlexButtonActive = 1;} else { r_FlexButtonActive = 0;}
@@ -1907,32 +1876,32 @@ window.onclick = function(event) {
                 if(r_FlexButtonActive == 1) {document.getElementById("MTDropdown1").className = 'MTFlexdown-content';}
                 if(document.getElementById("MTDropdown2").classList.toggle("show") == true) { r_FlexButtonActive = 2;} else { r_FlexButtonActive = 0;}
                 return;
+            case 'MTFlexCheckbox':
+                MTFlex.Button3 = event.target.checked;
+                setCookie(MTFlex.Name + 'Button3',MTFlex.Button3);
+                if(MTFlex.Button3 == true) {MM_hideElement('tr.MTSpacerClassTR',1);} else {MM_hideElement('tr.MTSpacerClassTR',0);}
+                return;
             case 'MTFlexButtonExport':
                 MT_GridExport();
         }
         if(cn.includes('AbstractButton')) {
             if(event.target.innerText.startsWith('\uf10b')) {
-                MM_FixCalendarShortcuts();
-                return;
+                MM_FixCalendarShortcuts();return;
             }
         }
     }
      if(typeof pcn === 'string') {
         switch (pcn) {
             case 'MTFlexGridTitleRow':
-                onClickGridSort();
-                return;
+                onClickGridSort();return;
             case 'MTFlexCellArrow':
-                onClickMTFlexArrow();
-                return;
+                onClickMTFlexArrow();return;
             case 'MTdropdown':
-                onClickFilter();
-                return;
+                onClickFilter();return;
         }
         if(pcn.includes('AbstractButton')) {
             if(event.target.parentNode.innerText.startsWith('\uf10b')) {
-                MM_FixCalendarShortcuts();
-                return;
+                MM_FixCalendarShortcuts();return;
             }
         }
         if(cn) {
@@ -1950,7 +1919,6 @@ window.onclick = function(event) {
         document.getElementById("MTDropdown2").className = 'MTFlexdown-content';
         r_FlexButtonActive = 0;
     }
-
 };
 
 function onClickMTFlexBig() {
@@ -2006,11 +1974,9 @@ function onClickFilter() {
                 cn = cn.replaceAll('%20',' ');
                 switch(cn) {
                     case 'MTF_@':
-                        MenuFilter_Save('');
-                        break;
+                        MenuFilter_Save('');break;
                     case 'MTF_#':
-                        MenuFilter_Save(getCookie('MT_LastFilter'));
-                        break;
+                        MenuFilter_Save(getCookie('MT_LastFilter'));break;
                     case 'MTF_$':
                         deleteCookie(PathCookie);
                         PathCookie = PathCookie.replace('MTF_','MTP_');
@@ -2018,8 +1984,7 @@ function onClickFilter() {
                         setCookie("MT_LastFilter","");
                         break;
                     default:
-                        MenuFilter_Restore(cn);
-                        break;
+                        MenuFilter_Restore(cn);break;
                 }
             }
         }
@@ -2038,13 +2003,11 @@ function cec(e,c,r,it,hr,a1,a2) {
 }
 
 function removeAllSections(inDiv) {
-
     const divs = document.querySelectorAll(inDiv);
     for (let i = 0; i < divs.length; ++i) { divs[i].remove(); }
 }
 
 function flipAllSections(inDiv) {
-
     flipCookie('MTC_' + inDiv,1);
     const cv = getCookie('MTC_' + inDiv,true);
     MM_hideElement(inDiv,cv);
@@ -2244,32 +2207,29 @@ function getCookie(cname,isNum) {
 
 function deleteCookie(cName) {
     document.cookie = cName + "= ;expires=31 Dec 2000 23:59:59 GMT; path=/" ;
- }
-
+}
 function flipCookie(inCookie,spin) {
     let OldValue = parseInt(getCookie(inCookie,true)) + 1;
     if(spin == null) {spin = 1;}
     if(OldValue > spin) { setCookie(inCookie,0); } else {setCookie(inCookie,OldValue); }
 }
-
 function getDisplay(InA,InB) {
     if(InA == 1) {return 'none;';} else {return InB;}
 }
-
-function getStyle() {
+function getChecked(InA,InB) {
+    if(InA == 'true') {return 'display: none;';} else {return InB;}
+}
+function isDarkMode() {
     const cssObj = window.getComputedStyle(document.querySelector('[class*=Page__Root]'), null);
     const bgColor = cssObj.getPropertyValue('background-color');
     if (bgColor === 'rgb(25, 25, 24)') { return 1; } else { return 0; }
 }
-
 function addStyle(aCss) {
-
     if(r_headStyle == null) { r_headStyle = document.getElementsByTagName('head')[0]; }
     let style = document.createElement('style');
     style.setAttribute('type', 'text/css');
     style.textContent = aCss;
     r_headStyle.appendChild(style);
-
 }
 
 (function() {
@@ -2400,10 +2360,7 @@ async function buildCategoryGroups() {
 }
 
 function getCategoryGroup(InId) {
-
-  for (let i = 0; i < accountGroups.length; i++) {
-      if(accountGroups[i].ID == InId || accountGroups[i].GROUP == InId) {return accountGroups[i] }
-  }
+    for (let i = 0; i < accountGroups.length; i++) {if(accountGroups[i].ID == InId || accountGroups[i].GROUP == InId) {return accountGroups[i]}}
     return [null];
 }
 
