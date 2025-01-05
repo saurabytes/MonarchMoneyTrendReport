@@ -5,7 +5,9 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.14 (beta):**
 
-• NEW: Transactions grid having smaller font now has compressed grid as well.
+• NEW: Transactions grid can have smaller font & compressed grid. (Settings / Display)
+
+• NEW: Budget grid can have smaller font & compressed grid. (Settings / Display)
 
 **Version 2.13:**
 
