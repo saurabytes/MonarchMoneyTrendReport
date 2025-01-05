@@ -1766,7 +1766,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Show total Investments card','MT_AccountsCard3','checkbox');
             MenuDisplay_Input('Show total 401k card','MT_AccountsCard4','checkbox');
             MenuDisplay_Input('Budget','','spacer');
-            MenuDisplay_Input('Forecast panel has smaller font & compressed grid','MT_PlanCompressed','checkbox');
+            MenuDisplay_Input('Budget panel has smaller font & compressed grid','MT_PlanCompressed','checkbox');
         }
     }
 }
