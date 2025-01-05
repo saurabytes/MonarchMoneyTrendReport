@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.14 (beta):**
 
-• NEW: Transaction grid having smaller font now has compressed grid as well.
+• NEW: Transactions grid having smaller font now has compressed grid as well.
 
 **Version 2.13:**
 
