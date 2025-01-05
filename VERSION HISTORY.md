@@ -9,6 +9,7 @@ Email any issues directly:  robert @ paresi.net
 
 • FIX: Export History Grid might throw exception creating file name.
 
+• CHANGE: Bettter styling with new color style.
 
 **Version 2.12:**
 
