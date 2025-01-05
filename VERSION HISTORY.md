@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.13 beta:**
+**Version 2.13:**
 
 • NEW: Ability to compress Reports / Trends & Accounts grid.
 
