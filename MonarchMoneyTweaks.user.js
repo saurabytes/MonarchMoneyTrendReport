@@ -42,7 +42,7 @@ function MM_Init() {
     const accentColor = ['#ff692d','#ff692d'][a];
 
     MM_MenuFix();
-    if(getCookie('MT_PlanCompressed') == 1) {addStyle('.joBqTh {padding-bottom: 0px; padding-top: 0px; !important;}'); addStyle('.earyfo {height: 42px;}'); addStyle('.dVgTYt, .exoRCJ {font-size: 15px;}');}
+    if(getCookie('MT_PlanCompressed') == 1) {addStyle('.joBqTh, .jsBiA-d {padding-bottom: 0px; padding-top: 0px; !important;}'); addStyle('.earyfo, .fxLfmT {height: 42px;}'); addStyle('.dVgTYt, .exoRCJ, .bgDnMb, .zoivW {font-size: 15px;}');}
     if(getCookie('MT_CompressedTx') == 1) {addStyle('.oRgik, .bVcoEc, .XbVLi, .erRzVO, .dEMbMu {font-size: 14px;}');addStyle('.XbVLi {padding: 0px 0px 0px 0px;}');}
     if(getCookie('MT_PendingIsRed') == 1) {addStyle('.cxLoFP {color:' + accentColor + '}');}
 
