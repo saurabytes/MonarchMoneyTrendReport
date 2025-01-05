@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.14.01
+// @version      2.14.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.14.01';
+const version = '2.14.02';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -42,11 +42,8 @@ function MM_Init() {
     const accentColor = ['#ff692d','#ff692d'][a];
 
     MM_MenuFix();
-    if(getCookie('MT_PlanCompressed') == 1) {addStyle('.sTiBE {height: 69px;}');addStyle('.jWyZIM {height: 45px;}');addStyle('.fAcQtX {margin-bottom: 2px;}');}
-    if(getCookie('MT_CompressedTx') == 1) {
-        addStyle('.oRgik, .bVcoEc, .XbVLi, .erRzVO, .dEMbMu {font-size: 14px;}');
-        addStyle('.XbVLi {padding: 0px 0px 0px 0px;');
-    }
+    if(getCookie('MT_PlanCompressed') == 1) {addStyle('.joBqTh {padding-bottom: 0px; padding-top: 0px; !important;}'); addStyle('.earyfo {height: 42px;}'); addStyle('.dVgTYt, .exoRCJ {font-size: 15px;}');}
+    if(getCookie('MT_CompressedTx') == 1) {addStyle('.oRgik, .bVcoEc, .XbVLi, .erRzVO, .dEMbMu {font-size: 14px;}');addStyle('.XbVLi {padding: 0px 0px 0px 0px;}');}
     if(getCookie('MT_PendingIsRed') == 1) {addStyle('.cxLoFP {color:' + accentColor + '}');}
 
     addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
@@ -1750,7 +1747,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Accounts','','spacer');
             MenuDisplay_Input('Hide Accounts Net Worth Graph panel','MT_HideAccountsGraph','checkbox');
             MenuDisplay_Input('Transactions','','spacer');
-            MenuDisplay_Input('Transactions panel has smaller font and compressed grid','MT_CompressedTx','checkbox');
+            MenuDisplay_Input('Transactions panel has smaller font & compressed grid','MT_CompressedTx','checkbox');
             MenuDisplay_Input('Highlight Pending Transactions (Preferences / "Allow Pending Edits" must be off)','MT_PendingIsRed','checkbox');
             MenuDisplay_Input('Hide Create Rule pop-up','MT_HideToaster','checkbox');
             MenuDisplay_Input('Reports','','spacer');
@@ -1769,7 +1766,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Show total Investments card','MT_AccountsCard3','checkbox');
             MenuDisplay_Input('Show total 401k card','MT_AccountsCard4','checkbox');
             MenuDisplay_Input('Budget','','spacer');
-            MenuDisplay_Input('Panel has smaller font & compressed grid','MT_PlanCompressed','checkbox');
+            MenuDisplay_Input('Forecast panel has smaller font & compressed grid','MT_PlanCompressed','checkbox');
         }
     }
 }
