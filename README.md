@@ -71,13 +71,13 @@ Enjoy!
 # SCREENSHOTS:
 
 **Monarch Tweaks Trends**
-![Settings](/images/MT20301.png)
+![Settings](/images/MT20301b.png)
 
 **Monarch Tweaks Accounts**
-![Settings](/images/MT20302.png)
+![Settings](/images/MT20302b.png)
 
 **Monarch Tweaks Configuration Options**
-![Settings](/images/MT20303.png)
+![Settings](/images/MT20303b.png)
 
 **Monarch Tweaks Trend Same Month, Last Month, Same Quarter**
 ![Settings](/images/MT20304.png)
