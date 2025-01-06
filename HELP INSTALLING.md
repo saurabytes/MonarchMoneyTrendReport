@@ -14,7 +14,7 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
 
 
 
-# INSTALL ON Chrome:
+# INSTALL ON Chrome/Firefox/etc.
 
 1. Click on **Chrome** menu option and then Settings
 2. Click on **Extensions** at bottom left
