@@ -14,7 +14,7 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
 
 
 
-# INSTALL ON Chrome/Firefox/etc.
+# INSTALL ON Chrome:
 
 1. Click on **Chrome** menu option and then Settings
 2. Click on **Extensions** at bottom left
@@ -25,7 +25,6 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
 Once Tampermonkey is installed, install or update the Monarch Money Tweaks extension by clicking on this link in Chrome:
 
 https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
-
 
 
 **Monarch Money Tweaks Install/Update screen**
@@ -39,6 +38,17 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
 **Monarch Money Tweaks Chrome Developer Mode to "ON"**
 
 ![Settings](/images/MM_Chrome2.png)
+
+
+# INSTALL ON Safari:
+
+1. Click on **Safari** menu option and then Safari Extentions
+2. Search for **Tampermonkey** and select "Tampermonkey Classic" (Get / Install)
+   
+Once Tampermonkey is installed, install or update the Monarch Money Tweaks extension by clicking on this link in Safari:
+
+https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
+
 
 
 Once installed, Refresh the Monarch Money webpage and then go to **Settings / Display**.
