@@ -50,5 +50,15 @@ Once Tampermonkey is installed, install or update the Monarch Money Tweaks exten
 https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
 
 
+# INSTALL ON Firefox:
+
+1. Click on **Tools** menu option and then Add-Ons and Themes
+2. Search for **Tampermonkey** and select "Tampermonkey by Jan Biniok" (Add to Firefox)
+   
+Once Tampermonkey is installed, install or update the Monarch Money Tweaks extension by clicking on this link in Firefox:
+
+https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
+
+
 
 Once installed, Refresh the Monarch Money webpage and then go to **Settings / Display**.
