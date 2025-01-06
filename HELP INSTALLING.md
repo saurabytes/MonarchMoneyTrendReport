@@ -1,4 +1,4 @@
-**INSTALL ON iPad using UserScripts </> app:**
+# INSTALL ON iPad using UserScripts </> app:
 
 1. Download **Userscripts </> - User Script and Style Manager** from the App Store
 2. Select **Settings** and search for **Safari** and select General / Extensions
@@ -14,7 +14,7 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
 
 
 
-**INSTALL ON Chrome:**
+# INSTALL ON Chrome:
 
 1. Click on **Chrome** menu option and then Settings
 2. Click on **Extensions** at bottom left
