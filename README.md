@@ -81,3 +81,6 @@ Enjoy!
 
 **Monarch Tweaks show Monthly History up to three years**
 ![Settings](/images/MT20306b.png)
+
+**Monarch Tweaks - Correct Calendar Pull-Down Year**
+![Settings](/images/MT20307b.png)
