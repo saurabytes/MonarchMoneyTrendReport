@@ -79,11 +79,5 @@ Enjoy!
 **Monarch Tweaks Configuration Options**
 ![Settings](/images/MT20303b.png)
 
-**Monarch Tweaks Trend Same Month, Last Month, Same Quarter**
-![Settings](/images/MT20304.png)
-
-**Monarch Tweaks show by Group, Category, or Both**
-![Settings](/images/MT20305.png)
-
 **Monarch Tweaks show Monthly History up to three years**
-![Settings](/images/MT20306.png)
+![Settings](/images/MT20306b.png)
