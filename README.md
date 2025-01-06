@@ -40,7 +40,7 @@ I found there were opportunities to enhance the Monarch Money web application wi
 
 * Hide Accounts Net Worth Graph Panel
 
-* Show Pending Transactions in Red when **Settings / Preferences / Allow Edits to Pending Transactions** is set to "Off".
+* Highlight Pending Transactions when **Settings / Preferences / Allow Edits to Pending Transactions** is set to "Off".
 
 
 # INSTALLING MONARCH MONEY TWEAKS:
