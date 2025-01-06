@@ -84,3 +84,6 @@ Enjoy!
 
 **Monarch Tweaks - Correct Calendar Pull-Down Year**
 ![Settings](/images/MT20307b.png)
+
+**Monarch Tweaks - Quickly split transactions 50/50**
+![Settings](/images/MT20308b.png)
