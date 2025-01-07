@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.15.01
+// @version      2.15.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.15.01';
+const version = '2.15.02';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -43,6 +43,7 @@ function MM_Init() {
 
     MM_MenuFix();
     MM_RefreshAll();
+
     if(getCookie('MT_PlanCompressed') == 1) {addStyle('.joBqTh, .jsBiA-d {padding-bottom: 0px; padding-top: 0px; !important;}'); addStyle('.earyfo, .fxLfmT {height: 42px;}'); addStyle('.dVgTYt, .exoRCJ, .bgDnMb, .zoivW {font-size: 15px;}');}
     if(getCookie('MT_CompressedTx') == 1) {addStyle('.oRgik, .bVcoEc, .XbVLi, .erRzVO, .dEMbMu {font-size: 14px;}');addStyle('.XbVLi {padding-top: 1px; padding-bottom: 1px;}');}
     if(getCookie('MT_PendingIsRed') == 1) {addStyle('.cxLoFP {color:' + accentColor + '}');}
@@ -118,8 +119,7 @@ function MM_MenuFix() {
 function MM_RefreshAll() {
 
     if (localStorage.getItem('MT:LastRefresh') != getDates('s_FullDate')) {
-        alert('Refreshing for First Time Today');
-        refreshAccountsData();
+        if(getCookie('MT_RefreshAll',true) == 1) {refreshAccountsData();}
     }
 }
 
@@ -2264,7 +2264,7 @@ function addStyle(aCss) {
             MenuTransactions(true);
         }
         MenuCheckSpawnProcess();
-    },300);
+    },330);
 }());
 
 function getGraphqlToken() {
@@ -2286,24 +2286,18 @@ function callGraphQL(data) {
 }
 
 async function getMonthlySnapshotData2(startDate, endDate,groupingType) {
-  const options = callGraphQL({
-    operationName: 'GetAggregatesGraph',
-    variables: {startDate: startDate, endDate: endDate, },
-      query: "query GetAggregatesGraph($startDate: Date, $endDate: Date) {\n aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"category\", \"" + groupingType + "\"]\n  fillEmptyValues: false\n ) {\n groupBy {\n category {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
+  const options = callGraphQL({operationName: 'GetAggregatesGraph', variables: {startDate: startDate, endDate: endDate, },
+        query: "query GetAggregatesGraph($startDate: Date, $endDate: Date) {\n aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"category\", \"" + groupingType + "\"]\n  fillEmptyValues: false\n ) {\n groupBy {\n category {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
       });
-
   return fetch(graphql, options)
     .then((response) => response.json())
     .then((data) => { return data.data; }).catch((error) => { console.error(version,error); });
 }
 
 async function getMonthlySnapshotData(startDate, endDate, groupingType) {
-    const options = callGraphQL({
-    operationName: 'GetAggregatesGraphCategoryGroup',
-    variables: {startDate: startDate, endDate: endDate, },
-      query: "query GetAggregatesGraphCategoryGroup($startDate: Date, $endDate: Date) {\n aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"categoryGroup\", \"" + groupingType + "\"]\n fillEmptyValues: false\n ) {\n groupBy {\n categoryGroup {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
+    const options = callGraphQL({ operationName: 'GetAggregatesGraphCategoryGroup',variables: {startDate: startDate, endDate: endDate, },
+          query: "query GetAggregatesGraphCategoryGroup($startDate: Date, $endDate: Date) {\n aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"categoryGroup\", \"" + groupingType + "\"]\n fillEmptyValues: false\n ) {\n groupBy {\n categoryGroup {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
       });
-
   return fetch(graphql, options)
     .then((response) => response.json())
     .then((data) => { return data.data; }).catch((error) => { console.error(version,error); });
@@ -2312,59 +2306,45 @@ async function getMonthlySnapshotData(startDate, endDate, groupingType) {
 async function GetTransactions(startDate,endDate, offset) {
     const limit = 1000;
     const filters = {startDate: startDate, endDate: endDate};
-    const options = callGraphQL({
-      operationName: 'GetTransactions',
-      variables: {offset: offset, limit: limit, filters: filters},
-      query: "query GetTransactions($offset: Int, $limit: Int, $filters: TransactionFilterInput) {\n allTransactions(filters: $filters) {\n totalCount\n results(offset: $offset, limit: $limit) {\n id\n amount\n pending\n date\n hideFromReports\n account {\n id } \n category {\n id\n name \n group {\n id\n name\n type }}}}}\n"
+    const options = callGraphQL({operationName: 'GetTransactions', variables: {offset: offset, limit: limit, filters: filters},
+          query: "query GetTransactions($offset: Int, $limit: Int, $filters: TransactionFilterInput) {\n allTransactions(filters: $filters) {\n totalCount\n results(offset: $offset, limit: $limit) {\n id\n amount\n pending\n date\n hideFromReports\n account {\n id } \n category {\n id\n name \n group {\n id\n name\n type }}}}}\n"
     });
-
     return fetch(graphql, options)
         .then((response) => response.json())
         .then((data) => { return data.data; }).catch((error) => { console.error(version,error);});
 }
 
 async function getDisplayBalanceAtDateData(date) {
-    const options = callGraphQL({
-    operationName: 'Common_GetDisplayBalanceAtDate',
-    variables: {date: date, },
-      query: "query Common_GetDisplayBalanceAtDate($date: Date!) {\n accounts {\n id\n displayBalance(date: $date)\n type {\n name\n}\n }\n }\n"
+    const options = callGraphQL({ operationName: 'Common_GetDisplayBalanceAtDate',variables: {date: date, },
+          query: "query Common_GetDisplayBalanceAtDate($date: Date!) {\n accounts {\n id\n displayBalance(date: $date)\n type {\n name\n}\n }\n }\n"
       });
-
   return fetch(graphql, options)
     .then((response) => response.json())
     .then((data) => { return data.data; }).catch((error) => { console.error(version,error); });
 }
 
 async function getAccountsData() {
-    const options = callGraphQL({
-    operationName: 'GetAccounts',
-    variables: { },
-      query: "query GetAccounts {\n accounts {\n id\n displayName\n deactivatedAt\n isHidden\n isAsset\n isManual\n mask\n displayLastUpdatedAt\n currentBalance\n displayBalance\n hideFromList\n hideTransactionsFromReports\n order\n icon\n logoUrl\n deactivatedAt \n type {\n      name\n      display\n      group\n    }\n subtype {\n name\n display\n }\n }}\n"
+    const options = callGraphQL({ operationName: 'GetAccounts',variables: { },
+          query: "query GetAccounts {\n accounts {\n id\n displayName\n deactivatedAt\n isHidden\n isAsset\n isManual\n mask\n displayLastUpdatedAt\n currentBalance\n displayBalance\n hideFromList\n hideTransactionsFromReports\n order\n icon\n logoUrl\n deactivatedAt \n type {\n  name\n  display\n  group\n  }\n subtype {\n name\n display\n }\n }}\n"
       });
-
   return fetch(graphql, options)
     .then((response) => response.json())
     .then((data) => { return data.data; }).catch((error) => { console.error(version,error); });
 }
 
 async function refreshAccountsData() {
-    const options = callGraphQL({
-    operationName: 'Common_ForceRefreshAccountsQuery',
-    variables: {},
-      query: "query Common_ForceRefreshAccountsQuery {\n  hasAccountsSyncing\n}"
-    });
+ const options = callGraphQL({operationName:"Common_ForceRefreshAccountsMutation",variables: { },
+           query: "mutation Common_ForceRefreshAccountsMutation {\n  forceRefreshAllAccounts {\n success\n errors {\n  __typename\n }\n __typename\n  }\n}\n\nfragment PayloadErrorFields on PayloadError {\n  fieldErrors {\n field\n messages\n __typename\n  }\n  message\n code\n  __typename\n}"
+     });
     return fetch(graphql, options)
     .then((response) => localStorage.setItem('MT:LastRefresh', getDates('s_FullDate')))
     .then((data) => { return data.data; }).catch((error) => { console.error(version,error); });
 }
 
 async function getCategoryData() {
-    const options = callGraphQL({
-      operationName: 'GetCategorySelectOptions',
-      variables: {},
-        query: "query GetCategorySelectOptions {categories {\n id\n name\n order\n icon\n group {\n id\n name \n type}}}"
+    const options = callGraphQL({ operationName: 'GetCategorySelectOptions', variables: {},
+          query: "query GetCategorySelectOptions {categories {\n id\n name\n order\n icon\n group {\n id\n name \n type}}}"
     });
-
     return fetch(graphql, options)
         .then((response) => response.json())
         .then((data) => { return data.data; }).catch((error) => { console.error(version,error); });
