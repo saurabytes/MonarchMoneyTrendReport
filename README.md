@@ -22,7 +22,7 @@ I found there were opportunities to enhance the Monarch Money web application wi
      - Sort the data by any column and export your data to Excel or Numbers
        
 
-* Save and restore your Report filters and other report options on **Reports / Datasets**.  Never have to redo your filters over each time!
+* Save and restore your Report filters and other report options on **Reports / Datasets**.  No longer have to redo your filters over each time!
 
 * Compressed & Smaller **Budget / Forecast** grid to show more items
   
