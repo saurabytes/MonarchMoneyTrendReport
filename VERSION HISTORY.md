@@ -6,7 +6,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.15 (beta):**
 
-• NEW: "Refresh All" accounts the first time logging in for the day
+• NEW: "Refresh All" accounts the first time logging in for the day (Settings / Display / Accounts)
 
 **Version 2.14:**
 
