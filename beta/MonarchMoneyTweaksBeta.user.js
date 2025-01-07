@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.14
+// @version      2.15.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.14';
+const version = '2.15.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -42,8 +42,9 @@ function MM_Init() {
     const accentColor = ['#ff692d','#ff692d'][a];
 
     MM_MenuFix();
+    MM_RefreshAll();
     if(getCookie('MT_PlanCompressed') == 1) {addStyle('.joBqTh, .jsBiA-d {padding-bottom: 0px; padding-top: 0px; !important;}'); addStyle('.earyfo, .fxLfmT {height: 42px;}'); addStyle('.dVgTYt, .exoRCJ, .bgDnMb, .zoivW {font-size: 15px;}');}
-    if(getCookie('MT_CompressedTx') == 1) {addStyle('.oRgik, .bVcoEc, .XbVLi, .erRzVO, .dEMbMu {font-size: 14px;}');addStyle('.XbVLi {padding: 0px 0px 0px 0px;}');}
+    if(getCookie('MT_CompressedTx') == 1) {addStyle('.oRgik, .bVcoEc, .XbVLi, .erRzVO, .dEMbMu {font-size: 14px;}');addStyle('.XbVLi {padding-top: 1px; padding-bottom: 1px;}');}
     if(getCookie('MT_PendingIsRed') == 1) {addStyle('.cxLoFP {color:' + accentColor + '}');}
 
     addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
@@ -112,6 +113,14 @@ function MM_MenuFix() {
     MM_hideElement("[href~='/objectives']",getCookie('MT_Goals'));
     MM_hideElement("[href~='/recurring']",getCookie('MT_Recurring'));
     MM_hideElement("[href~='/plan']",getCookie('MT_Budget'));
+}
+
+function MM_RefreshAll() {
+
+    if (localStorage.getItem('MT:LastRefresh') != getDates('s_FullDate')) {
+        alert('Refreshing for First Time Today');
+        refreshAccountsData();
+    }
 }
 
 function MM_hideElement(InList,InValue) {
@@ -1745,6 +1754,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Hide Advice','MT_Advice','checkbox');
             MenuDisplay_Input('Hide Monarch Ads','MT_Ads','checkbox');
             MenuDisplay_Input('Accounts','','spacer');
+            MenuDisplay_Input('"Refresh All" accounts the first time logging in for the day','MT_RefreshAll','checkbox');
             MenuDisplay_Input('Hide Accounts Net Worth Graph panel','MT_HideAccountsGraph','checkbox');
             MenuDisplay_Input('Transactions','','spacer');
             MenuDisplay_Input('Transactions panel has smaller font & compressed grid','MT_CompressedTx','checkbox');
@@ -2334,6 +2344,17 @@ async function getAccountsData() {
 
   return fetch(graphql, options)
     .then((response) => response.json())
+    .then((data) => { return data.data; }).catch((error) => { console.error(version,error); });
+}
+
+async function refreshAccountsData() {
+    const options = callGraphQL({
+    operationName: 'Common_ForceRefreshAccountsQuery',
+    variables: {},
+      query: "query Common_ForceRefreshAccountsQuery {\n  hasAccountsSyncing\n}"
+    });
+    return fetch(graphql, options)
+    .then((response) => localStorage.setItem('MT:LastRefresh', getDates('s_FullDate')))
     .then((data) => { return data.data; }).catch((error) => { console.error(version,error); });
 }
 
