@@ -3,6 +3,11 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+
+**Version 2.15 (beta):**
+
+• NEW: "Refresh All" accounts the first time logging in for the day
+
 **Version 2.14:**
 
 • NEW: Transactions grid can have smaller font & compressed grid. (Settings / Display)
