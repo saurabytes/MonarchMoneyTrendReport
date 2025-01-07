@@ -24,7 +24,9 @@ I found there were opportunities to enhance the Monarch Money web application wi
 
 * Save and restore your Report filters and other report options on **Reports / Datasets**.  No longer have to redo your filters over each time!
 
-* Compressed & Smaller **Budget / Forecast** grid to show more items
+* Compressed & smaller font for **Transactions** grid to show more items
+  
+* Compressed & smaller font for **Budget** grid to show more items
   
 * Turn ON/OFF (hide) menu items
 
