@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.15.02
+// @version      2.15.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.15.02';
+const version = '2.15.03';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -117,7 +117,6 @@ function MM_MenuFix() {
 }
 
 function MM_RefreshAll() {
-
     if (localStorage.getItem('MT:LastRefresh') != getDates('s_FullDate')) {
         if(getCookie('MT_RefreshAll',true) == 1) {refreshAccountsData();}
     }
@@ -2334,8 +2333,7 @@ async function getAccountsData() {
 
 async function refreshAccountsData() {
  const options = callGraphQL({operationName:"Common_ForceRefreshAccountsMutation",variables: { },
-           query: "mutation Common_ForceRefreshAccountsMutation {\n  forceRefreshAllAccounts {\n success\n errors {\n  __typename\n }\n __typename\n  }\n}\n\nfragment PayloadErrorFields on PayloadError {\n  fieldErrors {\n field\n messages\n __typename\n  }\n  message\n code\n  __typename\n}"
-     });
+         query: "mutation Common_ForceRefreshAccountsMutation {\n  forceRefreshAllAccounts {\n    success\n    errors {\n      ...PayloadErrorFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment PayloadErrorFields on PayloadError {\n  fieldErrors {\n    field\n    messages\n    __typename\n  }\n  message\n  code\n  __typename\n}" });
     return fetch(graphql, options)
     .then((response) => localStorage.setItem('MT:LastRefresh', getDates('s_FullDate')))
     .then((data) => { return data.data; }).catch((error) => { console.error(version,error); });
