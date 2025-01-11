@@ -764,6 +764,7 @@ async function MenuReportsAccountsGo() {
                         }
                     }
                 }
+                MTFlexRow[MTFlexCR][MTFields+9] = MTFlexRow[MTFlexCR][MTFields+9] * -1;
                 if(skipTxs == 1 && MTFlex.Button2 < 3 && (snapshotData.accounts[i].subtype.name == 'checking' || snapshotData.accounts[i].subtype.name == 'credit_card')) {
                     if(snapshotData.accounts[i].isAsset == true){
                         MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] + MTFlexRow[MTFlexCR][MTFields+5] - MTFlexRow[MTFlexCR][MTFields+6];
