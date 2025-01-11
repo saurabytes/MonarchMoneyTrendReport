@@ -8,6 +8,8 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: "Refresh All" accounts the first time logging in for the day (Settings / Display / Accounts)
 
+• NEW: Ability to alwys hide decimals in Reports / Trends
+
 **Version 2.14:**
 
 • NEW: Transactions grid can have smaller font & compressed grid. (Settings / Display)
