@@ -4,7 +4,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 Email any issues directly:  robert @ paresi.net
 
 
-**Version 2.15 (beta):**
+**Version 2.15:**
 
 • NEW: "Refresh All" accounts the first time logging in for the day (Settings / Display / Accounts)
 
