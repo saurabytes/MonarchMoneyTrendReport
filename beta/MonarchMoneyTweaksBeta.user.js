@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.15.04
+// @version      2.15.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.15.04';
+const version = '2.15.05';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -1097,6 +1097,8 @@ async function WriteTrendData() {
 
     let useCards = [0,'',0,'',0,'',0,''];
     let useDesc = '';
+    let useFormat = false;
+    if(getCookie('MT_NoDecimals',true) == 1) {useFormat = true;}
 
     for (let i = 0; i < TrendQueue.length; i += 1) {
         MTP = [];
@@ -1181,7 +1183,7 @@ async function WriteTrendData() {
     function WriteTrendCard(inCol,inValue,inTitle,inSub1,inSub2) {
         MTP = [];
         MTP.Col = inCol;
-        MTP.Title = getDollarValue(Math.abs(inValue));
+        MTP.Title = getDollarValue(Math.abs(inValue),useFormat);
         if(inValue > 0) {
             MTP.Subtitle = inSub1;
             MTP.Style = css_green;
