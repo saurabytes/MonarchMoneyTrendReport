@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.15.03
+// @version      2.15.04
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.15.03';
+const version = '2.15.04';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -909,13 +909,15 @@ async function MenuReportsTrendsGo() {
         }
         await WriteMonthlyData();
     } else {
+        let useFormat = 1;
+        if(getCookie('MT_NoDecimals',true) == 1) {useFormat = 2};
         MTFlex.Title1 = 'Net Income Trend Report';
         MTFlex.Title2 = getDates('s_FullDate',lowerDate) + ' - ' + getDates('s_FullDate',higherDate);
         if(TrendFullPeriod == 1) { MTFlex.Title3 = '* Comparing to End of Month'; }
 
         // this year
         MTP = [];
-        MTP.Column = 5; MTP.Title = 'YTD ' + year; MTP.isSortable = 2; MTP.Width = '14%'; MTP.Format = 1; MTP.ShowPercentShade = false;
+        MTP.Column = 5; MTP.Title = 'YTD ' + year; MTP.isSortable = 2; MTP.Width = '14%'; MTP.Format = useFormat; MTP.ShowPercentShade = false;
         if(getCookie('MT_TrendHidePer1',true) != true) {MTP.ShowPercent = 2;}
         MF_QueueAddTitle(MTP);
         await BuildTrendData('cp',MTFlex.Button1,'year',lowerDate,higherDate,'');
@@ -925,10 +927,10 @@ async function MenuReportsTrendsGo() {
         lowerDate.setFullYear(year);
         higherDate.setFullYear(year);
         MTP = [];
-        MTP.Column = 4; MTP.Title = 'YTD ' + year; MTP.isSortable = 2; MTP.Format = 1; MTP.Width = '14%'; MTP.ShowPercentShade = false;
+        MTP.Column = 4; MTP.Title = 'YTD ' + year; MTP.isSortable = 2; MTP.Format = useFormat; MTP.Width = '14%'; MTP.ShowPercentShade = false;
         if(getCookie('MT_TrendHidePer1',true) != true) {MTP.ShowPercent = 2;}
         MF_QueueAddTitle(MTP);
-        MTP.Column = 6; MTP.Title = 'Difference'; MTP.Format = 1; MTP.Width = '14%';MTP.ShowPercentShade = true;
+        MTP.Column = 6; MTP.Title = 'Difference'; MTP.Format = useFormat; MTP.Width = '14%';MTP.ShowPercentShade = true;
         if(getCookie('MT_TrendHidePer2',true) != true) {MTP.ShowPercent = 1;}
         MF_QueueAddTitle(MTP);
         await BuildTrendData('lp',MTFlex.Button1,'year',lowerDate,higherDate,'');
@@ -955,7 +957,7 @@ async function MenuReportsTrendsGo() {
 
         useTitle = useTitle + getMonthName(month2,true) + ' ' + year;
         MTP = [];
-        MTP.Column = 2; MTP.Title = useTitle; MTP.isSortable = 2; MTP.Width = '14%'; MTP.Format = 1; MTP.ShowPercentShade = false;
+        MTP.Column = 2; MTP.Title = useTitle; MTP.isSortable = 2; MTP.Width = '14%'; MTP.Format = useFormat; MTP.ShowPercentShade = false;
         if(getCookie('MT_TrendHidePer1',true) != true) {MTP.ShowPercent = 2;}
         MF_QueueAddTitle(MTP);
         await BuildTrendData('cm',MTFlex.Button1,'year',lowerDate,higherDate,'');
@@ -1006,11 +1008,11 @@ async function MenuReportsTrendsGo() {
             useTitle = useTitle + ' *';
         }
         MTP = [];
-        MTP.Column = 1; MTP.Title = useTitle; MTP.isSortable = 2; MTP.Format = 1; MTP.Width = '14%'; MTP.ShowPercentShade = false;
+        MTP.Column = 1; MTP.Title = useTitle; MTP.isSortable = 2; MTP.Format = useFormat; MTP.Width = '14%'; MTP.ShowPercentShade = false;
         if(getCookie('MT_TrendHidePer1',true) != true) {MTP.ShowPercent = 2;}
         MF_QueueAddTitle(MTP);
         MTP = [];
-        MTP.Column = 3; MTP.Title = 'Difference'; MTP.isSortable = 2; MTP.Format = 1; MTP.Width = '14%'; MTP.ShowPercentShade = true;
+        MTP.Column = 3; MTP.Title = 'Difference'; MTP.isSortable = 2; MTP.Format = useFormat; MTP.Width = '14%'; MTP.ShowPercentShade = true;
         if(getCookie('MT_TrendHidePer2',true) != true) {MTP.ShowPercent = 1;}
         MF_QueueAddTitle(MTP);
 
@@ -1228,7 +1230,6 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
                 useID = retGroups.GROUP;
                 useType = retGroups.TYPE;
                 break;
-
         }
         if(inID == '' || inID == useID) {
             let useAmount = Number(snapshotData.aggregates[i].summary.sum);
@@ -1766,6 +1767,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('By Month "Avg" ignores Current Month','MT_TrendIgnoreCurrent','checkbox');
             MenuDisplay_Input('Hide percentage of Income & Spending','MT_TrendHidePer1','checkbox');
             MenuDisplay_Input('Hide percentage of Difference','MT_TrendHidePer2','checkbox');
+            MenuDisplay_Input('Always hide decimals','MT_NoDecimals','checkbox');
             MenuDisplay_Input('Reports / Accounts','','spacer');
             MenuDisplay_Input('Use calculated balance (Income, Expenses & Transfers) for Checking & Credit Cards','MT_AccountsBalance','checkbox');
             MenuDisplay_Input('Hide accounts marked as "Hide this account in list"','MT_AccountsHidden','checkbox');
