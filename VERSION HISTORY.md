@@ -10,6 +10,8 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Ability to always hide decimals in Reports / Trends
 
+• NEW: Ability to show Pending charges and Projected balance amounts by account in Reports / Accounts
+
 **Version 2.14:**
 
 • NEW: Transactions grid can have smaller font & compressed grid. (Settings / Display)
