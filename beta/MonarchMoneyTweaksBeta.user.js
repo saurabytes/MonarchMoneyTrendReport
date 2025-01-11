@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.15.08
+// @version      2.15.09
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.15.08';
+const version = '2.15.09';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -673,7 +673,7 @@ async function MenuReportsAccountsGo() {
     let isToday = getDates('isToday',AccountsTodayIs);
     if(isToday) {accountBalances = [];}
 
-    let snapshotData = null, snapshotData2 = null, snapshotData3 = null;
+    let snapshotData = null, snapshotData2 = null, snapshotData3 = null,snapshotData4 = null
     let useDateRange = ['d_MinusWeek','d_Minus2Weeks','d_StartofMonth','d_Minus3Months','d_Minus6Months','d_StartOfYear','d_Minus1Year','d_Minus2Years','d_Minus3Years'][MTFlex.Button2];
     let useDate = getDates(useDateRange,AccountsTodayIs);
     let useDate2 = AccountsTodayIs;
@@ -703,8 +703,9 @@ async function MenuReportsAccountsGo() {
     let skipHidden = getCookie('MT_AccountsHidden',true);
 
     snapshotData = await getAccountsData();
-    snapshotData2 = await GetTransactions(formatQueryDate(useDate),formatQueryDate(useDate2),0);
+    snapshotData2 = await GetTransactions(formatQueryDate(useDate),formatQueryDate(useDate2),0,false);
     snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
+    snapshotData4 = await GetTransactions(formatQueryDate(getDates('d_StartofLastMonth')),formatQueryDate(useDate2),0,true);
 
     for (let i = 0; i < 5; i += 1) { if(getCookie('MT_AccountsCard' + i.toString(),true) == 1) {cards+=1;}}
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
@@ -745,26 +746,24 @@ async function MenuReportsAccountsGo() {
                     for (let j = 0; j < snapshotData2.allTransactions.results.length; j += 1) {
                         if(snapshotData2.allTransactions.results[j].hideFromReports == false) {
                             if(snapshotData2.allTransactions.results[j].account.id == snapshotData.accounts[i].id) {
-                                if(snapshotData2.allTransactions.results[j].pending == true) { MTFlexRow[MTFlexCR][MTFields+9] += snapshotData2.allTransactions.results[j].amount;} else {
-                                    switch (snapshotData2.allTransactions.results[j].category.group.type) {
-                                        case 'income':
-                                            MTFlexRow[MTFlexCR][MTFields+4] += snapshotData2.allTransactions.results[j].amount;
-                                            break;
-                                        case 'expense':
-                                            useAmount = snapshotData2.allTransactions.results[j].amount * -1;
-                                            MTFlexRow[MTFlexCR][MTFields+5] += useAmount;
-                                            MTFlexRow[MTFlexCR][MTFields+5] = parseFloat(MTFlexRow[MTFlexCR][MTFields+5].toFixed(2));
-                                            break;
-                                        case 'transfer':
-                                            MTFlexRow[MTFlexCR][MTFields+6] += snapshotData2.allTransactions.results[j].amount;
-                                            break;
-                                    }
+                                switch (snapshotData2.allTransactions.results[j].category.group.type) {
+                                    case 'income':
+                                        MTFlexRow[MTFlexCR][MTFields+4] += snapshotData2.allTransactions.results[j].amount;
+                                        break;
+                                    case 'expense':
+                                        useAmount = snapshotData2.allTransactions.results[j].amount * -1;
+                                        MTFlexRow[MTFlexCR][MTFields+5] += useAmount;
+                                        MTFlexRow[MTFlexCR][MTFields+5] = parseFloat(MTFlexRow[MTFlexCR][MTFields+5].toFixed(2));
+                                        break;
+                                    case 'transfer':
+                                        MTFlexRow[MTFlexCR][MTFields+6] += snapshotData2.allTransactions.results[j].amount;
+                                        break;
                                 }
                             }
                         }
                     }
                 }
-                MTFlexRow[MTFlexCR][MTFields+9] = MTFlexRow[MTFlexCR][MTFields+9] * -1;
+                MTFlexRow[MTFlexCR][MTFields+9] = getAccountPendingBalance(snapshotData.accounts[i].id);
                 if(skipTxs == 1 && MTFlex.Button2 < 3 && (snapshotData.accounts[i].subtype.name == 'checking' || snapshotData.accounts[i].subtype.name == 'credit_card')) {
                     if(snapshotData.accounts[i].isAsset == true){
                         MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] + MTFlexRow[MTFlexCR][MTFields+5] - MTFlexRow[MTFlexCR][MTFields+6];
@@ -815,7 +814,15 @@ async function MenuReportsAccountsGo() {
         }
         return 0;
     }
-
+    function getAccountPendingBalance(inId) {
+        let amt = 0;
+        for (let j = 0; j < snapshotData4.allTransactions.results.length; j += 1) {
+            if(snapshotData4.allTransactions.results[j].account.id == inId) {
+                amt = amt + snapshotData4.allTransactions.results[j].amount;
+            }
+        }
+        amt = amt * -1;return amt;
+    }
     function getAccountUsed(inId) {
         for (let k = 0; k < snapshotData2.allTransactions.results.length; k++) {
             if(snapshotData2.allTransactions.results[k].account.id == inId) { return true; }
@@ -2313,9 +2320,9 @@ async function getMonthlySnapshotData(startDate, endDate, groupingType) {
     .then((data) => { return data.data; }).catch((error) => { console.error(version,error); });
 }
 
-async function GetTransactions(startDate,endDate, offset) {
+async function GetTransactions(startDate,endDate, offset, isPending) {
     const limit = 1000;
-    const filters = {startDate: startDate, endDate: endDate};
+    const filters = {startDate: startDate, endDate: endDate, isPending: isPending};
     const options = callGraphQL({operationName: 'GetTransactions', variables: {offset: offset, limit: limit, filters: filters},
           query: "query GetTransactions($offset: Int, $limit: Int, $filters: TransactionFilterInput) {\n allTransactions(filters: $filters) {\n totalCount\n results(offset: $offset, limit: $limit) {\n id\n amount\n pending\n date\n hideFromReports\n account {\n id } \n category {\n id\n name \n group {\n id\n name\n type }}}}}\n"
     });
