@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.15.06
+// @version      2.15.07
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.15.06';
+const version = '2.15.07';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -693,7 +693,8 @@ async function MenuReportsAccountsGo() {
     MTP.Column = 6; MTP.Title = 'Transfers'; MF_QueueAddTitle(MTP);
     MTP.isHidden = false;
     MTP.Column = 7; MTP.Title = 'Balance';MF_QueueAddTitle(MTP);
-    MTP.Column = 8; MTP.Title = 'Net Change'; MTP.ShowPercent = 3; MF_QueueAddTitle(MTP);
+    if(getCookie('MT_AccountsHidePer2',true) == 0) {MTP.ShowPercent = 3;}
+    MTP.Column = 8; MTP.Title = 'Net Change'; MF_QueueAddTitle(MTP);
     if(getCookie('MT_AccountsHidePending',true) == 1) {MTP.isHidden = true;}
     MTP.Column = 9; MTP.Title = 'Pending'; MTP.ShowPercent = 0; MF_QueueAddTitle(MTP);
     MTP.Column = 10; MTP.Title = 'Proj Balance'; MTP.ShowPercent = 0; MF_QueueAddTitle(MTP);
@@ -1778,6 +1779,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Use calculated balance (Income, Expenses & Transfers) for Checking & Credit Cards','MT_AccountsBalance','checkbox');
             MenuDisplay_Input('Hide accounts marked as "Hide this account in list"','MT_AccountsHidden','checkbox');
             MenuDisplay_Input('Hide Pending & Projected Balance information','MT_AccountsHidePending','checkbox');
+            MenuDisplay_Input('Hide percentage of Net Change','MT_AccountsHidePer2','checkbox');
             MenuDisplay_Input('Show total Checking card','MT_AccountsCard0','checkbox');
             MenuDisplay_Input('Show total Savings card','MT_AccountsCard1','checkbox');
             MenuDisplay_Input('Show total Credit Card Liability card','MT_AccountsCard2','checkbox');
