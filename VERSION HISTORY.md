@@ -10,7 +10,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Ability to always hide decimals in Reports / Trends
 
-• NEW: Ability to show Pending charges and Projected balance amounts by account in Reports / Accounts
+• NEW: Ability to show Pending total and Projected balance amounts by account in Reports / Accounts
 
 • NEW: Ability to hide Net Change percent in Reports / Accounts
 
