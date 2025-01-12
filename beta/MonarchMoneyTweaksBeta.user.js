@@ -665,7 +665,8 @@ function MenuReportsPanels(inType) {
 async function MenuReportsAccountsGo() {
 
     await MF_GridInit('MTAccounts');
-    MTFlex.Title1 = 'Accounts' + MTFlex.Button2;
+    MTFlex.Title1 = 'Accounts';
+    MTFlex.SortSeq = ['1','1','1','1','1','1','1','1','1','2','3'];
     MTFlex.TriggerEvent = true;
     MTFlex.TriggerEvents = false;
     MTFlex.Button1Options = ['Hide subtotals','Show subtotals'];
