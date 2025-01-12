@@ -3,6 +3,9 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 2.16 (beta):**
+
+• NEW: Display last 12 or 6 months of Account Balances with Average in Reports / Accounts
 
 **Version 2.15:**
 
