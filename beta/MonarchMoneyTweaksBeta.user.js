@@ -746,6 +746,7 @@ async function MenuReportsAccountsGoB(){
     MT_GridRollup(1,2,1,'Assets');
     MT_GridRollup(3,4,2,'Liabilities');
     MT_GridRollDifference(5,1,3,1,'Net Worth/Totals',0);
+    MT_GridCalcDifference(1,3,5,[2,3,4,5,6,7,8,9,10,11,12,13,14],1);
     MT_GridCalcRange(15,14-NumMonths,13,'Avg')
 }
 async function MenuReportsAccountsGoA(){
