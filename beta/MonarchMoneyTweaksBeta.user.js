@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.15
+// @version      2.16.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.15';
+const version = '2.16.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;';
 const css_red = 'color: #d13415;';
@@ -505,12 +505,14 @@ function MT_GridDrawEmbed(inSection,inCol,inValue, inDesc) {
             }
             break;
         case 'MTAccounts':
-            if((inSection == 2) && inCol == 8 ) {if(inValue < 0) {return css_red;}}
-            if((inSection == 2) && inCol == 8 ) {if(inValue > 0) {return css_green;}}
-            if((inSection == 2) && inCol == 10 ) {if(inValue < 0) {return css_red;}}
-            if((inSection == 4) && inCol == 8 ) {if(inValue > 0) {return css_red;}}
-            if((inSection == 4) && inCol == 8 ) {if(inValue < 0) {return css_green;}}
-            if((inSection == 4) && inCol == 10 ) {if(inValue < 0) {return css_red;}}
+            if(MTFlex.Button2 < 9) {
+                if((inSection == 2) && inCol == 8 ) {if(inValue < 0) {return css_red;}}
+                if((inSection == 2) && inCol == 8 ) {if(inValue > 0) {return css_green;}}
+                if((inSection == 2) && inCol == 10 ) {if(inValue < 0) {return css_red;}}
+                if((inSection == 4) && inCol == 8 ) {if(inValue > 0) {return css_red;}}
+                if((inSection == 4) && inCol == 8 ) {if(inValue < 0) {return css_green;}}
+                if((inSection == 4) && inCol == 10 ) {if(inValue < 0) {return css_red;}}
+            }
             break;
     }
     return '';
@@ -663,13 +665,84 @@ function MenuReportsPanels(inType) {
 async function MenuReportsAccountsGo() {
 
     await MF_GridInit('MTAccounts');
-    MTFlex.Title1 = 'Accounts';
+    MTFlex.Title1 = 'Accounts' + MTFlex.Button2;
     MTFlex.TriggerEvent = true;
     MTFlex.TriggerEvents = false;
     MTFlex.Button1Options = ['Hide subtotals','Show subtotals'];
-    MTFlex.Button2Options = ['This week','Two weeks','This month','3 months', '6 months', 'This year', '1 year', '2 years', '3 years'];
+    MTFlex.Button2Options = ['This week','Two weeks','This month','3 months', '6 months', 'This year', '1 year', '2 years', '3 years','Last 6 months with average','Last 12 months with average'];
     MTFlex.Subtotals = MTFlex.Button1;
+    MTP = [];
+    MTP.Column = 0; MTP.Title = 'Account';MTP.isSortable = 1; MTP.Format = 0; MF_QueueAddTitle(MTP);
+    MTP.Column = 1; MTP.Title = 'Type'; MF_QueueAddTitle(MTP);
+    if(MTFlex.Button2 > 8) {
+        await MenuReportsAccountsGoB() }
+    else {
+        await MenuReportsAccountsGoA()
+    }
+    MTFlexReady = true;
+}
 
+async function MenuReportsAccountsGoB(){
+
+    let snapshotData = null, snapshotData3 = null
+    let skipHidden = getCookie('MT_AccountsHidden',true);
+    let CurMonth = getDates('n_CurMonth');
+    let NumMonths = 12;
+    if(MTFlex.Button2 == 9) {NumMonths = 6;}
+
+    MTFlex.Title2 = 'Last ' + NumMonths + ' Months as of ' + getDates('s_FullDate');
+
+    for (let i = 0; i < 12; i += 1) {
+        if(NumMonths == 6 && i < 6) {MTP.isHidden = true;} else {MTP.isHidden = false;}
+        MTP.Column = i+2; MTP.Title = getMonthName(CurMonth,true);MTP.isSortable = 2;MTP.Format = 2;MF_QueueAddTitle(MTP);
+        CurMonth+=1; if(CurMonth == 12) {CurMonth = 0};
+    }
+    MTP.Column = 14; MTP.Title = 'Current';MF_QueueAddTitle(MTP);
+    MTP.Column = 15; MTP.Title = 'Average';MF_QueueAddTitle(MTP);
+
+    snapshotData = await getAccountsData();
+    for (let i = 0; i < snapshotData.accounts.length; i += 1) {
+        MTP = [];
+        MTP.isHeader = false;
+        MTP.UID = snapshotData.accounts[i].id;
+        if(snapshotData.accounts[i].isAsset == true) {
+            MTP.BasedOn = 1;MTP.Section = 2;
+        } else {
+            MTP.BasedOn = 2; MTP.Section = 4;
+        }
+        if(MTFlex.Subtotals == 1) {
+            MTP.PK = snapshotData.accounts[i].type.display;
+        } else {
+            MTP.PK = MTP.BasedOn.toString();
+        }
+        MTP.SKHRef = '/accounts/details/' + MTP.UID;
+        MF_QueueAddRow(MTP);
+        MTFlexRow[MTFlexCR][MTFields] = snapshotData.accounts[i].displayName;
+        MTFlexRow[MTFlexCR][MTFields+1] = snapshotData.accounts[i].subtype.display;
+        MTFlexRow[MTFlexCR][MTFields+14] = Number(snapshotData.accounts[i].displayBalance);
+    }
+
+    let useDate = getDates('d_Minus1Year');
+
+    for (let i = 0; i < 12; i += 1) {
+        snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
+        for (let j = 0; j < snapshotData3.accounts.length; j += 1) {
+            MT_GridUpdateUID(snapshotData3.accounts[j].id,i+2,snapshotData3.accounts[j].displayBalance);
+        }
+        CurMonth+=1;
+        if(CurMonth == 12) {
+            CurMonth=0;
+            useDate.setFullYear(useDate.getFullYear() + 1);
+        }
+        useDate.setMonth(CurMonth);
+    }
+
+    MT_GridRollup(1,2,1,'Assets');
+    MT_GridRollup(3,4,2,'Liabilities');
+    MT_GridRollDifference(5,1,3,1,'Net Worth/Totals',0);
+    MT_GridCalcRange(15,14-NumMonths,13,'Avg')
+}
+async function MenuReportsAccountsGoA(){
     let isToday = getDates('isToday',AccountsTodayIs);
     if(isToday) {accountBalances = [];}
 
@@ -681,9 +754,6 @@ async function MenuReportsAccountsGo() {
 
     MTFlex.Title2 = getDates('s_FullDate',useDate) + ' - ' + getDates('s_FullDate',useDate2);
 
-    MTP = [];
-    MTP.Column = 0; MTP.Title = 'Account';MTP.isSortable = 1; MTP.Format = 0; MF_QueueAddTitle(MTP);
-    MTP.Column = 1; MTP.Title = 'Type'; MF_QueueAddTitle(MTP);
     MTP.Column = 2; MTP.Title = 'Updated';MF_QueueAddTitle(MTP);
     MTP.Column = 3; MTP.Title = 'Beg Balance'; MTP.isSortable = 2; MTP.Format = 1;MF_QueueAddTitle(MTP);
     if(MTFlex.Button2 > 2) { MTP.isHidden = true; }
@@ -806,7 +876,6 @@ async function MenuReportsAccountsGo() {
     MT_GridRollup(3,4,2,'Liabilities');
     MT_GridRollDifference(5,1,3,1,'Net Worth/Totals',0);
     MT_GridCalcDifference(1,3,5,[3,7,8,10],1);
-    MTFlexReady = true;
 
     function getAccountBalance(inId) {
         for (let k = 0; k < snapshotData3.accounts.length; k++) {
