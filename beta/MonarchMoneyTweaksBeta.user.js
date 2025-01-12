@@ -691,6 +691,7 @@ async function MenuReportsAccountsGoB(){
     if(MTFlex.Button2 == 9) {NumMonths = 6;}
 
     MTFlex.Title2 = 'Last ' + NumMonths + ' Months as of ' + getDates('s_FullDate');
+    MTFlex.Title3 = '(Based on beginning of each month)';
 
     for (let i = 0; i < 12; i += 1) {
         if(NumMonths == 6 && i < 6) {MTP.isHidden = true;} else {MTP.isHidden = false;}
