@@ -7,7 +7,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Display Current year, last 12 months or last 6 months of Account Balances with Average in Reports / Accounts (Work in Progress)
 
-• NEW: New and additional cards with more information in Reports / Trends
+• NEW: New and more streamlined Cards with more information in Reports / Trends
 
 **Version 2.15:**
 
