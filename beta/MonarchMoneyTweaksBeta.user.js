@@ -1176,8 +1176,14 @@ async function WriteByMonthData() {
     MT_GridRollup(3,4,2,'Spending');
     MT_GridRollDifference(5,1,3,1,'Savings','Sub');
     MT_GridCalcRange(13,1,12,'Add');
-    if(MTFlex.Button2 == 3 || MTFlex.Button2 == 5 || MTFlex.Button2 == 8) {
-        MT_GridCalcRange(14,1,11,'Avg');} else { MT_GridCalcRange(14,1,12,'Avg');}
+
+    let useMth = 12;
+    if(getCookie('MT_TrendIgnoreCurrent',true) == 1) {
+        if(MTFlex.Button2 == 3 || MTFlex.Button2 == 5) {useMth = 11;}
+    }
+    if(MTFlex.Button2 == 8) {useMth = 11;}
+    MT_GridCalcRange(14,1,useMth,'Avg');
+
     MT_GridAddCard(1,13,13,'HV','Total Income','',css_green,'','', '');
     MT_GridAddCard(3,13,13,'HV','Total Expenses','',css_red,'','', '');
     MT_GridAddCard(5,13,13,'HV','Total Savings','Total Overspent',css_green,css_red,'', '');
