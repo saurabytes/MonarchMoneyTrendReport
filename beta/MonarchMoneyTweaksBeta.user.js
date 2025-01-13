@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.16.05
+// @version      2.16.06
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.16.05';
+const version = '2.16.06';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -133,7 +133,7 @@ function MF_QueueAddRow(p) {
     if(p.PK == undefined || p.PK == null) {p.PK = '';}
     if(p.SK == undefined || p.SK == null) {p.SK = '';}
     MTFlexRow.push({"Num": MTFlexCR, "isHeader": p.isHeader, "BasedOn": p.BasedOn, "IgnoreShade": p.IgnoreShade, "Section": p.Section, "PK": p.PK, "SK": p.SK, "UID": p.UID,"PKHRef": p.PKHRef, "PKTriggerEvent": p.PKTriggerEvent, "SKHRef": p.SKHRef, "SKTriggerEvent": p.SKTriggerEvent, "Icon": p.Icon });
-    for (let j = 1; j < MTFlexTitle.length; j += 1) {if(MTFlexTitle[j].Format > 0) { MTFlexRow[MTFlexCR][MTFields+j] = 0;}}}
+    for (let j = 1; j < MTFlexTitle.length; j += 1) {if(MTFlexTitle[j].Format > 0) {MTFlexRow[MTFlexCR][MTFields+j] = 0;}}}
 
 function MF_QueueAddCard(p) {
     MTFlexCard.push({"Col": p.Col, "Title": p.Title,"Subtitle": p.Subtitle, "Style": p.Style});}
@@ -578,7 +578,7 @@ function MT_GridCalcRange(inColumn,inStart,inEnd,inOp) {
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         useValue = 0;useCols = 0;
         for ( let j = inStart; j <= inEnd; j += 1) {
-            if(MTFlexTitle[j].isHidden == false) {
+            if(MTFlexTitle[j].isHidden == false && MTFlexRow[i][MTFields + j] != null ) {
                 useCols +=1;
                 if(inOp == 'Sub') {
                     useValue = useValue - MTFlexRow[i][MTFields + j];
@@ -598,7 +598,7 @@ function MT_GridAddCard (inSec,inStart,inEnd,inOp,inPosMsg,inNegMsg,inPosColor,i
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         if(MTFlexRow[i].Section == inSec) {
             for ( let j = inStart; j <= inEnd; j += 1) {
-                if(MTFlexTitle[j].isHidden == false) {
+                if(MTFlexTitle[j].isHidden == false && MTFlexRow[i][MTFields + j] != null) {
                     useCells +=1;
                     if(inOp == 'HV') {
                         if(useValue == 0 || MTFlexRow[i][MTFields + j] > useValue) {useValue = MTFlexRow[i][MTFields + j];useCol = MTFlexTitle[j].Title;useRow=MTFlexRow[i][MTFields];}
@@ -741,7 +741,6 @@ async function MenuReportsAccountsGoB(){
     }
 
     let useDate = getDates('d_Minus1Year');
-
     for (let i = 0; i < 12; i += 1) {
         snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
         for (let j = 0; j < snapshotData3.accounts.length; j += 1) {
@@ -1011,7 +1010,7 @@ async function MenuReportsTrendsGo() {
         } else {
             await BuildTrendData('ot',MTFlex.Button1,'month',lowerDate,higherDate,'');
         }
-        await WriteMonthlyData();
+        await WriteByMonthData();
     } else {
         let useFormat = 1;
         if(getCookie('MT_NoDecimals',true) == 1) {useFormat = 2;}
@@ -1121,12 +1120,12 @@ async function MenuReportsTrendsGo() {
         MF_QueueAddTitle(MTP);
 
         await BuildTrendData('lm',MTFlex.Button1,'year',lowerDate,higherDate,'');
-        await WriteTrendData();
+        await WriteCompareData();
     }
     MTFlexReady = true;
 }
 
-async function WriteMonthlyData() {
+async function WriteByMonthData() {
 
     let useDesc = '',lowestMonth = 13;
     for (let i = 0; i < MTFlexRow.length; i += 1) {
@@ -1168,29 +1167,17 @@ async function WriteMonthlyData() {
         }
     }
     for(let i = MTFlexRow.length - 1; i >= 0; i--){ if(MTFlexRow[i].UID == '') {const x = MTFlexRow.splice(i, 1);}}
-    let mm = getDates('n_CurMonth') + 1;
-    if(MTFlex.Button2 == 3 && mm == 1) {MTFlexTitle[14].isHidden = true;
-        MT_GridCalcRange(13,1,1,'Add');}
-    else if(MTFlex.Button2 == 3) {
-        MT_GridCalcRange(13,1,mm,'Add');
-        if(getCookie('MT_TrendIgnoreCurrent',true) == 1) {MT_GridCalcRange(14,lowestMonth,mm-1,'Avg');} else { MT_GridCalcRange(14,lowestMonth,mm,'Avg');}}
-    else if(MTFlex.Button2 == 4) {
-        MT_GridCalcRange(13,1,12,'Add');
-        MT_GridCalcRange(14,1,12,'Avg');}
-    else if(MTFlex.Button2 == 8) {
+    if(MTFlex.Button2 == 8) {
         for(let i = 1; i <= 12; i++){ if(i < lowestMonth) {MTFlexTitle[i].isHidden = true;}}
-        MT_GridCalcRange(13,1,12,'Add');
-        MT_GridCalcRange(14,1,12,'Avg');
         MTFlex.Title2 = MTFlex.Title2.substring(0, 7) + MTFlexTitle[lowestMonth].Title + MTFlex.Title2.substring(11);
         MTFlex.Title1 = 'Net Income Trend Report by Year';
-    }
-    else if(MTFlex.Button2 == 5) {
-        MT_GridCalcRange(13,1,12,'Add');
-        if(getCookie('MT_TrendIgnoreCurrent',true == 1)) {MT_GridCalcRange(14,lowestMonth,11,'Avg');} else { MT_GridCalcRange(14,lowestMonth,12,'Avg');}
     }
     MT_GridRollup(1,2,1,'Income');
     MT_GridRollup(3,4,2,'Spending');
     MT_GridRollDifference(5,1,3,1,'Savings','Sub');
+    MT_GridCalcRange(13,1,12,'Add');
+    if(MTFlex.Button2 == 3 || MTFlex.Button2 == 5 || MTFlex.Button2 == 8) {
+        MT_GridCalcRange(14,1,11,'Avg');} else { MT_GridCalcRange(14,1,12,'Avg');}
     MT_GridAddCard(1,13,13,'HV','Total Income','',css_green,'','', '');
     MT_GridAddCard(3,13,13,'HV','Total Expenses','',css_red,'','', '');
     MT_GridAddCard(5,13,13,'HV','Total Savings','Total Overspent',css_green,css_red,'', '');
@@ -1198,7 +1185,7 @@ async function WriteMonthlyData() {
     MT_GridAddCard(4,2,12,'HV','Highest Expense','',css_red,'',' was with ', ' in ');
 }
 
-async function WriteTrendData() {
+async function WriteCompareData() {
 
     let useDesc = '',Numcards=0;
     let useFormat = false;
@@ -1913,7 +1900,6 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
 
 function MenuCheckSpawnProcess() {
 
-
     switch(MTFlexReady) {
         case true:
             MTFlexReady = false;
@@ -2252,6 +2238,7 @@ function getCleanValue(inValue,inDec) {
 
 function getDollarValue(InValue,ignoreCents) {
 
+    if(InValue == null) {return '';}
     if(InValue === -0 || isNaN(InValue)) {InValue = 0;}
     if(ignoreCents == true) { InValue = Math.round(InValue);}
     let useValue = InValue.toLocaleString("en-US", {style:"currency", currency:css_currency});
