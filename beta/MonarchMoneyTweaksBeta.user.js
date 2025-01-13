@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.16.04
+// @version      2.16.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.16.04';
+const version = '2.16.05';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -609,17 +609,20 @@ function MT_GridAddCard (inSec,inStart,inEnd,inOp,inPosMsg,inNegMsg,inPosColor,i
             }
         }
     }
-
     if(useCells > 0 && useValue != 0) {
-        let useMsg = '',useStyle='';
-        if(useValue < 0) {useMsg = inNegMsg;useStyle=inNegColor;useValue = useValue * -1;} else {useMsg = inPosMsg;useStyle=inPosColor;}
-        if(MTFlexTitle[inStart].Format == 2) {useValue = getDollarValue(useValue,true);} else {useValue = getDollarValue(useValue,false);}
-        MTP = [];MTP.Col = MTFlexCard.length+1;
-        if(inAddRow) {useMsg = useMsg + inAddRow + useRow;}
-        if(inAddCol) {useMsg = useMsg + inAddCol + useCol;}
-        MTP.Title = useValue;MTP.Subtitle = useMsg;MTP.Style = useStyle;
-        MF_QueueAddCard(MTP);
+        if((useValue > 0 && inPosMsg != '') || (useValue < 0 && inNegMsg != '')) {
+            let useMsg = '',useStyle='';
+            if(useValue < 0) {useMsg = inNegMsg;useStyle=inNegColor;useValue = useValue * -1;} else {useMsg = inPosMsg;useStyle=inPosColor;}
+            if(MTFlexTitle[inStart].Format == 2) {useValue = getDollarValue(useValue,true);} else {useValue = getDollarValue(useValue,false);}
+            MTP = [];MTP.Col = MTFlexCard.length+1;
+            if(inAddRow) {useMsg = useMsg + inAddRow + useRow;}
+            if(inAddCol) {useMsg = useMsg + inAddCol + useCol;}
+            MTP.Title = useValue;MTP.Subtitle = useMsg;MTP.Style = useStyle;
+            MF_QueueAddCard(MTP);
+            return 1;
+        }
     }
+    return 0;
 }
 
 // [ Reports Menu ]
@@ -757,11 +760,11 @@ async function MenuReportsAccountsGoB(){
     MT_GridRollDifference(5,1,3,1,'Net Worth/Totals','Add');
     MT_GridCalcDifference(5,1,3,[2,3,4,5,6,7,8,9,10,11,12,13,14],'Sub');
     MT_GridCalcRange(15,2,13,'Avg');
-    MT_GridAddCard (1,2,13,'HV','Highest Assets were','',css_green,'','',' during ');
-    MT_GridAddCard (3,2,13,'HV','Highest Liabilities were','',css_red,'','', ' during ');
-    MT_GridAddCard (2,2,13,'HV','Highest Asset','',css_green,'',' was for ', ' during ');
-    MT_GridAddCard (4,2,13,'HV','Highest Liability','',css_red,'','was for ', ' during ');
-    MT_GridAddCard (3,15,15,'HV','Average Liabilities','',css_red,'','', '');
+    MT_GridAddCard(1,2,13,'HV','Highest Assets\nwere','',css_green,'','',' in ');
+    MT_GridAddCard(3,2,13,'HV','Highest Liabilities\nwere','',css_red,'','', ' in ');
+    MT_GridAddCard(2,2,13,'HV','Highest Asset','',css_green,'',' was with ', ' in ');
+    MT_GridAddCard(4,2,13,'HV','Highest Liability','',css_red,'',' was with ', ' in ');
+    MT_GridAddCard(3,15,15,'HV','Average Liabilities','',css_red,'','', '');
 }
 async function MenuReportsAccountsGoA(){
     let isToday = getDates('isToday',AccountsTodayIs);
@@ -948,7 +951,7 @@ async function MenuReportsTrendsGo() {
     MTP.Column = 0; MTP.Title = ['Group','Category','Group/Category'][MTFlex.Button1]; MTP.isSortable = 1; MTP.Format = 0;
     MF_QueueAddTitle(MTP);
 
-    if(MTFlex.Button2 > 2) {
+    if(MTFlex.Button2 > 2) { // non Compare
         MTP.isSortable = 2;MTP.Format = 2;
         MTP.Column = 13; MTP.Title = 'Total';
         MF_QueueAddTitle(MTP);
@@ -1188,16 +1191,16 @@ async function WriteMonthlyData() {
     MT_GridRollup(1,2,1,'Income');
     MT_GridRollup(3,4,2,'Spending');
     MT_GridRollDifference(5,1,3,1,'Savings','Sub');
-    MTP = [];MTP.Col = 0; MTP.Title = getDollarValue(MT_GridGetUID(1,null,13),true);MTP.Subtitle = 'Total Income';MTP.Style = css_green;MF_QueueAddCard(MTP);
-    MTP = [];MTP.Col = 1; MTP.Title = getDollarValue(MT_GridGetUID(3,null,13),true);MTP.Subtitle = 'Total Expenses';MTP.Style = css_red;MF_QueueAddCard(MTP);
-    MTP = [];MTP.Col = 2; MTP.Title = getDollarValue(MT_GridGetUID(5,null,13),true);MTP.Subtitle = 'Total Savings';MTP.Style = css_green;MF_QueueAddCard(MTP);
-    if(MTFlexCard[2].Title.charAt(0) == '-') {MTFlexCard[2].Style = css_red;}
+    MT_GridAddCard(1,13,13,'HV','Total Income','',css_green,'','', '');
+    MT_GridAddCard(3,13,13,'HV','Total Expenses','',css_red,'','', '');
+    MT_GridAddCard(5,13,13,'HV','Total Savings','Total Overspent',css_green,css_red,'', '');
+    MT_GridAddCard(2,2,12,'HV','Highest Income','',css_green,'',' was with ', ' in ');
+    MT_GridAddCard(4,2,12,'HV','Highest Expense','',css_red,'',' was with ', ' in ');
 }
 
 async function WriteTrendData() {
 
-    let useCards = [0,'',0,'',0,'',0,''];
-    let useDesc = '';
+    let useDesc = '',Numcards=0;
     let useFormat = false;
     if(getCookie('MT_NoDecimals',true) == 1) {useFormat = true;}
 
@@ -1244,57 +1247,21 @@ async function WriteTrendData() {
             MTFlexRow[MTFlexCR][MTFields+4] = TrendQueue[i].N_LAST;
             MTFlexRow[MTFlexCR][MTFields+5] = TrendQueue[i].N_CURRENT;
             MTFlexRow[MTFlexCR][MTFields+6] = TrendQueue[i].N_CURRENT - TrendQueue[i].N_LAST;
-            if(retGroup.TYPE == 'expense') {
-                if(MTFlexRow[MTFlexCR][MTFields+3] > 0 && MTFlexRow[MTFlexCR][MTFields+3] > useCards[2]) {
-                    useCards[2] = MTFlexRow[MTFlexCR][MTFields+3];
-                    useCards[3] = MTP.Icon + ' ' + useDesc;
-                }
-                if(MTFlexRow[MTFlexCR][MTFields+3] < 0 && MTFlexRow[MTFlexCR][MTFields+3] < useCards[4]) {
-                    useCards[4] = MTFlexRow[MTFlexCR][MTFields+3];
-                    useCards[5] = MTP.Icon + ' ' + useDesc;
-                }
-                if(MTFlexRow[MTFlexCR][MTFields+6] > 0 && MTFlexRow[MTFlexCR][MTFields+6] > useCards[0]) {
-                    useCards[0] = MTFlexRow[MTFlexCR][MTFields+6];
-                    useCards[1] = MTP.Icon + ' ' + useDesc;
-                }
-                if(MTFlexRow[MTFlexCR][MTFields+6] < 0 && MTFlexRow[MTFlexCR][MTFields+6] < useCards[6]) {
-                    useCards[6] = MTFlexRow[MTFlexCR][MTFields+6];
-                    useCards[7] = MTP.Icon + ' ' + useDesc;
-                }
-            }
          }
     }
     MT_GridRollup(1,2,1,'Income');
     MT_GridRollup(3,4,2,'Spending');
     MT_GridRollDifference(5,1,3,1,'Savings','Sub');
-
-    if(useCards[2] != 0) {
-        WriteTrendCard(1,useCards[2] * -1,useCards[3],'Over spending in','Over spending in');
-    } else {
-        WriteTrendCard(1,useCards[4] * -1,useCards[5],'Saved most in','Saved most in');
+    Numcards = Numcards + MT_GridAddCard(4,6,6,'HV','Over spending YTD','',css_red,'','\nmost in ','')
+    Numcards = Numcards + MT_GridAddCard(4,3,3,'HV','Over spending ' + ['vs same month','vs last month','vs same quarter'][MTFlex.Button2],'',css_red,'','\nmost in ','')
+    if(Numcards < 2) {
+        Numcards = Numcards + MT_GridAddCard(3,2,2,'HV','Total Spending','','',css_red,'','')
     }
-    if(useCards[0] != 0) {
-        WriteTrendCard(2,useCards[0] * -1,useCards[1],'Over spent most in','Over spent most in');
-    } else {
-        WriteTrendCard(2,useCards[6] * -1,useCards[7],'Saved most in','Saved most in');
+    if(Numcards < 2) {
+        Numcards = Numcards + MT_GridAddCard(4,6,6,'LV','','Saving YTD','',css_green,'\nmost in ','')
     }
-    WriteTrendCard(3,MTFlexRow[MTFlexCR][MTFields+3],MTFlexTitle[1].Title,'Saved more than','Spent more than');
-    WriteTrendCard(4,MTFlexRow[MTFlexCR][MTFields+6],'last year','Saved more than','Spent more than');
-
-    function WriteTrendCard(inCol,inValue,inTitle,inSub1,inSub2) {
-        MTP = [];
-        MTP.Col = inCol;
-        MTP.Title = getDollarValue(Math.abs(inValue),useFormat);
-        if(inValue > 0) {
-            MTP.Subtitle = inSub1;
-            MTP.Style = css_green;
-        } else {
-            MTP.Subtitle = inSub2;
-            MTP.Style = css_red;
-        }
-        MTP.Subtitle = MTP.Subtitle + '\n' + inTitle;
-        MF_QueueAddCard(MTP);
-    }
+    Numcards = Numcards + MT_GridAddCard(1,6,6,'HV','More Total Income YTD','Less Total Income YTD',css_green,css_red,'','')
+    Numcards = Numcards + MT_GridAddCard(5,6,6,'HV','Savings YTD','Over spending YTD',css_green,css_red,'','')
 }
 
 async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,inID) {
