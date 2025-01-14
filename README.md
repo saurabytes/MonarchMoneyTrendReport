@@ -17,9 +17,11 @@ I found there were opportunities to enhance the Monarch Money web application wi
 * **Reports / Accounts**
      - Summarize all your Account balances on one screen
      - Compare to different time periods (This week, Last two weeks, This month, 3 months, 6 months, 1 year, 2 years and 3 years)
+     - Show Monthly Account balances with average for current year, last 6 months or last 12 months
      - Quickly see total amount owed on credit cards and other Checking and Credit card balances
      - See Income, Expenses and Transfers done by Account for the current month
      - Sort the data by any column and export your data to Excel or Numbers
+    
        
 
 * Save and restore your Report filters and other report options on **Reports / Datasets**.  No longer have to redo your filters over each time!
@@ -87,7 +89,7 @@ Enjoy!
 **Monarch Tweaks Reports / Trends Monthly Breakdown**
 ![Settings](/images/MT_V2_05.png)
 
-**Monarch Tweaks Reports / Trends Yeerly Breakdown**
+**Monarch Tweaks Reports / Trends Yearly Breakdown**
 ![Settings](/images/MT_V2_06.png)
 
 **Monarch Tweaks Reports / Accounts Monthly Account Average**
