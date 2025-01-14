@@ -72,20 +72,26 @@ Enjoy!
 
 # SCREENSHOTS:
 
-**Monarch Tweaks Trends**
-![Settings](/images/MT20302b.png)
+**Monarch Tweaks Settings**
+![Settings](/images/MT_V2_01.png)
 
-**Monarch Tweaks Accounts**
-![Settings](/images/MT20301b.png)
+**Monarch Tweaks Calendar Year Dropdown**
+![Settings](/images/MT_V2_02.png)
 
-**Monarch Tweaks Configuration Options**
-![Settings](/images/MT20303b.png)
+**Monarch Tweaks Spit Transaction 50/50**
+![Settings](/images/MT_V2_03.png)
 
-**Monarch Tweaks show Monthly History up to three years**
-![Settings](/images/MT20306b.png)
+**Monarch Tweaks Reports / Trends Compare**
+![Settings](/images/MT_V2_04.png)
 
-**Monarch Tweaks - Correct Calendar Pull-Down Year**
-![Settings](/images/MT20307b.png)
+**Monarch Tweaks Reports / Trends Monthly Breakdown**
+![Settings](/images/MT_V2_05.png)
 
-**Monarch Tweaks - Quickly split transactions 50/50**
-![Settings](/images/MT20308b.png)
+**Monarch Tweaks Reports / Trends Yeerly Breakdown**
+![Settings](/images/MT_V2_06.png)
+
+**Monarch Tweaks Reports / Accounts Monthly Account Average**
+![Settings](/images/MT_V2_07.png)
+
+**Monarch Tweaks Reports / Accounts Balance and Pending**
+![Settings](/images/MT_V2_08.png)
