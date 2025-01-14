@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.16 (beta):**
+**Version 2.16:**
 
 • NEW: Display Current year, last 12 months or last 6 months of Account Balances with Average in Reports / Accounts (Work in Progress)
 
