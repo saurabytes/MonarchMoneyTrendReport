@@ -97,3 +97,6 @@ Enjoy!
 
 **Monarch Tweaks Reports / Accounts Balance and Pending**
 ![Settings](/images/MT_V2_08.png)
+
+**Monarch Tweaks Reports tag multiple cells**
+![Settings](/images/MT_V2_09.png)
