@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.16
+// @version      2.17.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.16';
+const version = '2.17.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -23,6 +23,7 @@ let TrendQueue = [], TrendQueue2 = [];
 const MTFields = 13;
 let MTFlex = [], MTFlexTitle = [], MTFlexRow = [], MTFlexCard = [];
 let MTFlexCR = 0, MTFlexDetails = null, MTFlexReady = false, MTP = null;
+let MTFlexSum = [0,0];
 
 function MM_Init() {
 
@@ -42,7 +43,8 @@ function MM_Init() {
     if(getCookie('MT_PlanCompressed',true) == 1) {addStyle('.joBqTh, .jsBiA-d {padding-bottom: 0px; padding-top: 0px; !important;}'); addStyle('.earyfo, .fxLfmT {height: 42px;}'); addStyle('.dVgTYt, .exoRCJ, .bgDnMb, .zoivW {font-size: 15px;}');}
     if(getCookie('MT_CompressedTx',true) == 1) {addStyle('.oRgik, .bVcoEc, .XbVLi, .erRzVO, .dEMbMu {font-size: 14px;}');addStyle('.XbVLi {padding-top: 1px; padding-bottom: 1px;}');}
     if(getCookie('MT_PendingIsRed',true) == 1) {addStyle('.cxLoFP {color:' + accentColor + '}');}
-
+    addStyle('.MTBub {margin-bottom: 12px;}');
+    addStyle('.MTBub1 {cursor: pointer;float: right; margin-left: 12px;font-size: 12px; margin-bottom: 10px;padding: 2px;border: 1px solid #e4e1de; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;border-radius: 8px;width: 150px;text-align: center;font-weight: 500;}');
     addStyle('.MTWait { width: 40%; margin-left: auto; margin-top: 100px;margin-right: auto;justify-content: center; align-items: center;}');
     addStyle('.MTWait2 {font-size: 18px; font-weight: 500; font: "Oracle", sans-serif; ' + panelBackground + ' padding: 20px;border-radius: 5px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);text-align: center;}');
     addStyle('.MTWait2 p {' + standardText + 'font-family:  MonarchIcons, sans-serif, "Oracle" !important; font-size: 15px; font-weight: 200;}');
@@ -292,6 +294,7 @@ function MT_GridDrawDetails() {
                     }
                     if(useStyle2 == '') { useStyle2 = MT_GridDrawEmbed(useRow.Section,j,useValue,useDesc);}
                     if(useStyle2) {elx = cec('td',useStyle,el,useValue2,'','style',useStyle2);} else {elx = cec('td',useStyle,el,useValue2,'','','');}
+                    //elx.id = useRow.Num + '-' + j;
                     Grouptotals[j-1] += useValue;
                 }
             }
@@ -363,6 +366,13 @@ function MT_GridDrawContainer() {
         div2 = cec('span','MTFlexLittle',div,MTFlex.Title3,'','','');
 
         let tbs = cec('span','MTFlexButtonContainer',cht);
+
+        div2 = cec('span','',tbs,'','','style','height: 38px; display: block; align-content: end;');
+        MTFlex.bub = cec('div','MTBub',div2,'','','style','display: none;');
+        MTFlex.bub5 = cec('div','MTBub1',MTFlex.bub,'','','','');
+        MTFlex.bub2 = cec('div','MTBub1',MTFlex.bub,'','','','');
+        MTFlex.bub1 = cec('div','MTBub1',MTFlex.bub,'','','','');
+
         div2 = cec('div','MTdropdown',tbs,'','','','');
         div2 = cec('button','MTFlexButtonExport',div2,'Export','','','');
         if(MTFlex.Button1Options) {
@@ -1941,6 +1951,29 @@ window.onclick = function(event) {
         if(cn.includes('AbstractButton')) {
             if(event.target.innerText.startsWith('\uf10b')) {
                 MM_FixCalendarShortcuts();return;
+            }
+        }
+        if(cn == 'MTBub1') {
+            if(event.target.textContent.startsWith('SUM') == true) {navigator.clipboard.writeText(MTFlexSum[1])};
+            if(event.target.textContent.startsWith('AVG') == true) {navigator.clipboard.writeText(getCleanValue('$' + MTFlexSum[1]/MTFlexSum[0],2))};
+            if(event.target.textContent.startsWith('CNT') == true) {navigator.clipboard.writeText(MTFlexSum[0])};
+        }
+        if(cn == 'MTFlexGridDCell2') {
+            let x = Number(getCleanValue(event.target.textContent,2));
+            if(event.target.id != 'selected') {
+                event.target.style = 'border: 2px solid green;';event.target.id = 'selected';
+                MTFlexSum[0] +=1;
+                MTFlexSum[1] += x;
+            } else {
+                event.target.style = '';event.target.id = '';
+                MTFlexSum[0] -=1;
+                MTFlexSum[1] -= x;
+            }
+            if(MTFlexSum[0] < 2) {MTFlex.bub.setAttribute('style','display:none;')} else {
+                MTFlex.bub.setAttribute('style','display:block;');
+                MTFlex.bub1.textContent = 'SUM: ' + getDollarValue(MTFlexSum[1],false);
+                MTFlex.bub2.textContent = 'AVG: ' + getDollarValue(MTFlexSum[1]/MTFlexSum[0],false);
+                MTFlex.bub5.textContent = 'CNT: ' + MTFlexSum[0];
             }
         }
     }
