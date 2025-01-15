@@ -1,4 +1,5 @@
-# Monarch Money Tweaks - GET STARTED! (Current Version - 2.17)
+# Monarch Money Tweaks - GET STARTED! 
+(Current Version - 2.17)
 
 Hello!  I use **Monarch Money**.  
 
