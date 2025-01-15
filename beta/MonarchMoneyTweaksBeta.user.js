@@ -2249,6 +2249,7 @@ function findButton(inValue,inName) {
 function getCleanValue(inValue,inDec) {
 
     if(inValue.startsWith('$') || inValue.startsWith('-')) {
+        inValue = replaceBetweenWith(inValue,'(',')','');
         const AmtStr = inValue.replace(/[$,]+/g,"");
         let Amt = Number(AmtStr);
         if(inDec > 0) {Amt = Amt.toFixed(inDec);}
