@@ -22,7 +22,7 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
 4. Search for “Tampermonkey”
 5. Add Tampermonkey using **Add to Chrome** button
 
-6. Extension / Manage Extention / upper-right, Developer Mode "On"
+6. Extension / Tampermonkey **Manage Extention** / upper-right, **Developer Mode** "On"
    
 Once Tampermonkey is installed, install or update the Monarch Money Tweaks extension by clicking on this link in Chrome:
 
