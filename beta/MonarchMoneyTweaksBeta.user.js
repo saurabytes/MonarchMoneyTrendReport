@@ -173,6 +173,7 @@ function MT_GridDraw(inRedraw) {
     if(inRedraw == false) {MT_GridDrawContainer();}
     MT_GridDrawSort();
     MT_GridDrawDetails();
+    MTFlexSum = [0,0];
     if(inRedraw == false) {MT_GridDrawCards();}
     document.body.style.cursor = "";
 }
