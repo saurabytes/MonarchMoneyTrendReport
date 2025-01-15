@@ -3,9 +3,11 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.17 (beta):**
+**Version 2.17:**
 
 • NEW: Automatic Calculations - click on multiple cells to get SUM, AVG and CNT.  Click on each bubble to copy the value to your clipboard.
+
+• REGRESSION: Reports / Accounts - Drop-Down for Time-Frame was not setting properly.
 
 **Version 2.16:**
 
