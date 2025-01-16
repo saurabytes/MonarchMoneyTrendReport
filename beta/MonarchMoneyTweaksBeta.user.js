@@ -1175,24 +1175,24 @@ async function WriteByMonthData() {
                         MTFlexRow[i][MTFields + j] = MTFlexRow[i][MTFields + j] * -1;
                     }
                 }
-                useURL = 'reports/spending';
+                 useURL = '#|spending|';
             } else {
                 MTFlexRow[i].BasedOn = 1;
                 MTFlexRow[i].Section = 2;
-                useURL = 'reports/income';
+                useURL = '#|income|';
             }
             if(MTFlex.Button1 > 0) {
                 if(MTFlex.Button1 == 2) {
                     MTFlexRow[i].PK = retGroup.GROUPNAME;
-                    MTFlexRow[i].PKHRef = useURL;
+                    MTFlexRow[i].PKHRef = useURL + '|' + retGroup.GROUP + '|';
                     MTFlexRow[i].PKTriggerEvent = 'category-groups|' + retGroup.GROUP;
                 }
-                MTFlexRow[i].SKHRef = useURL;
+                MTFlexRow[i].SKHRef = useURL + retGroup.ID + '|';
                 MTFlexRow[i].SKTriggerEvent = 'categories|' + retGroup.ID;
                 useDesc = retGroup.NAME;
             } else {
                 useDesc = retGroup.GROUPNAME;
-                MTFlexRow[i].SKHRef = useURL;
+                MTFlexRow[i].SKHRef = useURL + '|' + retGroup.GROUP + '|';
                 MTFlexRow[i].PKTriggerEvent = '';
                 MTFlexRow[i].SKTriggerEvent = 'category-groups|' + retGroup.GROUP;
             }
