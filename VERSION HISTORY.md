@@ -3,6 +3,10 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 2.18 (beta):**
+
+• NEW: Reports / Trends now goes to Reports Income & Spending rather than the old Cash-Flow screen.
+
 **Version 2.17:**
 
 • NEW: Automatic Calculations - click on multiple cells to get SUM, AVG and CNT.  Click on each bubble to copy the value to your clipboard.
