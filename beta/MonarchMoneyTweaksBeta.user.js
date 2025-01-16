@@ -661,11 +661,11 @@ function MenuReportsSetFilter(inType,inCategory,inGroup) {
     let reportsObj = localStorage.getItem('persist:reports');
     let startDate = formatQueryDate(getDates('d_Minus3Years'));
     let endDate = formatQueryDate(getDates('d_Today'));
-    let useCats = ''
-    if(inGroup) {useCats = getCategoryGroupList(inGroup) } else {useCats = '\\"' + inCategory + '\\"'}
+    let useCats = '';
+    if(inGroup) {useCats = getCategoryGroupList(inGroup);} else {useCats = '\\"' + inCategory + '\\"';}
     reportsObj = replaceBetweenWith(reportsObj,'"filters":"{','}','"filters":"{\\"startDate\\":\\"' + startDate + '\\",\\"endDate\\":\\"' + endDate + '\\",\\"categories\\":[' + useCats + ']}');
     reportsObj = replaceBetweenWith(reportsObj,'"groupByTimeframe":',',','"groupByTimeframe":"\\"month\\"",');
-    reportsObj = replaceBetweenWith(reportsObj,'"' + inType + '":"{','}",','"' + inType + '":"{\\"viewMode\\":\\"changeOverTime\\",\\"chartType\\":\\"barChart\\"}",');
+    reportsObj = replaceBetweenWith(reportsObj,'"' + inType + '":"{','}",','"' + inType + '":"{\\"viewMode\\":\\"changeOverTime\\",\\"chartType\\":\\"stackedBarChart\\"}",');
     if(inCategory) {reportsObj = replaceBetweenWith(reportsObj,'"groupBy":',',','"groupBy":"\\"category\\"",');
     } else {reportsObj = replaceBetweenWith(reportsObj,'"groupBy":',',','"groupBy":"\\"category_group\\"",');}
     localStorage.setItem('persist:reports',reportsObj);
@@ -1393,10 +1393,10 @@ function MenuReportsHistory(inType,inID) {
     let topDiv = document.getElementById('root');
     if(topDiv) {
 
-        const lowerDate = new Date("2022-01-01");
+        const lowerDate = new Date("2023-01-01");
         const higherDate = new Date();
         let retGroups = getCategoryGroup(inID);
-        let inGroup = 1;
+        let inGroup = 1,useURL = '';
 
         topDiv = topDiv.childNodes[0];
         let div = cec('div','MTHistoryPanel',topDiv,'','','','');
@@ -1412,12 +1412,12 @@ function MenuReportsHistory(inType,inID) {
         div2 = cec('div','MTFlexCardBig',div,'Monthly Summary');
         div = cec('span','MTSideDrawerHeader',div4,'','','','');
         div2 = cec('div','MTFlexSmall',div, retGroups.TYPE,'','style','float:right;');
-
+        if(retGroups.TYPE == 'expense') {useURL = '#|spending|';} else {useURL = '#|income|';}
         if(inType == 'category-groups') {
-            div2 = cec('a','MThRefClass',div,retGroups.ICON + ' ' + retGroups.GROUPNAME ,'/' + inType + '/' + retGroups.GROUP ,'','' );
+            div2 = cec('a','MTFlexGridDCell',div,retGroups.ICON + ' ' + retGroups.GROUPNAME ,useURL + '|' + retGroups.GROUP ,'','' );
             inGroup = 3;
         } else {
-            div2 = cec('a','MThRefClass',div,retGroups.ICON + ' ' + retGroups.GROUPNAME + ' / ' + retGroups.NAME,'/' + inType + '/' + retGroups.ID,'','' );
+            div2 = cec('a','MTFlexGridDCell',div,retGroups.ICON + ' ' + retGroups.GROUPNAME + ' / ' + retGroups.NAME,useURL + retGroups.ID + '|','','' );
         }
         TrendQueue2 = [];
         BuildTrendData('hs',inGroup,'month',lowerDate,higherDate,inID);
@@ -1947,7 +1947,7 @@ window.onclick = function(event) {
                         event.preventDefault();
                         const p = event.target.hash.split('|');
                         MenuReportsSetFilter(p[1],p[2],p[3]);
-                        window.location.replace('/reports/' + p[1])
+                        window.location.replace('/reports/' + p[1]);
                     }
                 }
                 return;
@@ -1986,9 +1986,9 @@ window.onclick = function(event) {
             }
         }
         if(cn == 'MTBub1') {
-            if(event.target.textContent.startsWith('SUM') == true) {navigator.clipboard.writeText(MTFlexSum[1])};
-            if(event.target.textContent.startsWith('AVG') == true) {navigator.clipboard.writeText(getCleanValue('$' + MTFlexSum[1]/MTFlexSum[0],2))};
-            if(event.target.textContent.startsWith('CNT') == true) {navigator.clipboard.writeText(MTFlexSum[0])};
+            if(event.target.textContent.startsWith('SUM') == true) {navigator.clipboard.writeText(MTFlexSum[1]);}
+            if(event.target.textContent.startsWith('AVG') == true) {navigator.clipboard.writeText(getCleanValue('$' + MTFlexSum[1]/MTFlexSum[0],2));}
+            if(event.target.textContent.startsWith('CNT') == true) {navigator.clipboard.writeText(MTFlexSum[0]);}
         }
         if(cn == 'MTFlexGridDCell2') {
             let x = Number(getCleanValue(event.target.textContent,2));
@@ -2001,7 +2001,7 @@ window.onclick = function(event) {
                 MTFlexSum[0] -=1;
                 MTFlexSum[1] -= x;
             }
-            if(MTFlexSum[0] < 2) {MTFlex.bub.setAttribute('style','display:none;')} else {
+            if(MTFlexSum[0] < 2) {MTFlex.bub.setAttribute('style','display:none;');} else {
                 MTFlex.bub.setAttribute('style','display:block;');
                 MTFlex.bub1.textContent = 'SUM: ' + getDollarValue(MTFlexSum[1],false);
                 MTFlex.bub2.textContent = 'AVG: ' + getDollarValue(MTFlexSum[1]/MTFlexSum[0],false);
@@ -2472,14 +2472,14 @@ function getCategoryGroupList(InId) {
     buildCategoryGroups();
     for (let i = 0; i < accountGroups.length; i++) {
         if(accountGroups[i].GROUP == InId) {
-            if(cl) {cl=cl+','};cl = cl + '\\"' + accountGroups[i].ID + '\\"'
-        }
+            if(cl) {cl=cl+',';}
+            cl = cl + '\\"' + accountGroups[i].ID + '\\"';}
     }
     return cl;
 }
 
 function getCategoryGroup(InId) {
-    for (let i = 0; i < accountGroups.length; i++) {if(accountGroups[i].ID == InId || accountGroups[i].GROUP == InId) {return accountGroups[i]}}
+    for (let i = 0; i < accountGroups.length; i++) {if(accountGroups[i].ID == InId || accountGroups[i].GROUP == InId) {return accountGroups[i];}}
     return [null];
 }
 
