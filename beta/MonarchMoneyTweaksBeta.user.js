@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.17
+// @version      2.18.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.17';
+const version = '2.18.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -656,6 +656,21 @@ function MenuReports(OnFocus) {
     }
 }
 
+function MenuReportsSetFilter(inType,inCategory,inGroup) {
+
+    let reportsObj = localStorage.getItem('persist:reports');
+    let startDate = formatQueryDate(getDates('d_Minus3Years'));
+    let endDate = formatQueryDate(getDates('d_Today'));
+    let useCats = ''
+    if(inGroup) {useCats = getCategoryGroupList(inGroup) } else {useCats = '\\"' + inCategory + '\\"'}
+    reportsObj = replaceBetweenWith(reportsObj,'"filters":"{','}','"filters":"{\\"startDate\\":\\"' + startDate + '\\",\\"endDate\\":\\"' + endDate + '\\",\\"categories\\":[' + useCats + ']}');
+    reportsObj = replaceBetweenWith(reportsObj,'"groupByTimeframe":',',','"groupByTimeframe":"\\"month\\"",');
+    reportsObj = replaceBetweenWith(reportsObj,'"' + inType + '":"{','}",','"' + inType + '":"{\\"viewMode\\":\\"changeOverTime\\",\\"chartType\\":\\"barChart\\"}",');
+    if(inCategory) {reportsObj = replaceBetweenWith(reportsObj,'"groupBy":',',','"groupBy":"\\"category\\"",');
+    } else {reportsObj = replaceBetweenWith(reportsObj,'"groupBy":',',','"groupBy":"\\"category_group\\"",');}
+    localStorage.setItem('persist:reports',reportsObj);
+}
+
 // [ Trends Menu ]
 function MenuReportsCustom() {
 
@@ -1145,7 +1160,7 @@ async function MenuReportsTrendsGo() {
 
 async function WriteByMonthData() {
 
-    let useDesc = '',lowestMonth = 13;
+    let useDesc = '',lowestMonth = 13,useURL = '';
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         let retGroup = await getCategoryGroup(MTFlexRow[i].UID);
         if(retGroup.TYPE == 'transfer') {
@@ -1160,22 +1175,24 @@ async function WriteByMonthData() {
                         MTFlexRow[i][MTFields + j] = MTFlexRow[i][MTFields + j] * -1;
                     }
                 }
+                useURL = 'reports/spending';
             } else {
                 MTFlexRow[i].BasedOn = 1;
                 MTFlexRow[i].Section = 2;
+                useURL = 'reports/income';
             }
             if(MTFlex.Button1 > 0) {
                 if(MTFlex.Button1 == 2) {
                     MTFlexRow[i].PK = retGroup.GROUPNAME;
-                    MTFlexRow[i].PKHRef = '/category-groups/' + retGroup.GROUP;
+                    MTFlexRow[i].PKHRef = useURL;
                     MTFlexRow[i].PKTriggerEvent = 'category-groups|' + retGroup.GROUP;
                 }
-                MTFlexRow[i].SKHRef = '/categories/' + retGroup.ID;
+                MTFlexRow[i].SKHRef = useURL;
                 MTFlexRow[i].SKTriggerEvent = 'categories|' + retGroup.ID;
                 useDesc = retGroup.NAME;
             } else {
                 useDesc = retGroup.GROUPNAME;
-                MTFlexRow[i].SKHRef = '/category-groups/' + retGroup.GROUP;
+                MTFlexRow[i].SKHRef = useURL;
                 MTFlexRow[i].PKTriggerEvent = '';
                 MTFlexRow[i].SKTriggerEvent = 'category-groups|' + retGroup.GROUP;
             }
@@ -1208,7 +1225,7 @@ async function WriteByMonthData() {
 
 async function WriteCompareData() {
 
-    let useDesc = '',Numcards=0;
+    let useDesc = '',Numcards=0, useURL = '';
     let useFormat = false;
     if(getCookie('MT_NoDecimals',true) == 1) {useFormat = true;}
 
@@ -1223,27 +1240,29 @@ async function WriteCompareData() {
                  TrendQueue[i].N_LASTM = TrendQueue[i].N_LASTM * -1;
                  MTP.BasedOn = 2;
                  MTP.Section = 4;
+                 useURL = '#|spending|';
              }
              if(retGroup.TYPE == 'income') {
                  MTP.BasedOn = 1;
                  MTP.Section = 2;
                  MTP.IgnoreShade = true;
+                 useURL = '#|income|';
              }
              MTP.isHeader = false;
              if(MTFlex.Button1 > 0) {
                  if(MTFlex.Button1 == 2) {
                      MTP.PK = retGroup.GROUPNAME;
-                     MTP.PKHRef = '/category-groups/' + retGroup.GROUP;
-                     MTP.PKTriggerEvent = 'category-groups|' + retGroup.GROUP;
+                     MTP.PKHRef = useURL + '|' + retGroup.GROUP + '|';
+                     MTP.PKTriggerEvent = 'category-groups|' + retGroup.GROUP + '|';
                  }
-                 MTP.SKHRef = '/categories/' + retGroup.ID;
-                 MTP.SKTriggerEvent = 'categories|' + retGroup.ID;
+                 MTP.SKHRef = useURL + retGroup.ID + '|';
+                 MTP.SKTriggerEvent = 'categories|' + retGroup.ID + '|';
                  useDesc = retGroup.NAME;
              } else {
                  useDesc = retGroup.GROUPNAME;
-                 MTP.SKHRef = '/category-groups/' + retGroup.GROUP;
+                 MTP.SKHRef = useURL + '|' + retGroup.GROUP + '|';
                  MTP.PKTriggerEvent = '';
-                 MTP.SKTriggerEvent = 'category-groups|' + retGroup.GROUP;
+                 MTP.SKTriggerEvent = 'category-groups|' + retGroup.GROUP + '|';
              }
             MTP.Icon = retGroup.ICON;
             MTP.SKExpand = '';
@@ -1920,6 +1939,18 @@ window.onclick = function(event) {
     //console.log(cn,event.target,pcn,event.target.parentNode);
     if(typeof cn === 'string') {
         switch (cn) {
+            case 'MTFlexGridDCell':
+                if(event.target.hash != '') {
+                    if(event.target.hash.startsWith('#') == true) {
+                        event.stopImmediatePropagation();
+                        event.stopPropagation();
+                        event.preventDefault();
+                        const p = event.target.hash.split('|');
+                        MenuReportsSetFilter(p[1],p[2],p[3]);
+                        window.location.replace('/reports/' + p[1])
+                    }
+                }
+                return;
             case 'MTSideDrawerRoot':
                 removeAllSections('div.MTSideDrawerRoot');return;
             case 'MTTrendCellArrow':
@@ -2435,6 +2466,16 @@ async function buildCategoryGroups() {
             accountGroups.push({"GROUP": categoryData.categories[i].group.id, "GROUPNAME": categoryData.categories[i].group.name, "ID": categoryData.categories[i].id, "NAME": categoryData.categories[i].name, "ICON": categoryData.categories[i].icon, "TYPE": categoryData.categories[i].group.type, "ORDER": categoryData.categories[i].order});
         }
     }
+}
+function getCategoryGroupList(InId) {
+    let cl = '';
+    buildCategoryGroups();
+    for (let i = 0; i < accountGroups.length; i++) {
+        if(accountGroups[i].GROUP == InId) {
+            if(cl) {cl=cl+','};cl = cl + '\\"' + accountGroups[i].ID + '\\"'
+        }
+    }
+    return cl;
 }
 
 function getCategoryGroup(InId) {
