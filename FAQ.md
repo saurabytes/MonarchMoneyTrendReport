@@ -19,14 +19,14 @@
 
 > [!TIP]
 > If you want the script to update automatically:
-> Go to Extensions / Manage Extensions for Tampermoney / Extension options. (In Firefox, just click on the Tampermoney icon in the browser toolbar).
-> Next click on the **Installed Userscripts** tab
-> Click on the "Edit" icon under "Actions" for Monarch Money Tweaks
-> Next to "Editor", click on the "Settings" tab
-> Under **Updates**, check the "Check for Updates" checkbox
-> Paste the following into the Update URL: https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
-> Press **Save**
-> 
+
+1. Go to Extensions / Manage Extensions for Tampermoney / Extension options. (In Firefox, just click on the Tampermoney icon in the browser toolbar).
+2. Next click on the **Installed Userscripts** tab
+3. Click on the "Edit" icon under "Actions" for Monarch Money Tweaks
+4. Next to "Editor", click on the "Settings" tab
+5. Under **Updates**, check the "Check for Updates" checkbox
+6. Paste the following into the Update URL: https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
+7. Press **Save**
 
 
 Enjoy!
