@@ -7,6 +7,8 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Reports / Trends now goes to Reports Income & Spending rather than the old Cash-Flow screen.
 
+• NEW: Ability to always hide decimals in Reports / Accounts
+
 **Version 2.17:**
 
 • NEW: Automatic Calculations - click on multiple cells to get SUM, AVG and CNT.  Click on each bubble to copy the value to your clipboard.
