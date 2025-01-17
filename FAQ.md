@@ -17,6 +17,16 @@
 > [!IMPORTANT]
 > Only install or update the Monarch Money Tweaks extension from **this GitHub location only**. Do not install from other locations including direct links in Reddit or other websites.  This GitHub page is the only **official location** that should be used to get the extension.
 
+> [!TIP]
+> If you want the script to update automatically:
+> Go to Extensions / Manage Extensions for Tampermoney / Extension options. (In Firefox, just click on the Tampermoney icon in the browser toolbar).
+> Next click on the **Installed Userscripts** tab
+> Click on the "Edit" icon under "Actions" for Monarch Money Tweaks
+> Next to "Editor", click on the "Settings" tab
+> Under **Updates**, check the "Check for Updates" checkbox
+> Paste the following into the Update URL: https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
+> Press **Save**
+> 
 
 
-    Enjoy!
+Enjoy!
