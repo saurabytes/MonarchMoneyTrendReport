@@ -6,7 +6,8 @@
 4. At bottom, set the "Other Websites" to **Ask** or **Allow**.
 5. Open Safari and click on the following link and **Tap to Install**:
 
-https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
+[Next, Click here to install MM Tweaks](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
+
 
 **Monarch Money Tweaks iPad Tap to Install screen**
 
@@ -30,7 +31,7 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
 
 Once Tampermonkey is installed, install or update the Monarch Money Tweaks extension by clicking on this link in Chrome:
 
-https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
+[Next, Click here to install MM Tweaks](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
 
 
 **Monarch Money Tweaks Install/Update screen**
@@ -51,7 +52,7 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
    
 Once Tampermonkey is installed, install or update the Monarch Money Tweaks extension by clicking on this link in Safari:
 
-https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
+[Next, Click here to install MM Tweaks](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
 
 
 # INSTALL ON Firefox:
@@ -61,7 +62,7 @@ https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/Mona
    
 Once Tampermonkey is installed, install or update the Monarch Money Tweaks extension by clicking on this link in Firefox:
 
-https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
+[Next, Click here to install MM Tweaks](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
 
 
 
