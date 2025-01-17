@@ -73,8 +73,6 @@ Search App store for "User Script and Style Manager" by Justin Wasack
 
 Refresh/Reload the Monarch Money webpage and select **Settings / Display** in Monarch to configure the Tweaks.
 
-> [!IMPORTANT]
-> Please read each option carefully before turning it on/off to fully understand what it does. 
 
 ![Settings](/images/MM_SettingsDeveloper.png)
 
