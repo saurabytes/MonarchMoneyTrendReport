@@ -1,10 +1,6 @@
 # Monarch Money Tweaks - GET STARTED! 
 
-[Click here to Update to V2.17]([https://pages.github.com/](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js))
-
-Once the above is installed, you can install or update the Monarch Money Tweaks extension by clicking on the following link:
-
-https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
+[Click here to Update to V2.17](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
 
 Hello!  I use **Monarch Money**.  
 
