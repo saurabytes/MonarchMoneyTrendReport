@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.18.01
+// @version      2.18.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.18.01';
+const version = '2.18.02';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -223,39 +223,37 @@ function MT_GridDrawDetails() {
         let useRow = Object.assign({}, MTFlexRow[RowI]);
         if(isSubTotal == false) {
             if(useRow.isHeader == true) {
-                el = cec('tr','MTFlexGridRow',Header,'','','','');
+                el = cec('tr','MTFlexGridRow',Header);
                 useStyle = 'MTFlexGridHCell';
                 Subtotals[SubtotalsNdx] = RowI;
                 SubtotalsNdx+=1;
             } else {
                 let el2 = cec('tr','MTSpacerClassTR',Header,'','','style',hide);
                 let el3 = cec('td','MTSpacerClassTR',el2,'','','colspan',MTFlexTitle.length);
-                cec('div','MTSpacerClass2',el3,'','','','');
-                el = cec('tr','MTFlexGridItem',Header,'','','','');
+                cec('div','MTSpacerClass2',el3);
+                el = cec('tr','MTFlexGridItem',Header);
                 useStyle = 'MTFlexGridDCell';
             }
             useDesc = useRow[MTFields];
             if(useRow.Icon) {useDesc = useRow.Icon + ' ' + useDesc;}
             if(useRow.SKHRef) {
-                elx = cec('td',useStyle,el,'','','','');
-                elx = cec('a',useStyle,elx,useDesc,useRow.SKHRef,'','');
+                elx = cec('td',useStyle,el);
+                elx = cec('a',useStyle,elx,useDesc,useRow.SKHRef);
             } else {
                 elx = cec('td',useStyle,el,useDesc);
             }
         } else {
             if(useRow.isHeader == true) {return;}
             if(MTFlex.Subtotals != true) {return;}
-            for (let j = 0; j < MTFlexTitle.length; j += 1) {
-                useRow[MTFields + j + 1] = Grouptotals[j];
-            }
+            for (let j = 0; j < MTFlexTitle.length; j += 1) {useRow[MTFields + j + 1] = Grouptotals[j];}
             useRow.IgnoreShade = true;
             useDesc = useRow.PK;
-            el = cec('tr','MTFlexGridItem',Header,'','','','');
+            el = cec('tr','MTFlexGridItem',Header);
             if(useRow.PKHRef) {
-                elx = cec('td','MTFlexGridSCell',el,'','','','');
-                elx = cec('a','MTFlexGridDCell',elx,useDesc,useRow.PKHRef,'','');
+                elx = cec('td','MTFlexGridSCell',el);
+                elx = cec('a','MTFlexGridDCell',elx,useDesc,useRow.PKHRef);
             } else {
-                elx = cec('td','MTFlexGridS3Cell',el,useDesc,'','','');
+                elx = cec('td','MTFlexGridS3Cell',el,useDesc);
             }
             useStyle = 'MTFlexGridSCell';
         }
@@ -273,29 +271,24 @@ function MT_GridDrawDetails() {
                 } else {
                     if(MTFlexTitle[j].Format == 2) { useValue2 = getDollarValue(useValue,true);} else {useValue2 = getDollarValue(useValue,false);}
                     useStyle2 = '';
-                    switch (MTFlexTitle[j].ShowPercent) {
-                        case 1:
-                            pct = MT_GridPercent(useRow[j + MTFields - 2],useRow[j + MTFields - 1],MTFlexTitle[j].ShowPercentShade,1,useRow.IgnoreShade);
-                            useValue2 = useValue2 + ' ' + pct[0];
-                            useStyle2 = pct[1];
-                            break;
-                        case 3:
-                            pct = MT_GridPercent(useRow[j + MTFields - 5],useRow[j + MTFields - 1],MTFlexTitle[j].ShowPercentShade,1,useRow.IgnoreShade);
-                            useValue2 = useValue2 + ' ' + pct[0];
-                            useStyle2 = pct[1];
-                            break;
-                        case 2:
-                            rowNdx = useRow.BasedOn -1;
-                            rowNdx = Subtotals[rowNdx];
-                            workValue = MTFlexRow[rowNdx][j + MTFields];
-                            pct = MT_GridPercent(workValue,useValue,MTFlexTitle[j].ShowPercentShade,2,useRow.IgnoreShade);
-                            useValue2 = useValue2 + ' ' + pct[0];
-                            useStyle2 = pct[1];
-                            break;
+                    if((MTFlexTitle[j].ShowPercent) > 0) {
+                        switch (MTFlexTitle[j].ShowPercent) {
+                            case 1:
+                                pct = MT_GridPercent(useRow[j + MTFields - 2],useRow[j + MTFields - 1],MTFlexTitle[j].ShowPercentShade,1,useRow.IgnoreShade);
+                                break;
+                            case 3:
+                                pct = MT_GridPercent(useRow[j + MTFields - 5],useRow[j + MTFields - 1],MTFlexTitle[j].ShowPercentShade,1,useRow.IgnoreShade);
+                                break;
+                            case 2:
+                                rowNdx = useRow.BasedOn -1;rowNdx = Subtotals[rowNdx];workValue = MTFlexRow[rowNdx][j + MTFields];
+                                pct = MT_GridPercent(workValue,useValue,MTFlexTitle[j].ShowPercentShade,2,useRow.IgnoreShade);
+                                break;
+                        }
+                        useValue2 = useValue2 + ' ' + pct[0];
+                        useStyle2 = pct[1];
                     }
                     if(useStyle2 == '') { useStyle2 = MT_GridDrawEmbed(useRow.Section,j,useValue,useDesc);}
                     if(useStyle2) {elx = cec('td',useStyle,el,useValue2,'','style',useStyle2);} else {elx = cec('td',useStyle,el,useValue2,'','','');}
-                    //elx.id = useRow.Num + '-' + j;
                     Grouptotals[j-1] += useValue;
                 }
             }
@@ -320,31 +313,27 @@ function MT_GridDrawDetails() {
 
 function MT_GridDrawSort() {
 
-    let cn = MTFlex.Name + 'Sort';
-    if(MTFlex.SortSeq != null) {cn = cn + MTFlex.SortSeq[MTFlex.Button2];}
-    let useSort = getCookie(cn,true);
-    if(Math.abs(useSort) > MTFlexTitle.length) {useSort = 0;}
-    let useCol = MTFields + Math.abs(useSort);
+    let cn = MTFlex.Name + 'Sort' + (MTFlex.SortSeq ? MTFlex.SortSeq[MTFlex.Button2] : '');
+    let useSort = getCookie(cn, true);
+    useSort = Math.abs(useSort) > MTFlexTitle.length ? 0 : useSort;
+    const useCol = MTFields + Math.abs(useSort);
 
-    for (let i = 0; i < MTFlexRow.length; i += 1) { MTFlexRow[i].SK = MTFlexRow[i][useCol]; }
-    for (let i = 0; i < MTFlexTitle.length; i += 1) {
-        MTFlexTitle[i].ShowSort = '';
-        if(i == useSort) { MTFlexTitle[i].ShowSort = '▲'; } else if (i == Math.abs(useSort)) { MTFlexTitle[i].ShowSort = '▼';}
-    }
-    switch (MTFlexTitle[useCol-MTFields].isSortable) {
-        case 1:
-            if(useSort < 0) {
-                MTFlexRow.sort((a, b) => (a.Section - b.Section || a.PK.localeCompare(b.PK) || b.SK.localeCompare(a.SK) ));
-            } else { MTFlexRow.sort((a, b) => (a.Section - b.Section || a.PK.localeCompare(b.PK) || a.SK.localeCompare(b.SK) ));}
-            break;
-        case 2:
-            if(useSort < 0) {
-                MTFlexRow.sort((a, b) => (a.Section - b.Section || a.PK.localeCompare(b.PK) || b.SK - a.SK ));
-            } else {MTFlexRow.sort((a, b) => (a.Section - b.Section || a.PK.localeCompare(b.PK) || a.SK - b.SK ));}
-            break;
-        default:
-            MTFlexRow.sort((a, b) => (a.Section - b.Section || a.PK.localeCompare(b.PK)));
-    }
+    MTFlexRow.forEach(row => { row.SK = row[useCol]; });
+    MTFlexTitle.forEach((title, i) => {title.ShowSort = (i == useSort) ? '▲' : (i == Math.abs(useSort)) ? '▼' : '';});
+
+    const sortable = MTFlexTitle[useCol - MTFields].isSortable;
+    MTFlexRow.sort((a, b) => {
+        const sectionDifference = a.Section - b.Section || a.PK.localeCompare(b.PK);
+        const sortValue = useSort < 0 ? -1 : 1;
+        switch (sortable) {
+            case 1:
+                return sectionDifference || sortValue * (a.SK.localeCompare(b.SK));
+            case 2:
+                return sectionDifference || sortValue * (b.SK - a.SK);
+            default:
+                return sectionDifference;
+        }
+    });
 }
 
 function MT_GridDrawContainer() {
@@ -419,34 +408,29 @@ function MT_GridDrawCards() {
         }
     }
 }
-
-function MT_GridPercent(inA,inB,inHighlight, inPercent, inIgnoreShade) {
+function MT_GridPercent(inA, inB, inHighlight, inPercent, inIgnoreShade) {
 
     if(isNaN(inA)) {inA = 0;}
     if(isNaN(inB)) {inB = 0;}
-    let p = ['',''];
-    if(inA != 0 || inB != 0) {
-        if(inA > 0) {
-            if(inPercent == 1) {p[0] = ((inB - inA) / inA);}
-            else {p[0] = inB / inA;if(p[0] < 0) { p[0] = 0;}}
-        } else {p[0] = 1;}
-        p[0] = p[0] * 100;
-        p[0] = Math.round(p[0] * 10) / 10;
-        if(inHighlight == true && inIgnoreShade != true) {
-            if(p[0] > 100) {
-                p[1] = 'background-color: #f7752d; color: black;';
-            } else {
-                if(p[0] > 50) {p[1] = 'background-color: #f89155; color: black;';} else {
-                    if(p[0] > 25 ) {p[1] = 'background-color: #fde0cf; color: black;';}
-                }
-            }
-            if(p[1]) {p[1] = p[1] + 'border-radius: 6px;';}
-        }
 
-        if (p[0] > 1000) { p[0] = '(>1,000%)';
-        } else if (p[0] < -1000) { p[0] = '(<1,000%)'; } else { p[0] = ' (' + p[0].toFixed(1) + '%)'; }
+    let p = ['', ''];
+    if (inA === 0 && inB === 0) return p;
+
+    p[0] = inA > 0 ? (inPercent === 1 ? (inB - inA) / inA : Math.max(inB / inA, 0)) : 1;
+    p[0] = Math.round(p[0] * 1000) / 10;
+
+    if (inHighlight && !inIgnoreShade) {
+        if (p[0] > 100) p[1] = 'background-color: #f7752d; color: black;';
+        else if (p[0] > 50) p[1] = 'background-color: #f89155; color: black;';
+        else if (p[0] > 25) p[1] = 'background-color: #fde0cf; color: black;';
+        if (p[1]) p[1] += 'border-radius: 6px;';
     }
-    return(p);
+
+    p[0] = (p[0] > 1000) ? '(>1,000%)' :
+            (p[0] < -1000) ? '(<1,000%)' :
+            ` (${p[0].toFixed(1)}%)`;
+
+    return p;
 }
 
 function MT_GridExport() {
@@ -457,7 +441,9 @@ function MT_GridExport() {
 
     for (let i = 0; i < MTFlexTitle.length; i += 1) {
         if(MTFlexTitle[i].isHidden == false) { csvContent = csvContent + '"' + MTFlexTitle[i].Title + '"' + c;}
-    };csvContent = csvContent + CRLF;
+    };
+    csvContent = csvContent + CRLF;
+
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         if(i > 0 && MTFlexRow[i].Section != MTFlexRow[i-1].Section) { csvContent = csvContent + c + CRLF; }
         k = 0;
@@ -466,17 +452,9 @@ function MT_GridExport() {
                 useValue = '';
                 if(MTFlexRow[i][j] != undefined) {
                     switch(MTFlexTitle[k].Format) {
-                        case 1:
-                            useValue = Number(MTFlexRow[i][j]);
-                            useValue = useValue.toFixed(2);
-                            break;
-                        case 2:
-                            useValue = Number(MTFlexRow[i][j]);
-                            useValue = Math.round(useValue);
-                            useValue = useValue.toFixed(0);
-                            break;
-                        default:
-                            useValue = MTFlexRow[i][j];
+                        case 1: useValue = Number(MTFlexRow[i][j]).toFixed(2); break;
+                        case 2: useValue = Math.round(Number(MTFlexRow[i][j])).toFixed(0); break;
+                        default: useValue = MTFlexRow[i][j];
                     }
                 }
                 csvContent = csvContent + useValue + c;
@@ -1106,8 +1084,7 @@ async function MenuReportsTrendsGo() {
         if(MTFlex.Button2 == 0) {
             month-=1;
             if(month < 0) { month = 11; year = year - 1;}
-            month2 = month;
-            year2 = year;
+            month2 = month;year2 = year;
             lowerDate.setFullYear(year,month,1);
             higherDate.setFullYear(year2,month2,1);
 
@@ -1304,29 +1281,16 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
     if(inID) { useType = getCategoryGroup(inID).TYPE; }
     inGrouping = Number(inGrouping);
 
-    if(inGrouping == 0) {
-        snapshotData = await getMonthlySnapshotData(firstDate,lastDate,inPeriod);
-    } else {
-        snapshotData = await getMonthlySnapshotData2(firstDate,lastDate,inPeriod);
-    }
+    if(inGrouping == 0) {snapshotData = await getMonthlySnapshotData(firstDate,lastDate,inPeriod);} else {
+        snapshotData = await getMonthlySnapshotData2(firstDate,lastDate,inPeriod);}
 
     for (let i = 0; i < snapshotData.aggregates.length; i += 1) {
         switch(inGrouping) {
-            case 0:
-                useID = snapshotData.aggregates[i].groupBy.categoryGroup.id;
-                break;
-            case 1:
-                useID = snapshotData.aggregates[i].groupBy.category.id;
-                break;
-            case 2:
-                useID = snapshotData.aggregates[i].groupBy.category.id;
-                break;
-            case 3:
-                useID = snapshotData.aggregates[i].groupBy.category.id;
-                retGroups = getCategoryGroup(useID);
-                useID = retGroups.GROUP;
-                useType = retGroups.TYPE;
-                break;
+            case 0: useID = snapshotData.aggregates[i].groupBy.categoryGroup.id;break;
+            case 1: useID = snapshotData.aggregates[i].groupBy.category.id;break;
+            case 2: useID = snapshotData.aggregates[i].groupBy.category.id;break;
+            case 3: useID = snapshotData.aggregates[i].groupBy.category.id;retGroups = getCategoryGroup(useID);
+                useID = retGroups.GROUP;useType = retGroups.TYPE;break;
         }
         if(inID == '' || inID == useID) {
             let useAmount = Number(snapshotData.aggregates[i].summary.sum);
@@ -1364,27 +1328,19 @@ function Trend_UpdateQueue(useID,useAmount,inCol) {
     for (let i = 0; i < TrendQueue.length; i++) {
         if(TrendQueue[i].ID == useID) {
             switch(inCol) {
-                case 'cp':
-                    TrendQueue[i].N_CURRENT = useAmount;break;
-                case 'lp':
-                    TrendQueue[i].N_LAST = useAmount;break;
-                case 'cm':
-                    TrendQueue[i].N_CURRENTM = useAmount;break;
-                case 'lm':
-                    TrendQueue[i].N_LASTM = useAmount;break;
+                case 'cp':TrendQueue[i].N_CURRENT = useAmount;break;
+                case 'lp':TrendQueue[i].N_LAST = useAmount;break;
+                case 'cm':TrendQueue[i].N_CURRENTM = useAmount;break;
+                case 'lm':TrendQueue[i].N_LASTM = useAmount;break;
             }
             return;
         }
     }
     switch(inCol) {
-        case 'cp':
-            TrendQueue.push({"ID": useID,"N_CURRENT": useAmount,"N_LAST": 0, "N_CURRENTM": 0, "N_LASTM": 0});break;
-        case 'lp':
-            TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": useAmount, "N_CURRENTM": 0, "N_LASTM": 0});break;
-        case 'cm':
-            TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_CURRENTM": useAmount, "N_LASTM": 0});break;
-        case 'lm':
-            TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_CURRENTM": 0, "N_LASTM": useAmount});break;
+        case 'cp':TrendQueue.push({"ID": useID,"N_CURRENT": useAmount,"N_LAST": 0, "N_CURRENTM": 0, "N_LASTM": 0});break;
+        case 'lp':TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": useAmount, "N_CURRENTM": 0, "N_LASTM": 0});break;
+        case 'cm':TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_CURRENTM": useAmount, "N_LASTM": 0});break;
+        case 'lm':TrendQueue.push({"ID": useID,"N_CURRENT": 0,"N_LAST": 0, "N_CURRENTM": 0, "N_LASTM": useAmount});break;
     }
 }
 
@@ -1393,10 +1349,8 @@ function MenuReportsHistory(inType,inID) {
     let topDiv = document.getElementById('root');
     if(topDiv) {
 
-        const lowerDate = new Date("2023-01-01");
-        const higherDate = new Date();
-        let retGroups = getCategoryGroup(inID);
-        let inGroup = 1,useURL = '';
+        const lowerDate = new Date("2023-01-01"),higherDate = new Date();
+        let retGroups = getCategoryGroup(inID),inGroup = 1,useURL = '';
 
         topDiv = topDiv.childNodes[0];
         let div = cec('div','MTHistoryPanel',topDiv,'','','','');
@@ -1679,46 +1633,26 @@ function MenuFilter_Restore(cn) {
 
 // ===[ Calendar Fixes ] ===
 function MM_FixCalendarShortcuts() {
-
-    let li = document.querySelectorAll('div.DateRangePickerShortcuts__StyledMenuItem-jr6842-1');
-    if(li[6]) {
+    const li = document.querySelectorAll('div.DateRangePickerShortcuts__StyledMenuItem-jr6842-1');
+    if (li[6]) {
         const useClass = li[0].className;
-        let div = document.createElement('div');
-        div.className = useClass;
-        div.innerText = 'This quarter';
-        let newli = li[5].nextSibling.after(div);
-        div.addEventListener('click', () => {
-            inputTwoFields('input.DateInput_input',getDates('i_ThisQTRs'),getDates('i_ThisQTRe'));
-            let sb = findButton('','Apply');
-            if(sb) {
-                focus(sb);
-                sb.click();
-            }
-        });
-        div = document.createElement('div');
-        div.className = useClass;
-        div.innerText = 'Last year YTD';
-        newli = li[5].nextSibling.after(div);
-        div.addEventListener('click', () => {
-            inputTwoFields('input.DateInput_input',getDates('i_LastYearYTDs'),getDates('i_LastYearYTDe'));
-            let sb = findButton('','Apply');
-            if(sb) {
-                focus(sb);
-                sb.click();
-            }
-        });
-        div = document.createElement('div');
-        div.className = useClass;
-        div.innerText = 'Last 12 months';
-        newli = li[5].nextSibling.after(div);
-        div.addEventListener('click', () => {
-            inputTwoFields('input.DateInput_input',getDates('i_Last12s'),getDates('i_Last12e'));
-            let sb = findButton('','Apply');
-            if(sb) {
-                focus(sb);
-                sb.click();
-            }
-        });
+        const createShortcut = (text, startDate, endDate) => {
+            const div = document.createElement('div');
+            div.className = useClass;
+            div.innerText = text;
+            li[5].nextSibling.after(div);
+            div.addEventListener('click', () => {
+                inputTwoFields('input.DateInput_input', getDates(startDate), getDates(endDate));
+                const sb = findButton('', 'Apply');
+                if (sb) {
+                    focus(sb);
+                    sb.click();
+                }
+            });
+        };
+        createShortcut('This quarter', 'i_ThisQTRs', 'i_ThisQTRe');
+        createShortcut('Last year YTD', 'i_LastYearYTDs', 'i_LastYearYTDe');
+        createShortcut('Last 12 months', 'i_Last12s', 'i_Last12e');
     }
 }
 
@@ -2258,24 +2192,12 @@ function daysInMonth(iMonth, iYear) {
     return 32 - new Date(iYear, iMonth, 32).getDate();
 }
 
-function findButton(inValue,inName) {
-
-    let useTarget = null;
-    const div=document.querySelectorAll('button');
-
-    div.forEach((li)=> {
-        if(useTarget == null) {
-            if(inValue != '' && li.textContent.substring(0,1) == inValue) {
-                useTarget = li;
-                return useTarget;
-            }
-            if(inName != '' && inName == li.innerText) {
-                useTarget = li;
-                return useTarget;
-            }
-        }
-    });
-    return useTarget;
+function findButton(inValue, inName) {
+    const buttons = document.querySelectorAll('button');
+    for (const button of buttons) {
+        if ((inValue && button.textContent.startsWith(inValue)) || (inName && inName === button.innerText)) {return button;}
+    }
+    return null;
 }
 
 function getCleanValue(inValue,inDec) {
