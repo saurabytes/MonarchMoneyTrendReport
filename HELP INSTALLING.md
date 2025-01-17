@@ -38,7 +38,7 @@ Once Tampermonkey is installed, install or update the Monarch Money Tweaks exten
 
 ![Settings](/images/MM_Chrome3.png)
 
-**Monarch Money Tweaks Dashboard**
+**Tampermonkey Dashboard**
 
 ![Settings](/images/MM_Chrome1.png)
 
