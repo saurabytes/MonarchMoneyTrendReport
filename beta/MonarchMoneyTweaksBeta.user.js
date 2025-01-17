@@ -786,7 +786,7 @@ async function MenuReportsAccountsGoStd(){
     MTFlex.Title2 = getDates('s_FullDate',useDate) + ' - ' + getDates('s_FullDate',useDate2);
 
     MTP.Column = 2; MTP.Title = 'Updated';MF_QueueAddTitle(MTP);
-    MTP.Column = 3; MTP.Title = 'Beg Balance'; MTP.isSortable = 2; MTP.Format = 1;MF_QueueAddTitle(MTP);
+    MTP.Column = 3; MTP.Title = 'Beg Balance'; MTP.isSortable = 2; MTP.Format = [1,2][getCookie('MT_AccountsNoDecimals',true)];MF_QueueAddTitle(MTP);
     if(MTFlex.Button2 > 0) { MTP.isHidden = true; }
     MTP.Column = 4; MTP.Title = 'Income'; MF_QueueAddTitle(MTP);
     MTP.Column = 5; MTP.Title = 'Expenses'; MF_QueueAddTitle(MTP);
@@ -1784,6 +1784,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Show total Credit Card Liability card','MT_AccountsCard2','checkbox');
             MenuDisplay_Input('Show total Investments card','MT_AccountsCard3','checkbox');
             MenuDisplay_Input('Show total 401k card','MT_AccountsCard4','checkbox');
+            MenuDisplay_Input('Always hide decimals','MT_AccountsNoDecimals','checkbox');
             MenuDisplay_Input('Budget','','spacer');
             MenuDisplay_Input('Budget panel has smaller font & compressed grid','MT_PlanCompressed','checkbox');
         }
