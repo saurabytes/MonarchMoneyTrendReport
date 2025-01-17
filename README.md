@@ -58,11 +58,9 @@ You can install the script by using the **Tampermonkey** app extension in Chrome
 
 **iPad users:** Close your Safari browser, go to App Store and install the Userscripts (User Script and Style Manager) by Justin Wasack.
 
+(Chrome Users - Be sure to click on Extensions / Tampermonkey Manage Extension / Developer Mode On)
 
-
-Once the above is installed, you can install or update the Monarch Money Tweaks extension by clicking on the following link:
-
-https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
+[Next, Click here to install or Update MM Tweaks](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
 
 
 
