@@ -71,7 +71,8 @@ You can install the script by using the **Tampermonkey** app extension in Chrome
 
 Finally, Refresh/Reload the Monarch Money webpage and select **Settings / Display** in Monarch to configure the Tweaks.
 
-Please read each option carefully before turning it on/off to fully understand what it does. 
+> [!IMPORTANT]
+> Please read each option carefully before turning it on/off to fully understand what it does. 
 
 ![Settings](/images/MM_SettingsDeveloper.png)
 
