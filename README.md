@@ -58,7 +58,8 @@ You can install the script by using the **Tampermonkey** app extension in Chrome
 **Non iPad users:** Install Tampermonkey for your browser by going to the following link:  
 https://www.tampermonkey.net/
 
-**iPad users:** Close your Safari browser, go to App Store and install the Userscripts (User Script and Style Manager) by Justin Wasack.
+**iPad users:** Close your Safari browser, go to App Store and install the Userscripts program:
+Search App store for "User Script and Style Manager" by Justin Wasack
 
 
 **STEP 2**
