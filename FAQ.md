@@ -14,4 +14,8 @@
 9. This extension has been available for over 11 months to users in the Monarch Money community.
 10. If there are any issues, help needed or concerns with the extension, please email me: robert @ paresi.net
 
+> [!IMPORTANT]
+> Only install or update the Monarch Money Tweaks extension from THIS GitHub location only. No where else including links in Reddit or other website.  This GitHub page is the only official location that should be used to get the extension.
+
+
     Enjoy!
