@@ -50,7 +50,7 @@ function MM_Init() {
     addStyle('.MTWait2 p {' + standardText + 'font-family:  MonarchIcons, sans-serif, "Oracle" !important; font-size: 15px; font-weight: 200;}');
     addStyle('.MTlink, .MTlink3 {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
     addStyle('.MTlink2 {background-color: transparent; font-size: 14px; font-weight: 500; padding: 0px 0px 0px 16px;}');
-    addStyle('.MTCheckboxClass, .MTFlexCheckbox {width: 19px; height: 19px; margin-right: 10px;float: inline-start; accent-color: ' + accentColor + '}');
+    addStyle('.MTCheckboxClass, .MTFlexCheckbox {width: 19px; height: 19px; margin-right: 10px;float: inline-start; color: #FFFFFF; accent-color: ' + accentColor + '}');
     addStyle('.MTSpacerClass {margin-top: 4px; margin-bottom: 4px; border-bottom: 1px solid ' + lineForground +';}');
     addStyle('.MTSpacerClassTR {padding: 0px 0px 0px 0px;}');
     addStyle('.MTSpacerClass2 {margin-bottom: 0px;border-bottom: 1px solid ' + borderColor +';}');
@@ -888,7 +888,7 @@ async function MenuReportsAccountsGoStd(){
                 if(snapshotData.accounts[i].subtype.display == '401k') {acard[4] = acard[4] + MTFlexRow[MTFlexCR][MTFields+7];}
                 if((snapshotData.accounts[i].subtype.name == 'credit_card') && cards < 5) {
                     MTP = [];MTP.Col = cards;
-                    MTP.Title = getDollarValue(MTFlexRow[MTFlexCR][MTFields+7]);
+                    MTP.Title = getDollarValue(MTFlexRow[MTFlexCR][MTFields+7],MTFlexTitle[3].Format == 2 ? true : false);
                     MTP.Subtitle = snapshotData.accounts[i].displayName;
                     MTP.Style = css_red;
                     MF_QueueAddCard(MTP);
@@ -901,7 +901,7 @@ async function MenuReportsAccountsGoStd(){
     cards=0;
     for (let i = 0; i < 5; i += 1) {
         if(getCookie('MT_AccountsCard' + i.toString(),true) == 1) {
-            MTP = [];MTP.Col = cards;MTP.Title = getDollarValue(acard[i]);MTP.Subtitle = 'Total ' + ['Checking', 'Savings', 'Credit Cards', 'Investments','401k'][i];
+            MTP = [];MTP.Col = cards;MTP.Title = getDollarValue(acard[i],MTFlexTitle[3].Format == 2 ? true : false);MTP.Subtitle = 'Total ' + ['Checking', 'Savings', 'Credit Cards', 'Investments','401k'][i];
             MTP.Style = [css_green,css_green,css_red,css_green,css_green][i];MF_QueueAddCard(MTP);
         }
     }
