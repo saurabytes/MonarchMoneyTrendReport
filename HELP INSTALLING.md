@@ -38,12 +38,6 @@ Once Tampermonkey is installed, install or update the Monarch Money Tweaks exten
 
 ![Settings](/images/MM_Chrome3.png)
 
-**Tampermonkey Dashboard**
-
-![Settings](/images/MM_Chrome1.png)
-
-
-
 
 # INSTALL ON Safari:
 
@@ -65,5 +59,10 @@ Once Tampermonkey is installed, install or update the Monarch Money Tweaks exten
 [Next, Click here to install MM Tweaks](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
 
 
-
 Once installed, Refresh the Monarch Money webpage and then go to **Settings / Display**.
+
+**Tampermonkey Dashboard**
+
+![Settings](/images/MM_Chrome1.png)
+
+
