@@ -59,9 +59,11 @@ Once Tampermonkey is installed, install or update the Monarch Money Tweaks exten
 [Next, Click here to install MM Tweaks](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
 
 
+# Monarch Money Tweaks Settings & Auto-Update
+
 Once installed, Refresh the Monarch Money webpage and then go to **Settings / Display**.
 
-> [!NOTE]
+> [!TIP]
 > Use the Tampermonkey Dashboard to set the script to auto-update versions
 
 ![Settings](/images/MM_Chrome1.png)
