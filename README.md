@@ -69,9 +69,9 @@ Search App store for "User Script and Style Manager" by Justin Wasack
 
 [Next, Click here to install or Update MM Tweaks](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
 
+**STEP 3**
 
-
-Finally, Refresh/Reload the Monarch Money webpage and select **Settings / Display** in Monarch to configure the Tweaks.
+Refresh/Reload the Monarch Money webpage and select **Settings / Display** in Monarch to configure the Tweaks.
 
 > [!IMPORTANT]
 > Please read each option carefully before turning it on/off to fully understand what it does. 
