@@ -28,7 +28,7 @@
 6. Paste the following into the Update URL: https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js
 7. Press **Save**
 
-**Monarch Money Tweaks Dashboard**
+**Tampermonkey Dashboard**
 
 ![Settings](/images/MM_Chrome1.png)
 
