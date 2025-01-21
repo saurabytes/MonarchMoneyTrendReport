@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.18.03
+// @version      2.18.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.18.03';
+const version = '2.18.05';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -690,11 +690,11 @@ async function MenuReportsAccountsGo() {
 
     await MF_GridInit('MTAccounts', 'Accounts');
     MTFlex.Title1 = 'Accounts';
-    MTFlex.SortSeq = ['1','1','1','1','1','1','1','2','3','4'];
+    MTFlex.SortSeq = ['1','1','1','1','1','1','1','2','3','4','5'];
     MTFlex.TriggerEvent = true;
     MTFlex.TriggerEvents = false;
     MTFlex.Button1Options = ['Hide subtotals','Show subtotals'];
-    MTFlex.Button2Options = ['This month','3 months', '6 months', 'This year', '1 year', '2 years', '3 years','Last 6 months with average','Last 12 months with average', 'This year with average'];
+    MTFlex.Button2Options = ['This month','3 months', '6 months', 'This year', '1 year', '2 years', '3 years','Last 6 months with average','Last 12 months with average','This year with average','Last 3 years with average'];
     MTFlex.Subtotals = MTFlex.Button1;
     MTP = [];
     MTP.Column = 0; MTP.Title = 'Account';MTP.isSortable = 1; MTP.Format = 0; MF_QueueAddTitle(MTP);
@@ -707,20 +707,33 @@ async function MenuReportsAccountsGoExt(){
 
     let snapshotData = null, snapshotData3 = null
     let skipHidden = getCookie('MT_AccountsHidden',true);
-    let CurMonth = getDates('n_CurMonth');
-    let NumMonths = 12;
-    if(MTFlex.Button2 == 7) {NumMonths = 6;}
+    let CurMonth = getDates('n_CurMonth'),CurYear = 0;
+    let NumMonths = (MTFlex.Button2 === 7) ? 6 : 12;
+    let useDate = getDates('d_Minus1Year');
+
     MTFlex.Title2 = 'Last ' + NumMonths + ' Months as of ' + getDates('s_FullDate');
-    if(MTFlex.Button2 == 9) {
-        NumMonths = CurMonth;
-        MTFlex.Title2 = 'This year as of ' + getDates('s_FullDate');
-    }
     MTFlex.Title3 = '(Based on beginning of each month)';
 
-    for (let i = 0; i < 12; i += 1) {
-        if(i < (12-NumMonths)) {MTP.isHidden = true;} else {MTP.isHidden = false;}
-        MTP.Column = i+2; MTP.Title = getMonthName(CurMonth,true);MTP.isSortable = 2;MTP.Format = 2;MF_QueueAddTitle(MTP);
-        CurMonth+=1; if(CurMonth == 12) {CurMonth = 0;}
+    if(MTFlex.Button2 == 9) {
+        NumMonths = CurMonth;MTFlex.Title2 = 'This year as of ' + getDates('s_FullDate');
+    }
+    if (MTFlex.Button2 == 10) {
+        useDate = getDates('d_ThisQTRs');
+        CurMonth = useDate.getMonth();CurYear = useDate.getFullYear() - 3;
+        CurMonth+=3; if(CurMonth == 12) {CurMonth = 0;CurYear+=1;}
+        useDate.setFullYear(CurYear,CurMonth,1);
+        MTFlex.Title2 = 'Last 3 years as of ' + getDates('s_FullDate');
+        for (let i = 0; i < 12; i += 1) {
+            MTP.Column = i+2; MTP.Title = getMonthName(CurMonth,true) + "'" + CurYear % 100;MTP.isSortable = 2;MTP.Format = 2;MF_QueueAddTitle(MTP);
+            CurMonth+=3; if(CurMonth == 12) {CurMonth = 0;CurYear+=1;}
+        }
+        CurMonth = useDate.getMonth();CurYear = useDate.getFullYear();
+    } else {
+        for (let i = 0; i < 12; i += 1) {
+            if(i < (12-NumMonths)) {MTP.isHidden = true;} else {MTP.isHidden = false;}
+            MTP.Column = i+2; MTP.Title = getMonthName(CurMonth,true);MTP.isSortable = 2;MTP.Format = 2;MF_QueueAddTitle(MTP);
+            CurMonth+=1; if(CurMonth == 12) {CurMonth = 0;}
+        }
     }
     MTP.isHidden = false;
     MTP.Column = 14; MTP.Title = 'Current';MF_QueueAddTitle(MTP);
@@ -748,18 +761,26 @@ async function MenuReportsAccountsGoExt(){
         MTFlexRow[MTFlexCR][MTFields+14] = Number(snapshotData.accounts[i].displayBalance);
     }
 
-    let useDate = getDates('d_Minus1Year');
     for (let i = 0; i < 12; i += 1) {
+        let used = false;
         snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
         for (let j = 0; j < snapshotData3.accounts.length; j += 1) {
             MT_GridUpdateUID(snapshotData3.accounts[j].id,i+2,snapshotData3.accounts[j].displayBalance);
+            if(snapshotData3.accounts[j].displayBalance != null) {used = true;};
         }
-        CurMonth+=1;
-        if(CurMonth == 12) {
-            CurMonth=0;
-            useDate.setFullYear(useDate.getFullYear() + 1);
+        if(MTFlex.Button2 == 10) {
+            if(used == false) {MTFlexTitle[i+2].isHidden = true;}
+            CurMonth+=3;
+            if(CurMonth > 11) {CurMonth=0;CurYear+=1;}
+            useDate.setFullYear(CurYear,CurMonth,1);
+        } else {
+            CurMonth+=1;
+            if(CurMonth == 12) {
+                CurMonth=0;
+                useDate.setFullYear(useDate.getFullYear() + 1);
+            }
+            useDate.setMonth(CurMonth);
         }
-        useDate.setMonth(CurMonth);
     }
     if(MTFlex.Button2 == 9 && CurMonth == 0) {MTFlexTitle[2].isHidden = false;}
     MT_GridRollup(1,2,1,'Assets');
@@ -778,7 +799,7 @@ async function MenuReportsAccountsGoStd(){
     if(isToday) {accountBalances = [];}
 
     let snapshotData = null, snapshotData2 = null, snapshotData3 = null,snapshotData4 = null;
-    let useDateRange = ['d_StartofMonth','d_Minus3Months','d_Minus6Months','d_StartOfYear','d_Minus1Year','d_Minus2Years','d_Minus3Years'][MTFlex.Button2];
+    let useDateRange = ['d_StartofMonth','d_Minus3Months','d_Minus6Months','d_StartOfYear','d_Minus1Year','d_Minus2Years','d_Minus3Years','d_Minus4Years','d_Minus5Years'][MTFlex.Button2];
     let useDate = getDates(useDateRange,AccountsTodayIs);
     let useDate2 = AccountsTodayIs;
     let cards = 0,acard=[0,0,0,0,0];
@@ -1344,7 +1365,7 @@ function Trend_UpdateQueue(useID,useAmount,inCol) {
     }
 }
 
-function MenuReportsHistory(inType,inID) {
+function MenuTrendsHistory(inType,inID) {
 
     let topDiv = document.getElementById('root');
     if(topDiv) {
@@ -1378,7 +1399,7 @@ function MenuReportsHistory(inType,inID) {
     }
 }
 
-function MenuReportsHistoryDraw() {
+function MenuTrendsHistoryDraw() {
 
     let sumQue = [], detailQue = [];
     const os = 'text-align:left; font-weight: 600;';
@@ -1519,7 +1540,7 @@ function MenuReportsHistoryDraw() {
     }
 }
 
-function MenuReportsHistoryExport() {
+function MenuTrendsHistoryExport() {
 
     const CRLF = String.fromCharCode(13,10),c = ',';
     let csvContent = '',j = 0,Cols = 0;
@@ -1862,7 +1883,7 @@ function MenuCheckSpawnProcess() {
             break;
         case 2:
             MTFlexReady = false;
-            MenuReportsHistoryDraw();
+            MenuTrendsHistoryDraw();
             break;
     }
 }
@@ -1895,7 +1916,7 @@ window.onclick = function(event) {
                 event.target.innerText = ['',''][getCookie('MTC_div.TrendHistoryDetail',true)];
                 return;
             case 'MTlink':
-                if(pcn == 'MTSideDrawerHeader') {MenuReportsHistoryExport();}
+                if(pcn == 'MTSideDrawerHeader') {MenuTrendsHistoryExport();}
                 return;
             case 'MTFlexBig MThRefClass':
                 onClickMTFlexBig();return;
@@ -1993,7 +2014,7 @@ function onClickMTFlexArrow() {
 
     let p = event.target.parentNode.getAttribute("triggers").split('|');
     if(p == null) {return;}
-    if(MTFlex.Name == 'MTTrend') { MenuReportsHistory(p[0],p[1]); }
+    if(MTFlex.Name == 'MTTrend') { MenuTrendsHistory(p[0],p[1]); }
 }
 
 function onClickGridSort() {
@@ -2045,14 +2066,13 @@ function onClickFilter() {
     }
 }
 
-function cec(e,c,r,it,hr,a1,a2) {
-    let div = document.createElement(e);
-    if(it) {div.innerText = it;}
-    if(hr) {div.href = hr;}
-    if(c) {div.className = c;}
-    if(a1) {div.setAttribute(a1,a2);}
-    const x = r.appendChild(div);
-    return x;
+function cec(e, c, r, it, hr, a1, a2) {
+    const div = document.createElement(e);
+    if (it) div.innerText = it;
+    if (hr) div.href = hr;
+    if (c) div.className = c;
+    if (a1) div.setAttribute(a1, a2);
+    return r.appendChild(div);
 }
 
 function removeAllSections(inDiv) {
@@ -2091,41 +2111,38 @@ function getDates(InValue,InDate) {
     let d = null;
     if(InDate) { d = new Date(InDate);} else { d = new Date(); }
     let month = d.getMonth(), day = d.getDate(), year = d.getFullYear();
-
     if(InValue == 'isToday') {
         let todaysDate = new Date();
         if(InDate.setHours(0,0,0,0) == todaysDate.setHours(0,0,0,0)) {return true;} else {return false;}
     }
 
     switch (InValue) {
-        case 'n_CurYear':
-            return(year);
-        case 'n_CurMonth':
-            return(month);
-        case 'n_CurDay':
-            return(day);
-        case 'd_Today':
+        case 'n_CurYear':return(year);
+        case 'n_CurMonth':return(month);
+        case 'n_CurDay':return(day);
+        case 'd_Today':return d;
+        case 'd_Yesterday':d.setDate(d.getDate() - 1);return d;
+        case 'd_MinusWeek':d.setDate(d.getDate() - 7);return d;
+        case 'd_Minus2Weeks':d.setDate(d.getDate() - 14);return d;
+        case 'd_Minus3Months':d.setDate(1);d.setMonth(d.getMonth() - 2);return d;
+        case 'd_Minus6Months':d.setDate(1);d.setMonth(d.getMonth() - 5);return d;
+        case 'd_Minus1Year':d.setDate(1);d.setFullYear(d.getFullYear() - 1);return d;
+        case 'd_Minus2Years':d.setDate(1);d.setFullYear(d.getFullYear() - 2);return d;
+        case 'd_Minus3Years':d.setDate(1);d.setFullYear(d.getFullYear() - 3);return d;
+        case 'd_Minus4Years':d.setDate(1);d.setFullYear(d.getFullYear() - 4);return d;
+        case 'd_Minus5Years':d.setDate(1);d.setFullYear(d.getFullYear() - 5);return d;
+        case 'd_StartofMonth':d.setDate(1);return d;
+        case 'd_EndofMonth':day = daysInMonth(month,year); d.setDate(day);return d;
+        case 'd_StartOfYear':d.setDate(1);d.setMonth(0);return d;
+        case 's_FullDate':return(getMonthName(month,true) + ' ' + day + ', ' + year );
+        case 's_ShortDate':return(getMonthName(month,true) + ' ' + day);
+        case 'd_ThisQTRs':
+            if(month < 3) {month = 0;}
+            if(month == 4 || month == 5) {month = 3;}
+            if(month == 7 || month == 8) {month = 6;}
+            if(month == 10 || month == 11) {month = 9;}
+            d.setFullYear(year,month,1);
             return d;
-        case 'd_Yesterday':
-            d.setDate(d.getDate() - 1);return d;
-        case 'd_MinusWeek':
-            d.setDate(d.getDate() - 7);return d;
-        case 'd_Minus2Weeks':
-            d.setDate(d.getDate() - 14);return d;
-        case 'd_Minus3Months':
-            d.setDate(1);d.setMonth(d.getMonth() - 2);return d;
-        case 'd_Minus6Months':
-            d.setDate(1);d.setMonth(d.getMonth() - 5);return d;
-        case 'd_Minus1Year':
-            d.setDate(1);d.setFullYear(d.getFullYear() - 1);return d;
-        case 'd_Minus2Years':
-            d.setDate(1);d.setFullYear(d.getFullYear() - 2);return d;
-        case 'd_Minus3Years':
-            d.setDate(1);d.setFullYear(d.getFullYear() - 3);return d;
-        case 'd_StartofMonth':
-            d.setDate(1);return d;
-        case 'd_EndofMonth':
-            day = daysInMonth(month,year); d.setDate(day);return d;
         case 'd_StartofLastMonth':
             month-=1;
             if(month < 0) {month = 11;year-=1;}
@@ -2136,25 +2153,11 @@ function getDates(InValue,InDate) {
             if(month < 0) {month = 11;year-=1;}
             day = daysInMonth(month,year);
             d.setFullYear(year, month, day);return d;
-        case 'd_StartOfYear':
-            d.setDate(1);d.setMonth(0);return d;
-        case 's_FullDate':
-           return(getMonthName(month,true) + ' ' + day + ', ' + year );
-        case 's_ShortDate':
-           return(getMonthName(month,true) + ' ' + day);
-        case 'i_Last12s':
-            year-=1;
-            break;
-        case 'i_Last12e':
-            if(getCookie('MT_CalendarEOM',true) == 1) {day = daysInMonth(month,year); }
-            break;
-        case 'i_LastYearYTDs':
-            month = 0;day = 1;year-=1;
-            break;
-        case 'i_LastYearYTDe':
-            year-=1;
-            if(getCookie('MT_CalendarEOM',true) == 1) {day = daysInMonth(month,year); }
-            break;
+        case 'i_Last12s':year-=1;break;
+        case 'i_Last12e':if(getCookie('MT_CalendarEOM',true) == 1) {day = daysInMonth(month,year);}break;
+        case 'i_LastYearYTDs':month = 0;day = 1;year-=1;break;
+        case 'i_LastYearYTDe':year-=1;if(getCookie('MT_CalendarEOM',true) == 1) {day = daysInMonth(month,year); }break;
+
         case 'i_ThisQTRs':
             if(month < 3) {month = 0;}
             if(month == 4 || month == 5) {month = 3;}
