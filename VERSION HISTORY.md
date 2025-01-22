@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.18 (beta):**
+**Version 2.18:**
 
 • NEW: Reports / Trends now goes to Reports Income & Spending rather than the old Cash-Flow screen.
 
