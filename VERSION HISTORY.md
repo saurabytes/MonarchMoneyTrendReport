@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.19 (beta):**
 
-• NEW: New **Transactions** Report to allow full reporting (sort, select columns, totals & sub-totals) for transactions.
+• NEW: New **Transactions** Report to allow full reporting (filter, sort, select columns, totals & sub-totals) for transactions.
 
 **Version 2.18:**
 
