@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.19 (beta):**
 
-• NEW:  **Transactions** Report to allow full reporting (filter, sort, select columns, totals & sub-totals) for transactions.
+• NEW:  Reports / Trends Monthly Summary can now link to Income & Spending when expanding detail. 
 
 **Version 2.18:**
 
