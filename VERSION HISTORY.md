@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.19 (beta):**
 
-• NEW:  Reports / Trends Monthly Summary can now link to Income & Spending when expanding detail. 
+• NEW:  Reports / Trends Monthly Summary can now link expanded items to Income & Spending charts. 
 
 **Version 2.18:**
 
