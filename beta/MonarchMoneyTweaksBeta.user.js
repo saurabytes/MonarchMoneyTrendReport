@@ -1,18 +1,17 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.18
+// @version      2.19.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.18';
+const version = '2.19.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
-let r_Init = false;
 let SaveLocationHRefName = '', SaveLocationPathName = '';
 let r_headStyle = null, r_DatasetActive = false, r_FlexButtonActive = false;
 let accountGroups = [], accountBalances = [];
@@ -38,7 +37,8 @@ function MM_Init() {
     const borderColor = ['#e4e1de','#62605D'][a];
     const accentColor = ['#ff692d;','#ff692d;'][a];
 
-    MM_MenuFix();MM_RefreshAll();
+    MM_MenuFix();
+    MM_RefreshAll();
 
     if(getCookie('MT_PlanCompressed',true) == 1) {addStyle('.joBqTh, .jsBiA-d {padding-bottom: 0px; padding-top: 0px; !important;}'); addStyle('.earyfo, .fxLfmT {height: 42px;}'); addStyle('.dVgTYt, .exoRCJ, .bgDnMb, .zoivW {font-size: 15px;}');}
     if(getCookie('MT_CompressedTx',true) == 1) {addStyle('.oRgik, .bVcoEc, .XbVLi, .erRzVO, .dEMbMu {font-size: 14px;}');addStyle('.XbVLi {padding-top: 1px; padding-bottom: 1px;}');}
@@ -1320,7 +1320,7 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
                 let yy = useDate.substring(0,4);
                 let mm = useDate.substring(5,7);
                 if(useType == 'expense') { useAmount = useAmount * -1;}
-                TrendQueue2.push({"YEAR": yy, "MONTH": mm,"AMOUNT": useAmount, "DESC": retGroups.NAME});
+                TrendQueue2.push({"YEAR": yy, "MONTH": mm,"AMOUNT": useAmount, "DESC": retGroups.NAME, "ID": retGroups.ID});
             } else if (inCol == 'oy') {
                 let useDate = snapshotData.aggregates[i].groupBy.year;
                 let ndx = Number(useDate.substring(0,4));
@@ -1506,6 +1506,7 @@ function MenuTrendsHistoryDraw() {
         for (let i = 0; i < TrendQueue2.length; i++) {
             if(TrendQueue2[i].MONTH == ms ) {
                 let result = MTHistoryFind(TrendQueue2[i].DESC);
+                detailQue[result].ID = TrendQueue2[i].ID;
                 if(TrendQueue2[i].YEAR == startYear) { detailQue[result].YR1 = TrendQueue2[i].AMOUNT;}
                 if(TrendQueue2[i].YEAR == startYear+1) { detailQue[result].YR2 = TrendQueue2[i].AMOUNT;}
                 if(TrendQueue2[i].YEAR == startYear+2) { detailQue[result].YR3 = TrendQueue2[i].AMOUNT;}
@@ -1513,10 +1514,12 @@ function MenuTrendsHistoryDraw() {
         }
 
         detailQue.sort((a, b) => b.YR3 - a.YR3 || b.YR2 - a.YR2);
+        let useURL = '#|';
+        if(topDiv.getAttribute("cattype") == 'expense') {useURL = useURL + 'spending|'} else {useURL = useURL + 'income|';}
 
         for (let i = 0; i < detailQue.length; i++) {
             let div2 = cec('div','TrendHistoryDetail MTSideDrawerItem',inDiv,'','','style',os4);
-            let div3 = cec('span','MTSideDrawerDetail2',div2,' ' + detailQue[i].DESC,'','style',os3);
+            let div3 = cec('a','MTSideDrawerDetail2',div2,' ' + detailQue[i].DESC,useURL + detailQue[i].ID+'|','style',os3);
             if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR1),'','','');}
             div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR2),'','','');
             div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR3),'','','');
@@ -1531,11 +1534,10 @@ function MenuTrendsHistoryDraw() {
     }
 
     function MTHistoryFind(inDesc) {
-
          for (let i = 0; i < detailQue.length; i++) {
              if(detailQue[i].DESC == inDesc) {return(i);}
          }
-        detailQue.push({"DESC": inDesc,"YR1": 0,"YR2": 0,"YR3": 0});
+        detailQue.push({"DESC": inDesc,"YR1": 0,"YR2": 0,"YR3": 0, "ID": ''});
         return detailQue.length-1;
     }
 }
@@ -1757,16 +1759,14 @@ function MenuTransactions(OnFocus) {
 function MenuLogin(OnFocus) {
 
     if (SaveLocationPathName.startsWith('/login')) {
-        if(OnFocus == false) { r_Init = false; }
+        if(OnFocus == false) { MM_MenuFix(); }
     }
 }
 
 function MenuDisplay(OnFocus) {
 
     if (SaveLocationPathName.startsWith('/settings/display')) {
-        if(OnFocus == false) {
-            if(r_Init == false) { window.location.replace(window.location.pathname);}
-        }
+        if(OnFocus == false) { }
         if(OnFocus == true) {
             MenuDisplay_Input('Monarch Money Tweaks - ' + version,'','header');
             MenuDisplay_Input('Lowest Calendar/Data year','','spacer');
@@ -1850,9 +1850,7 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
             e1.appendChild(e2);
             e2.addEventListener('change', () => {
                 flipCookie(inCookie,1);
-                r_Init = false;
-                MM_Init();
-                r_Init = false;
+                MM_MenuFix();
             });
             e3 = document.createTextNode('  ' + inValue);
             e2.parentNode.insertBefore(e3, e2.nextSibling);
@@ -1868,7 +1866,6 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
             e1.appendChild(e2);
             e2.addEventListener('change', () => {
                 setCookie(inCookie,e2.value);
-                r_Init = false;
             });
         }
     }
@@ -1896,6 +1893,7 @@ window.onclick = function(event) {
     if(typeof cn === 'string') {
         switch (cn) {
             case 'MTFlexGridDCell':
+            case 'MTSideDrawerDetail2':
                 if(event.target.hash != '') {
                     if(event.target.hash.startsWith('#') == true) {
                         event.stopImmediatePropagation();
@@ -2278,8 +2276,8 @@ function addStyle(aCss) {
 }
 
 (function() {
+    MM_Init();
     setInterval(() => {
-        if(SaveLocationHRefName != window.location.href) {MM_MenuFix();}
         if(window.location.pathname != SaveLocationPathName) {
 
             if(SaveLocationPathName) {
@@ -2288,8 +2286,6 @@ function addStyle(aCss) {
                 MenuDisplay(false);
                 MenuTransactions(false);
             }
-
-            if(r_Init == false) {MM_Init();r_Init = true;}
 
             SaveLocationPathName = window.location.pathname;
             SaveLocationHRefName = window.location.href;
