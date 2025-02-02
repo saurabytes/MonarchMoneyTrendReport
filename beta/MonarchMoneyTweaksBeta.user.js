@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.20.04
+// @version      2.20.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.20.04';
+const version = '2.20.05';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -1559,26 +1559,8 @@ function MenuTrendsHistoryExport() {
 async function MenuPlanRefresh() {
 
     if(getCookie('MT_PlanLTB',true) == 0) return;
-    removeAllSections('div.MTBudget');
 
-    let bCK = 0,bCC = 0,bSV=0,LeftToSpend=0, noBudget=false, LTSLit = 'Left to Spend';
-    let budgetI = [],budgetE = [],div=null;
-    let snapshotData = await getAccountsData();
-    let snapshotData4 = await GetTransactions(formatQueryDate(getDates('d_StartofLastMonth')),formatQueryDate(getDates('d_Today')),0,true);
-
-    for (let i = 0; i < snapshotData.accounts.length; i += 1) {
-        if(snapshotData.accounts[i].hideTransactionsFromReports == false) {
-            if(snapshotData.accounts[i].isAsset == true && snapshotData.accounts[i].subtype.name == 'checking') {
-                bCK+=Number(snapshotData.accounts[i].displayBalance);
-            } else if (snapshotData.accounts[i].isAsset == true && snapshotData.accounts[i].subtype.name == 'savings') {
-                bSV+=Number(snapshotData.accounts[i].displayBalance);
-            } else if (snapshotData.accounts[i].isAsset == false && snapshotData.accounts[i].subtype.name == 'credit_card') {
-                bCC+=Number(snapshotData.accounts[i].displayBalance);
-            }
-        }
-    }
-
-    const [bPD,bPDtx] = getPendingBalance();
+    let budgetI = [],budgetE = [],div=null,noBudget=false;
     const elements = document.querySelectorAll('[class*="PlanSummaryWidgetRow"]');
     for (const li of elements) {
         const ca = li.innerText.split('\n');
@@ -1597,6 +1579,23 @@ async function MenuPlanRefresh() {
     }
     if(div == null) {MTFlexReady = 3;return;}
 
+    removeAllSections('div.MTBudget');
+    let bCK = 0,bCC = 0,bSV=0,LeftToSpend=0, LTSLit = 'Left to Spend';
+    let snapshotData = await getAccountsData();
+    let snapshotData4 = await GetTransactions(formatQueryDate(getDates('d_StartofLastMonth')),formatQueryDate(getDates('d_Today')),0,true);
+
+    for (let i = 0; i < snapshotData.accounts.length; i += 1) {
+        if(snapshotData.accounts[i].hideTransactionsFromReports == false) {
+            if(snapshotData.accounts[i].isAsset == true && snapshotData.accounts[i].subtype.name == 'checking') {
+                bCK+=Number(snapshotData.accounts[i].displayBalance);
+            } else if (snapshotData.accounts[i].isAsset == true && snapshotData.accounts[i].subtype.name == 'savings') {
+                bSV+=Number(snapshotData.accounts[i].displayBalance);
+            } else if (snapshotData.accounts[i].isAsset == false && snapshotData.accounts[i].subtype.name == 'credit_card') {
+                bCC+=Number(snapshotData.accounts[i].displayBalance);
+            }
+        }
+    }
+    const [bPD,bPDtx] = getPendingBalance();
     LeftToSpend = (bCK-bCC-bPD);
     if(budgetE[0] > 0) {LeftToSpend = LeftToSpend - budgetE[0];} else {LTSLit=LTSLit + ' (Over Budget!)';}
     if(budgetI[0] > 0) {if(getCookie('MT_PlanLTBII',true) == 0) {LeftToSpend = LeftToSpend + budgetI[0];}}
@@ -1836,7 +1835,7 @@ function MM_SplitTransaction() {
 
 function MenuPlan(OnFocus) {
 
-    if (SaveLocationPathName.startsWith('/plan')) {
+    if (SaveLocationPathName.startsWith('/plan') || SaveLocationPathName.startsWith('/dashboard')) {
         if(OnFocus == true) {MTFlexReady = 3; }
     }
 }
