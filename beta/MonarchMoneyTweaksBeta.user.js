@@ -1593,6 +1593,10 @@ async function MenuPlanRefresh() {
 
     let Remaining = budgetE[0];
     if(getCookie('MT_PlanLTBII',true) == 0) {Remaining = budgetI[0] - Remaining;}
+    let LeftToSpend = (bCK-bCC-bPD) - Remaining;
+    let LeftToSpendStyle = css_green;
+    if(LeftToSpend < 0) {LeftToSpendStyle = css_red;}
+
     let div2 = cec('div','',div,'','','style','margin-top:20px');
     cec('span','MTBudget1',div2,'Total in Checking','','','');
     cec('span','MTBudget2',div2,getDollarValue(bCK,true),'','','');
@@ -1607,7 +1611,7 @@ async function MenuPlanRefresh() {
     cec('span','MTBudget2',div2,getDollarValue(bCK-bCC-bPD,true),'','','');
     div2 = cec('div','',div,'','','style','margin-top:10px');
     cec('span','MTBudget1',div2,'Left to Spend','','style','font-weight: 500;');
-    cec('span','MTBudget2',div2,getDollarValue((bCK-bCC-bPD) - Remaining,true),'','','');
+    cec('span','MTBudget2',div2,getDollarValue(LeftToSpend,true),'','style',LeftToSpendStyle);
     if(bSV > 0) {
         div2 = cec('div','',div,'','','','');
         cec('span','MTBudget1',div2,'Total in Savings','','','');
