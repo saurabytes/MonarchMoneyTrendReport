@@ -1601,7 +1601,7 @@ async function MenuPlanRefresh() {
     cec('span','MTBudget1',div2,'Total in Checking','','','');
     cec('span','MTBudget2',div2,getDollarValue(bCK,true),'','','');
     div2 = cec('div','',div,'','','','');
-    cec('span','MTBudget1',div2,'Total Credit Card','','','');
+    cec('span','MTBudget1',div2,'Total in Credit Cards','','','');
     cec('span','MTBudget2',div2,getDollarValue(bCC,true),'','','');
     div2 = cec('div','',div,'','','','');
     cec('span','MTBudget1',div2,'Total Pending (' + bPDtx + ')','','','');
