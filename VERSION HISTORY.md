@@ -3,6 +3,10 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 2.20:**
+
+• NEW:  Added "Left to Spend" to Budget Summary (Checking minus Credit Card Liabilities minus Remaining) **Work in progress**
+
 **Version 2.19:**
 
 • NEW:  Reports / Trends Monthly Summary can now link expanded items to Income & Spending charts. 
