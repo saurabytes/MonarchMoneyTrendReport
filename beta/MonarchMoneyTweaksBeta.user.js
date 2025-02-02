@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.20.05
+// @version      2.20
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.20.05';
+const version = '2.20';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -1892,7 +1892,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Always hide decimals','MT_AccountsNoDecimals','checkbox');
             MenuDisplay_Input('Budget','','spacer');
             MenuDisplay_Input('Budget panel has smaller font & compressed grid','MT_PlanCompressed','checkbox');
-            MenuDisplay_Input('Show "Left to Spend" in Budget Summary','MT_PlanLTB','checkbox');
+            MenuDisplay_Input('Show Checking & Credit Card balances with "Left to Spend" in Budget Summary','MT_PlanLTB','checkbox');
             MenuDisplay_Input('Ignore remaining Income in "Left to Spend"','MT_PlanLTBII','checkbox');
         }
     }
