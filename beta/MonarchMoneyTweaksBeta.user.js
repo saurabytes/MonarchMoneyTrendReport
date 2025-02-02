@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.20.02
+// @version      2.20.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.20.02';
+const version = '2.20.03';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -1591,9 +1591,9 @@ async function MenuPlanRefresh() {
     }
     if(div == null) {MTFlexReady = 3;return;}
 
-    let Remaining = budgetE[0];
-    if(getCookie('MT_PlanLTBII',true) == 0) {Remaining = budgetI[0] - Remaining;}
-    let LeftToSpend = (bCK-bCC-bPD) - Remaining;
+    let LeftToSpend = (bCK-bCC-bPD) - budgetE[0];
+    if(getCookie('MT_PlanLTBII',true) == 0) {LeftToSpend = LeftToSpend + budgetI[0];}
+
     let LeftToSpendStyle = css_green;
     if(LeftToSpend < 0) {LeftToSpendStyle = css_red;}
 
