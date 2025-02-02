@@ -1608,10 +1608,10 @@ async function MenuPlanRefresh() {
     cec('span','MTBudget2',div2,getDollarValue(bPD,true),'','','');
     div2 = cec('div','',div,'','','','');
     cec('span','MTBudget1',div2,'Total Available','','style','font-weight: 500;');
-    cec('span','MTBudget2',div2,getDollarValue(bCK-bCC-bPD,true),'','','');
+    cec('span','MTBudget2',div2,getDollarValue(bCK-bCC-bPD,true),'','style','font-weight: 500;');
     div2 = cec('div','',div,'','','style','margin-top:10px');
     cec('span','MTBudget1',div2,'Left to Spend','','style','font-weight: 500;');
-    cec('span','MTBudget2',div2,getDollarValue(LeftToSpend,true),'','style',LeftToSpendStyle);
+    cec('span','MTBudget2',div2,getDollarValue(LeftToSpend,true),'','style','font-weight: 500; ' + LeftToSpendStyle);
     if(bSV > 0) {
         div2 = cec('div','',div,'','','','');
         cec('span','MTBudget1',div2,'Total in Savings','','','');
@@ -1970,7 +1970,7 @@ window.onclick = function(event) {
 
     const cn = event.target.className;
     const pcn = event.target.parentNode.className;
-    console.log(cn,event.target,pcn,event.target.parentNode);
+    //console.log(cn,event.target,pcn,event.target.parentNode);
     if(typeof cn === 'string') {
         switch (cn) {
             case 'MTFlexGridDCell':
@@ -2022,6 +2022,10 @@ window.onclick = function(event) {
         }
         if(cn.startsWith('Tab__Root-ilk1fo-0')) {
             if(event.target.innerText == 'Summary') { MTFlexReady = 3;}
+            return;
+        }
+        if(cn.startsWith('PlanHeader__Tab')) {
+            if(event.target.innerText == 'Budget') { MTFlexReady = 3;}
             return;
         }
         if(cn == 'MTBub1') {
