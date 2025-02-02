@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.20:**
+**Version 2.20 (beta):**
 
 • NEW:  Added "Left to Spend" to Budget Summary (Checking minus Credit Card Liabilities minus Remaining) **Work in progress**
 
