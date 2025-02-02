@@ -32,6 +32,8 @@ I found there were opportunities to enhance the Monarch Money web application wi
   
 * Compressed & smaller font for **Budget** grid to show more items
   
+* Show "Left for Spending" (Checking minus Credit Cards minis Pending) in Budget Summary & Budget Summary Dashboard. 
+  
 * Turn ON/OFF (hide) menu items
 
 * Hide Report Tooltip "Difference Amount" in graphs
