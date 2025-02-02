@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.20.01
+// @version      2.20.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.20.01';
+const version = '2.20.02';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -265,14 +265,11 @@ function MT_GridDrawDetails() {
                 useValue = useRow[j + MTFields];
                 switch(MTFlexTitle[j].Format) {
                     case -1:
-                        useValue2 = getMonthName(useValue,2);
-                        break;
+                        useValue2 = getMonthName(useValue,2);break;
                     case 1:
-                        useValue2 = getDollarValue(useValue,false);
-                        break;
+                        useValue2 = getDollarValue(useValue,false);break;
                     case 2:
-                        useValue2 = getDollarValue(useValue,true);
-                        break;
+                        useValue2 = getDollarValue(useValue,true);break;
                     default:
                         useValue2 = useValue;
                 }
@@ -439,10 +436,7 @@ function MT_GridPercent(inA, inB, inHighlight, inPercent, inIgnoreShade) {
         if (p[1]) p[1] += 'border-radius: 6px;';
     }
 
-    p[0] = (p[0] > 1000) ? '(>1,000%)' :
-            (p[0] < -1000) ? '(<1,000%)' :
-            ` (${p[0].toFixed(1)}%)`;
-
+    p[0] = (p[0] > 1000) ? '(>1,000%)' : (p[0] < -1000) ? '(<1,000%)' : ` (${p[0].toFixed(1)}%)`;
     return p;
 }
 
@@ -723,9 +717,7 @@ async function MenuReportsAccountsGoExt(){
     MTFlex.Title2 = 'Last ' + NumMonths + ' Months as of ' + getDates('s_FullDate');
     MTFlex.Title3 = '(Based on beginning of each month)';
 
-    if(MTFlex.Button2 == 9) {
-        NumMonths = CurMonth;MTFlex.Title2 = 'This year as of ' + getDates('s_FullDate');
-    }
+    if(MTFlex.Button2 == 9) { NumMonths = CurMonth;MTFlex.Title2 = 'This year as of ' + getDates('s_FullDate'); }
     if (MTFlex.Button2 == 10) {
         useDate = getDates('d_ThisQTRs');
         CurMonth = useDate.getMonth();CurYear = useDate.getFullYear() - 3;
@@ -901,9 +893,7 @@ async function MenuReportsAccountsGoStd(){
                     } else {
                         MTFlexRow[MTFlexCR][MTFields+3] = useBalance - MTFlexRow[MTFlexCR][MTFields+4] - MTFlexRow[MTFlexCR][MTFields+5] + MTFlexRow[MTFlexCR][MTFields+6];
                     }
-                } else {
-                    MTFlexRow[MTFlexCR][MTFields+3] = pastBalance;
-                }
+                } else { MTFlexRow[MTFlexCR][MTFields+3] = pastBalance; }
                 if(isToday) {updateAccountBalance(snapshotData.accounts[i].id,MTFlexRow[MTFlexCR][MTFields+3]);}
                 MTFlexRow[MTFlexCR][MTFields+3] = parseFloat(MTFlexRow[MTFlexCR][MTFields+3].toFixed(2));
                 MTFlexRow[MTFlexCR][MTFields+8] = useBalance - MTFlexRow[MTFlexCR][MTFields+3];
@@ -1570,10 +1560,10 @@ async function MenuPlanRefresh() {
     if(getCookie('MT_PlanLTB',true) == 0) return;
 
     let bCK = 0,bCC = 0,bSV=0;
-    let snapshotData = null;
-    let budgetI = [],budgetE = [],div=null,cn=null;
+    let budgetI = [],budgetE = [],div=null;
 
-    snapshotData = await getAccountsData();
+    let snapshotData = await getAccountsData();
+    let snapshotData4 = await GetTransactions(formatQueryDate(getDates('d_StartofLastMonth')),formatQueryDate(getDates('d_Today')),0,true);
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
         if(snapshotData.accounts[i].isAsset == true && snapshotData.accounts[i].subtype.name == 'checking') {
             bCK+=Number(snapshotData.accounts[i].displayBalance);
@@ -1583,19 +1573,19 @@ async function MenuPlanRefresh() {
             bCC+=Number(snapshotData.accounts[i].displayBalance);
         }
     }
+    const [bPD,bPDtx] = getPendingBalance();
     const elements = document.querySelectorAll('[class*="PlanSummaryWidgetRow"]');
     for (const li of elements) {
-        let ca = li.innerText.split('\n');
-        if(ca) {
+        const ca = li.innerText.split('\n');
+        if(ca.length > 0) {
             if(ca[0] == 'Income') {
-                budgetI[0]= getCleanValue(ca[3]);
+                budgetI[0] = getCleanValue(ca[3]);
                 budgetI[1] = ca[4];
             }
             if(ca[0] == 'Expenses') {
-                budgetE[0]= getCleanValue(ca[3]);
+                budgetE[0] = getCleanValue(ca[3]);
                 budgetE[1] = ca[4];
                 div = li;
-                cn = li.className;
             }
         }
     }
@@ -1603,24 +1593,36 @@ async function MenuPlanRefresh() {
 
     let Remaining = budgetE[0];
     if(getCookie('MT_PlanLTBII',true) == 0) {Remaining = budgetI[0] - Remaining;}
-
     let div2 = cec('div','',div,'','','style','margin-top:20px');
-    cec('span','MTBudget1',div2,'Total Checking','','','');
+    cec('span','MTBudget1',div2,'Total in Checking','','','');
     cec('span','MTBudget2',div2,getDollarValue(bCK,true),'','','');
     div2 = cec('div','',div,'','','','');
     cec('span','MTBudget1',div2,'Total Credit Card','','','');
     cec('span','MTBudget2',div2,getDollarValue(bCC,true),'','','');
     div2 = cec('div','',div,'','','','');
+    cec('span','MTBudget1',div2,'Total Pending (' + bPDtx + ')','','','');
+    cec('span','MTBudget2',div2,getDollarValue(bPD,true),'','','');
+    div2 = cec('div','',div,'','','','');
     cec('span','MTBudget1',div2,'Total Available','','style','font-weight: 500;');
-    cec('span','MTBudget2',div2,getDollarValue(bCK-bCC,true),'','','');
+    cec('span','MTBudget2',div2,getDollarValue(bCK-bCC-bPD,true),'','','');
     div2 = cec('div','',div,'','','style','margin-top:10px');
     cec('span','MTBudget1',div2,'Left to Spend','','style','font-weight: 500;');
-    cec('span','MTBudget2',div2,getDollarValue((bCK-bCC) - Remaining,true),'','','');
-
+    cec('span','MTBudget2',div2,getDollarValue((bCK-bCC-bPD) - Remaining,true),'','','');
     if(bSV > 0) {
         div2 = cec('div','',div,'','','','');
-        cec('span','MTBudget1',div2,'(Savings)','','','');
+        cec('span','MTBudget1',div2,'Total in Savings','','','');
         cec('span','MTBudget2',div2,getDollarValue(bSV,true),'','','');
+    }
+
+    function getPendingBalance() {
+        let amt = 0,cnt = 0;
+        for (let j = 0; j < snapshotData4.allTransactions.results.length; j += 1) {
+            if(snapshotData4.allTransactions.results[j].amount != 1) {
+                amt = amt + snapshotData4.allTransactions.results[j].amount;
+                cnt+=1;
+            }
+        }
+        amt = amt * -1;return [amt,cnt];
     }
 }
 
