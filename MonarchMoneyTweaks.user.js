@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.21
+// @version      2.22
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
@@ -1566,16 +1566,15 @@ async function MenuPlanRefresh() {
         const ca = li.innerText.split('\n');
         if(ca.length > 0) {
             if(ca[0] == 'Income') {
-                budgetI[0] = getCleanValue(ca[3]);
-                budgetI[1] = ca[4];
+                if(ca[3].length > 1) {budgetI[0] = getCleanValue(ca[3]);budgetI[1] = ca[4];} else {budgetI[0] = getCleanValue(ca[4]);budgetI[1] = ca[5];}
             }
             if(ca[0] == 'Expenses') {
-                budgetE[0] = getCleanValue(ca[3]);
-                budgetE[1] = ca[4];
+                if(ca[3].length > 1) {budgetE[0] = getCleanValue(ca[3]);budgetE[1] = ca[4];} else {budgetE[0] = getCleanValue(ca[4]);budgetE[1] = ca[5];}
                 div = li;
             }
         }
     }
+
     if(div == null) {MTFlexReady = 3;return;}
 
     removeAllSections('div.MTBudget');
