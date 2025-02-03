@@ -3,11 +3,11 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.20-2.23:** 
+**Version 2.20-2.22:** 
 
 • NEW:  Added "Left to Spend" (Checking - Credit Cards - Pending) to Budget Summary and Budget Dashboard. (Turn on in Display/Settings/Budget)  
-• CHANGE:  Ability to do Ignore Budget Income & Ignore Budget Expenses. (2.22)
-• FIX:  Left to Spend might not show up if you use Rollover budgets. (2.23)
+• CHANGE:  Ability to do Ignore Budget Income & Ignore Budget Expenses. (2.21)
+• FIX:  Left to Spend might not show up if you use Rollover budgets. (2.22)
 
 
 **Version 2.19:**
