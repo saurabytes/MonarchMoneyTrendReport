@@ -1903,15 +1903,18 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
     let qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2')
     if(qs != null) {
         qs = qs.firstChild.lastChild;
+
         let e1 = document.createElement('div');
-        let e2 = qs;
+        let e2=null;
         if(inType == 'spacer') {
             e1.className = 'MTSpacerClass';
             qs.after(e1);
+            qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2');
+            qs = qs.firstChild.lastChild;
             e1 = document.createElement('div');
-            e1.style = 'font-size: 14px; font-weight: 500; margin-left:24px;';
+            e1.style = 'font-size: 14px; font-weight: 500;margin-left:24px;';
             e1.innerText = inValue;
-            e2.after(e1);
+            qs.after(e1);
             return;
         }
 
