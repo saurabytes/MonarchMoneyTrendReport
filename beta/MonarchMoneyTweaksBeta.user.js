@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.22.02
+// @version      2.22
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.22.02';
+const version = '2.22';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -1564,7 +1564,6 @@ async function MenuPlanRefresh() {
     const elements = document.querySelectorAll('[class*="PlanSummaryWidgetRow"]');
     for (const li of elements) {
         const ca = li.innerText.split('\n');
-        console.log(ca);
         if(ca.length > 0) {
             if(ca[0] == 'Income') {
                 if(ca[3].length > 1) {budgetI[0] = getCleanValue(ca[3]);budgetI[1] = ca[4];} else {budgetI[0] = getCleanValue(ca[4]);budgetI[1] = ca[5];}
@@ -1577,8 +1576,6 @@ async function MenuPlanRefresh() {
     }
 
     if(div == null) {MTFlexReady = 3;return;}
-
-    console.log(budgetI,budgetE);
 
     removeAllSections('div.MTBudget');
     let bCK = 0,bCC = 0,bSV=0,LeftToSpend=0, LTSLit = 'Left to Spend';
