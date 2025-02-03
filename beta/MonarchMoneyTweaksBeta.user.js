@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.23.02
+// @version      2.23.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.23.02';
+const version = '2.23.03';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -1893,52 +1893,42 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Show Checking / Credit Card balances / Left to Spend in Budget Summary','MT_PlanLTB','checkbox');
             MenuDisplay_Input('Ignore Budget Income remaining in "Left to Spend"','MT_PlanLTBII','checkbox');
             MenuDisplay_Input('Ignore Budget Expenses remaining in "Left to Spend"','MT_PlanLTBIE','checkbox');
-            MenuDisplay_Input('Always use Budget minus Spent (Ignore Rollover/remaining) for "Left to Spend"','MT_PlanLTBIR','checkbox');
+            MenuDisplay_Input('Ignore Rollover budgets, always use Budget minus Spent for “Left to spend”','MT_PlanLTBIR','checkbox');
         }
     }
 }
 
 function MenuDisplay_Input(inValue,inCookie,inType) {
 
-    let qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2');
+    let qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2')
     if(qs != null) {
         qs = qs.firstChild.lastChild;
-
         let e1 = document.createElement('div');
+        let e2 = qs;
         if(inType == 'spacer') {
             e1.className = 'MTSpacerClass';
             qs.after(e1);
-            qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2');
-            qs = qs.firstChild.lastChild;
             e1 = document.createElement('div');
-            e1.style = 'font-size: 14px; font-weight: 500;margin-left:24px;';
+            e1.style = 'font-size: 14px; font-weight: 500; margin-left:24px;';
             e1.innerText = inValue;
-            qs.after(e1);
+            e2.after(e1);
             return;
         }
 
         if(inType == 'header') {
             e1.innerText = inValue;
-            e1.style = 'font-size: 18px; font-weight: 500;margin-left:24px;';
-        } else {
-            e1.style = 'margin: 11px 25px;';
-        }
+            e1.style = 'font-size: 18px; font-weight: 500; margin-left:24px;';
+        } else { e1.style = 'margin: 11px 25px;';}
         qs.after(e1);
-        let e2 = null,e3 = null;
         const OldValue = getCookie(inCookie,false);
-        const d = new Date(),year = d.getFullYear();
-
         if(inType == 'checkbox') {
             e2 = document.createElement('input');
             e2.type = inType;
             e2.className = 'MTCheckboxClass';
             if(OldValue == 1) {e2.checked = 'checked';}
             e1.appendChild(e2);
-            e2.addEventListener('change', () => {
-                flipCookie(inCookie,1);
-                MM_MenuFix();
-            });
-            e3 = document.createTextNode('  ' + inValue);
+            e2.addEventListener('change', () => { flipCookie(inCookie,1); MM_MenuFix();});
+            const e3 = document.createTextNode('  ' + inValue);
             e2.parentNode.insertBefore(e3, e2.nextSibling);
         }
         if(inType == 'number') {
@@ -1946,13 +1936,11 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
             e2 = document.createElement('input');
             e2.type = inType;
             e2.min = 2000;
-            e2.max = year;
+            e2.max = getDates('n_CurYear');
             e2.value = OldValue;
             e2.style = 'font-size: 16px; padding: 5px 5px;';
             e1.appendChild(e2);
-            e2.addEventListener('change', () => {
-                setCookie(inCookie,e2.value);
-            });
+            e2.addEventListener('change', () => { setCookie(inCookie,e2.value);});
         }
     }
 }
