@@ -8,6 +8,8 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW:  "Left to Spend" direct link for Pending Transactions
 
+• NEW:  Added ability to Ignore Rollover Budget remaining and always use Budget minus Spent.
+
 **Version 2.20-2.22:** 
 
 • NEW:  Added "Left to Spend" (Checking - Credit Cards - Pending) to Budget Summary and Budget Dashboard. (Turn on in Display/Settings/Budget)  
