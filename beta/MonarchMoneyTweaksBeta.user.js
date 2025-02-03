@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.20
+// @version      2.21
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.20';
+const version = '2.21';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -1560,7 +1560,7 @@ async function MenuPlanRefresh() {
 
     if(getCookie('MT_PlanLTB',true) == 0) return;
 
-    let budgetI = [],budgetE = [],div=null,noBudget=false;
+    let budgetI = [],budgetE = [],div=null,noBudget=true;
     const elements = document.querySelectorAll('[class*="PlanSummaryWidgetRow"]');
     for (const li of elements) {
         const ca = li.innerText.split('\n');
@@ -1572,7 +1572,6 @@ async function MenuPlanRefresh() {
             if(ca[0] == 'Expenses') {
                 budgetE[0] = getCleanValue(ca[3]);
                 budgetE[1] = ca[4];
-                if(ca[1] == '$0 budget' || ca[1].startsWith('-')) {noBudget = true;} // not budgeting
                 div = li;
             }
         }
@@ -1597,9 +1596,9 @@ async function MenuPlanRefresh() {
     }
     const [bPD,bPDtx] = getPendingBalance();
     LeftToSpend = (bCK-bCC-bPD);
-    if(budgetE[0] > 0) {LeftToSpend = LeftToSpend - budgetE[0];} else {LTSLit=LTSLit + ' (Over Budget!)';}
-    if(budgetI[0] > 0) {if(getCookie('MT_PlanLTBII',true) == 0) {LeftToSpend = LeftToSpend + budgetI[0];}}
 
+    if(getCookie('MT_PlanLTBII',true) == 0) {noBudget = false; if(budgetI[0] > 0) { LeftToSpend = LeftToSpend + budgetI[0];}}
+    if(getCookie('MT_PlanLTBIE',true) == 0) {noBudget = false; if(budgetE[0] > 0) { LeftToSpend = LeftToSpend - budgetE[0];} else {LTSLit=LTSLit + ' (Over Budget!)';}}
     let LeftToSpendStyle = css_green;
     if(LeftToSpend < 0) {LeftToSpendStyle = css_red;}
 
@@ -1616,8 +1615,8 @@ async function MenuPlanRefresh() {
     div2 = cec('div','',div,'','','','');
     cec('span','MTBudget1',div2,'Total Available','','style','font-weight: 500;');
     cec('span','MTBudget2',div2,getDollarValue(bCK-bCC-bPD,true),'','style','font-weight: 500;');
+    div2 = cec('div','',div,'','','style','margin-top:10px');
     if(noBudget == false) {
-        div2 = cec('div','',div,'','','style','margin-top:10px');
         cec('span','MTBudget1',div2,LTSLit,'','style','font-weight: 500;');
         cec('span','MTBudget2',div2,getDollarValue(LeftToSpend,true),'','style','font-weight: 500; ' + LeftToSpendStyle);
     }
@@ -1893,7 +1892,8 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Budget','','spacer');
             MenuDisplay_Input('Budget panel has smaller font & compressed grid','MT_PlanCompressed','checkbox');
             MenuDisplay_Input('Show Checking & Credit Card balances with "Left to Spend" in Budget Summary','MT_PlanLTB','checkbox');
-            MenuDisplay_Input('Ignore remaining Income in "Left to Spend"','MT_PlanLTBII','checkbox');
+            MenuDisplay_Input('Ignore Budget Income remaining in "Left to Spend"','MT_PlanLTBII','checkbox');
+            MenuDisplay_Input('Ignore Budget Expenses remaining in "Left to Spend"','MT_PlanLTBIE','checkbox');
         }
     }
 }
