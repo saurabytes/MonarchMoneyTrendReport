@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.23.01
+// @version      2.23.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.23.01';
+const version = '2.23.02';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -100,8 +100,7 @@ function MM_Init() {
     addStyle('.MTFlexdown-content {' + panelBackground + standardText + ';display:none; margin-top: 12px; padding: 12px; position: absolute; min-width: 260px; overflow: auto; border-radius: 8px; border: 1px solid ' + borderColor + '; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0; z-index: 1;}');
     addStyle('.MTFlexdown-content a {' + panelBackground + standardText + ';font-size: 16px; text-align: left; border-radius: 8px; font-weight: 200; padding: 10px 10px; display: block;}');
     addStyle('.MTdropdown a:hover {' + selectBackground + selectForground + ' }');
-    addStyle('.MTBudget {margin-top: 20px;');
-    addStyle('.MTBudget1, .MTBudget2 {font-size: 14px;}');
+    addStyle('.MTBudget {margin-top: 20px;font-size: 14px;');
     addStyle('.MTBudget2 {float: right;}');
     addStyle('.show {display: block;}');
     addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster",false),'block;') + '}');
@@ -1560,25 +1559,27 @@ async function MenuPlanRefresh() {
 
     if(getCookie('MT_PlanLTB',true) == 0) return;
 
-    let budgetI = [],budgetE = [],div=null,noBudget=true;
+    let budgetI = [0,0,0,0],budgetE = [0,0,0,0]; // 0=remaining,1=budget,2=spent,3=use
+    let div=null,noBudget=true;
     const elements = document.querySelectorAll('[class*="PlanSummaryWidgetRow"]');
     for (const li of elements) {
         const ca = li.innerText.split('\n');
         if(ca.length > 0) {
             if(ca[0] == 'Income') {
-                if(ca[3].length > 1) {budgetI[0] = getCleanValue(ca[3]);budgetI[1] = ca[4];} else {budgetI[0] = getCleanValue(ca[4]);budgetI[1] = ca[5];}
+                budgetI[1] = getCleanValue(ca[1]);budgetI[2]=getCleanValue(ca[2]);
+                if(ca[3].length > 1) {budgetI[0] = getCleanValue(ca[3]);} else {budgetI[0] = getCleanValue(ca[4]);}
             }
             if(ca[0] == 'Expenses') {
-                if(ca[3].length > 1) {budgetE[0] = getCleanValue(ca[3]);budgetE[1] = ca[4];} else {budgetE[0] = getCleanValue(ca[4]);budgetE[1] = ca[5];}
+                budgetE[1] = getCleanValue(ca[1]);budgetE[2]=getCleanValue(ca[2]);
+                if(ca[3].length > 1) {budgetE[0] = getCleanValue(ca[3]);} else {budgetE[0] = getCleanValue(ca[4]);}
                 div = li;
             }
         }
     }
-
     if(div == null) {MTFlexReady = 3;return;}
 
     removeAllSections('div.MTBudget');
-    let bCK = 0,bCC = 0,bSV=0,LeftToSpend=0, LTSLit = 'Left to Spend';
+    let bCK = 0,bCC = 0,bSV=0,LeftToSpend=0,LTSLit = 'Left to Spend';
     let snapshotData = await getAccountsData();
     let snapshotData4 = await GetTransactions(formatQueryDate(getDates('d_StartofLastMonth')),formatQueryDate(getDates('d_Today')),0,true);
 
@@ -1595,11 +1596,12 @@ async function MenuPlanRefresh() {
     }
     const [bPD,bPDtx] = getPendingBalance();
     LeftToSpend = (bCK-bCC-bPD);
+    if(getCookie('MT_PlanLTBIR',true) == 0) {budgetI[3] = budgetI[0];budgetE[3]=budgetE[0];} else {
+        budgetI[3] = budgetI[1]-budgetI[2];budgetE[3]=budgetE[1]-budgetE[2];}
 
-    if(getCookie('MT_PlanLTBII',true) == 0) {noBudget = false; if(budgetI[0] > 0) { LeftToSpend = LeftToSpend + budgetI[0];}}
-    if(getCookie('MT_PlanLTBIE',true) == 0) {noBudget = false; if(budgetE[0] > 0) { LeftToSpend = LeftToSpend - budgetE[0];} else {LTSLit=LTSLit + ' (Over Budget!)';}}
-    let LeftToSpendStyle = css_green;
-    if(LeftToSpend < 0) {LeftToSpendStyle = css_red;}
+    if(getCookie('MT_PlanLTBII',true) == 0) {noBudget = false; if(budgetI[3] > 0) { LeftToSpend = LeftToSpend + budgetI[3];}}
+    if(getCookie('MT_PlanLTBIE',true) == 0) {noBudget = false; if(budgetE[3] > 0) { LeftToSpend = LeftToSpend - budgetE[3];} else {LTSLit=LTSLit + ' (Over Budget!)';}}
+    let LeftToSpendStyle = css_green;if(LeftToSpend < 0) {LeftToSpendStyle = css_red;}
 
     div = cec('div','MTBudget',div,'','','','');
     let div2 = cec('div','',div,'','','','');
@@ -1629,9 +1631,7 @@ async function MenuPlanRefresh() {
         let amt = 0,cnt = 0;
         for (let j = 0; j < snapshotData4.allTransactions.results.length; j += 1) {
             if(snapshotData4.allTransactions.results[j].amount != 1) {
-                amt = amt + snapshotData4.allTransactions.results[j].amount;
-                cnt+=1;
-            }
+                amt = amt + snapshotData4.allTransactions.results[j].amount;cnt+=1;}
         }
         amt = amt * -1;return [amt,cnt];
     }
@@ -1890,9 +1890,10 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Always hide decimals','MT_AccountsNoDecimals','checkbox');
             MenuDisplay_Input('Budget','','spacer');
             MenuDisplay_Input('Budget panel has smaller font & compressed grid','MT_PlanCompressed','checkbox');
-            MenuDisplay_Input('Show Checking & Credit Card balances with "Left to Spend" in Budget Summary','MT_PlanLTB','checkbox');
+            MenuDisplay_Input('Show Checking / Credit Card balances / Left to Spend in Budget Summary','MT_PlanLTB','checkbox');
             MenuDisplay_Input('Ignore Budget Income remaining in "Left to Spend"','MT_PlanLTBII','checkbox');
             MenuDisplay_Input('Ignore Budget Expenses remaining in "Left to Spend"','MT_PlanLTBIE','checkbox');
+            MenuDisplay_Input('Always use Budget minus Spent (Ignore Rollover/remaining) for "Left to Spend"','MT_PlanLTBIR','checkbox');
         }
     }
 }
@@ -2306,6 +2307,7 @@ function findButton(inValue, inName) {
 function getCleanValue(inValue,inDec) {
 
     if(inValue.startsWith('$') || inValue.startsWith('-')) {
+        inValue = inValue.split(" ")[0];
         inValue = replaceBetweenWith(inValue,'(',')','');
         const AmtStr = inValue.replace(/[$,]+/g,"");
         let Amt = Number(AmtStr);
