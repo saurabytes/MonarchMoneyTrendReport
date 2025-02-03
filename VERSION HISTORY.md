@@ -3,6 +3,11 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+
+**Version 2.23 (beta):** 
+
+• "Left to Spend" work in progress (fixes and enhancements) based on user feedback - stay tuned!
+
 **Version 2.20-2.22:** 
 
 • NEW:  Added "Left to Spend" (Checking - Credit Cards - Pending) to Budget Summary and Budget Dashboard. (Turn on in Display/Settings/Budget)  
