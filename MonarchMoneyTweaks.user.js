@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.22
+// @version      2.23
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.22';
+const version = '2.23';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -48,7 +48,7 @@ function MM_Init() {
     addStyle('.MTWait { width: 40%; margin-left: auto; margin-top: 100px;margin-right: auto;justify-content: center; align-items: center;}');
     addStyle('.MTWait2 {font-size: 18px; font-weight: 500; font: "Oracle", sans-serif; ' + panelBackground + ' padding: 20px;border-radius: 5px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);text-align: center;}');
     addStyle('.MTWait2 p {' + standardText + 'font-family:  MonarchIcons, sans-serif, "Oracle" !important; font-size: 15px; font-weight: 200;}');
-    addStyle('.MTlink {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 4px; border-style: none; padding: 15px 1px 1px 16px; display:inline-block;}');
+    addStyle('.MTlink, .MTBudget a {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer;}');
     addStyle('.MTCheckboxClass, .MTFlexCheckbox {width: 19px; height: 19px; margin-right: 10px;float: inline-start; color: #FFFFFF; accent-color: ' + accentColor + '}');
     addStyle('.MTSpacerClass {margin-top: 4px; margin-bottom: 4px; border-bottom: 1px solid ' + lineForground +';}');
     addStyle('.MTSpacerClassTR {padding: 0px 0px 0px 0px;}');
@@ -100,8 +100,7 @@ function MM_Init() {
     addStyle('.MTFlexdown-content {' + panelBackground + standardText + ';display:none; margin-top: 12px; padding: 12px; position: absolute; min-width: 260px; overflow: auto; border-radius: 8px; border: 1px solid ' + borderColor + '; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px; right: 0; z-index: 1;}');
     addStyle('.MTFlexdown-content a {' + panelBackground + standardText + ';font-size: 16px; text-align: left; border-radius: 8px; font-weight: 200; padding: 10px 10px; display: block;}');
     addStyle('.MTdropdown a:hover {' + selectBackground + selectForground + ' }');
-    addStyle('.MTBudget {margin-top: 20px;');
-    addStyle('.MTBudget1, .MTBudget2 {font-size: 14px;}');
+    addStyle('.MTBudget {margin-top: 20px;font-size: 14px;');
     addStyle('.MTBudget2 {float: right;}');
     addStyle('.show {display: block;}');
     addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster",false),'block;') + '}');
@@ -1560,25 +1559,27 @@ async function MenuPlanRefresh() {
 
     if(getCookie('MT_PlanLTB',true) == 0) return;
 
-    let budgetI = [],budgetE = [],div=null,noBudget=true;
+    let budgetI = [0,0,0,0],budgetE = [0,0,0,0]; // 0=remaining,1=budget,2=spent,3=use
+    let div=null,noBudget=true;
     const elements = document.querySelectorAll('[class*="PlanSummaryWidgetRow"]');
     for (const li of elements) {
         const ca = li.innerText.split('\n');
         if(ca.length > 0) {
             if(ca[0] == 'Income') {
-                if(ca[3].length > 1) {budgetI[0] = getCleanValue(ca[3]);budgetI[1] = ca[4];} else {budgetI[0] = getCleanValue(ca[4]);budgetI[1] = ca[5];}
+                budgetI[1] = getCleanValue(ca[1]);budgetI[2]=getCleanValue(ca[2]);
+                if(ca[3].length > 1) {budgetI[0] = getCleanValue(ca[3]);} else {budgetI[0] = getCleanValue(ca[4]);}
             }
             if(ca[0] == 'Expenses') {
-                if(ca[3].length > 1) {budgetE[0] = getCleanValue(ca[3]);budgetE[1] = ca[4];} else {budgetE[0] = getCleanValue(ca[4]);budgetE[1] = ca[5];}
+                budgetE[1] = getCleanValue(ca[1]);budgetE[2]=getCleanValue(ca[2]);
+                if(ca[3].length > 1) {budgetE[0] = getCleanValue(ca[3]);} else {budgetE[0] = getCleanValue(ca[4]);}
                 div = li;
             }
         }
     }
-
     if(div == null) {MTFlexReady = 3;return;}
 
     removeAllSections('div.MTBudget');
-    let bCK = 0,bCC = 0,bSV=0,LeftToSpend=0, LTSLit = 'Left to Spend';
+    let bCK = 0,bCC = 0,bSV=0,LeftToSpend=0,LTSLit = 'Left to Spend';
     let snapshotData = await getAccountsData();
     let snapshotData4 = await GetTransactions(formatQueryDate(getDates('d_StartofLastMonth')),formatQueryDate(getDates('d_Today')),0,true);
 
@@ -1595,11 +1596,12 @@ async function MenuPlanRefresh() {
     }
     const [bPD,bPDtx] = getPendingBalance();
     LeftToSpend = (bCK-bCC-bPD);
+    if(getCookie('MT_PlanLTBIR',true) == 0) {budgetI[3] = budgetI[0];budgetE[3]=budgetE[0];} else {
+        budgetI[3] = budgetI[1]-budgetI[2];budgetE[3]=budgetE[1]-budgetE[2];}
 
-    if(getCookie('MT_PlanLTBII',true) == 0) {noBudget = false; if(budgetI[0] > 0) { LeftToSpend = LeftToSpend + budgetI[0];}}
-    if(getCookie('MT_PlanLTBIE',true) == 0) {noBudget = false; if(budgetE[0] > 0) { LeftToSpend = LeftToSpend - budgetE[0];} else {LTSLit=LTSLit + ' (Over Budget!)';}}
-    let LeftToSpendStyle = css_green;
-    if(LeftToSpend < 0) {LeftToSpendStyle = css_red;}
+    if(getCookie('MT_PlanLTBII',true) == 0) {noBudget = false; if(budgetI[3] > 0) { LeftToSpend = LeftToSpend + budgetI[3];}}
+    if(getCookie('MT_PlanLTBIE',true) == 0) {noBudget = false; if(budgetE[3] > 0) { LeftToSpend = LeftToSpend - budgetE[3];} else {LTSLit=LTSLit + ' (Over Budget!)';}}
+    let LeftToSpendStyle = css_green;if(LeftToSpend < 0) {LeftToSpendStyle = css_red;}
 
     div = cec('div','MTBudget',div,'','','','');
     let div2 = cec('div','',div,'','','','');
@@ -1609,7 +1611,7 @@ async function MenuPlanRefresh() {
     cec('span','MTBudget1',div2,'Total in Credit Cards','','','');
     cec('span','MTBudget2',div2,getDollarValue(bCC,true),'','','');
     div2 = cec('div','',div,'','','','');
-    cec('span','MTBudget1',div2,'Total Pending (' + bPDtx + ')','','','');
+    cec('a','MTBudget1',div2,'Total Pending (' + bPDtx + ')','/transactions?isPending=true','','');
     cec('span','MTBudget2',div2,getDollarValue(bPD,true),'','','');
     div2 = cec('div','',div,'','','','');
     cec('span','MTBudget1',div2,'Total Available','','style','font-weight: 500;');
@@ -1629,9 +1631,7 @@ async function MenuPlanRefresh() {
         let amt = 0,cnt = 0;
         for (let j = 0; j < snapshotData4.allTransactions.results.length; j += 1) {
             if(snapshotData4.allTransactions.results[j].amount != 1) {
-                amt = amt + snapshotData4.allTransactions.results[j].amount;
-                cnt+=1;
-            }
+                amt = amt + snapshotData4.allTransactions.results[j].amount;cnt+=1;}
         }
         amt = amt * -1;return [amt,cnt];
     }
@@ -1890,20 +1890,22 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Always hide decimals','MT_AccountsNoDecimals','checkbox');
             MenuDisplay_Input('Budget','','spacer');
             MenuDisplay_Input('Budget panel has smaller font & compressed grid','MT_PlanCompressed','checkbox');
-            MenuDisplay_Input('Show Checking & Credit Card balances with "Left to Spend" in Budget Summary','MT_PlanLTB','checkbox');
-            MenuDisplay_Input('Ignore Budget Income remaining in "Left to Spend"','MT_PlanLTBII','checkbox');
-            MenuDisplay_Input('Ignore Budget Expenses remaining in "Left to Spend"','MT_PlanLTBIE','checkbox');
+            MenuDisplay_Input('Show Checking / Credit Card balances / Left to Spend in Budget Summary','MT_PlanLTB','checkbox');
+            MenuDisplay_Input('Ignore Budget Income remaining in "Left to Spend"','MT_PlanLTBII','checkbox','margin-left: 22px;');
+            MenuDisplay_Input('Ignore Budget Expenses remaining in "Left to Spend"','MT_PlanLTBIE','checkbox','margin-left: 22px;');
+            MenuDisplay_Input('Ignore Rollover budgets, always use actual Budget minus actual Spent for “Left to Spend”','MT_PlanLTBIR','checkbox','margin-left: 22px;');
         }
     }
 }
 
-function MenuDisplay_Input(inValue,inCookie,inType) {
+function MenuDisplay_Input(inValue,inCookie,inType,inStyle) {
 
-    let qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2');
+    let qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2')
     if(qs != null) {
         qs = qs.firstChild.lastChild;
 
         let e1 = document.createElement('div');
+        let e2=null;
         if(inType == 'spacer') {
             e1.className = 'MTSpacerClass';
             qs.after(e1);
@@ -1918,26 +1920,19 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
 
         if(inType == 'header') {
             e1.innerText = inValue;
-            e1.style = 'font-size: 18px; font-weight: 500;margin-left:24px;';
-        } else {
-            e1.style = 'margin: 11px 25px;';
-        }
+            e1.style = 'font-size: 18px; font-weight: 500; margin-left:24px;';
+        } else { e1.style = 'margin: 11px 25px;';}
         qs.after(e1);
-        let e2 = null,e3 = null;
         const OldValue = getCookie(inCookie,false);
-        const d = new Date(),year = d.getFullYear();
-
         if(inType == 'checkbox') {
             e2 = document.createElement('input');
             e2.type = inType;
+            if(inStyle) {e2.style=inStyle;}
             e2.className = 'MTCheckboxClass';
             if(OldValue == 1) {e2.checked = 'checked';}
             e1.appendChild(e2);
-            e2.addEventListener('change', () => {
-                flipCookie(inCookie,1);
-                MM_MenuFix();
-            });
-            e3 = document.createTextNode('  ' + inValue);
+            e2.addEventListener('change', () => { flipCookie(inCookie,1); MM_MenuFix();});
+            const e3 = document.createTextNode('  ' + inValue);
             e2.parentNode.insertBefore(e3, e2.nextSibling);
         }
         if(inType == 'number') {
@@ -1945,13 +1940,11 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
             e2 = document.createElement('input');
             e2.type = inType;
             e2.min = 2000;
-            e2.max = year;
+            e2.max = getDates('n_CurYear');
             e2.value = OldValue;
             e2.style = 'font-size: 16px; padding: 5px 5px;';
             e1.appendChild(e2);
-            e2.addEventListener('change', () => {
-                setCookie(inCookie,e2.value);
-            });
+            e2.addEventListener('change', () => { setCookie(inCookie,e2.value);});
         }
     }
 }
@@ -2306,6 +2299,7 @@ function findButton(inValue, inName) {
 function getCleanValue(inValue,inDec) {
 
     if(inValue.startsWith('$') || inValue.startsWith('-')) {
+        inValue = inValue.split(" ")[0];
         inValue = replaceBetweenWith(inValue,'(',')','');
         const AmtStr = inValue.replace(/[$,]+/g,"");
         let Amt = Number(AmtStr);
