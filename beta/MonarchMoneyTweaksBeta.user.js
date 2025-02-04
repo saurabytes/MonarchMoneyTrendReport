@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.23.03
+// @version      2.23
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.23.03';
+const version = '2.23';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -1891,14 +1891,14 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Budget','','spacer');
             MenuDisplay_Input('Budget panel has smaller font & compressed grid','MT_PlanCompressed','checkbox');
             MenuDisplay_Input('Show Checking / Credit Card balances / Left to Spend in Budget Summary','MT_PlanLTB','checkbox');
-            MenuDisplay_Input('Ignore Budget Income remaining in "Left to Spend"','MT_PlanLTBII','checkbox');
-            MenuDisplay_Input('Ignore Budget Expenses remaining in "Left to Spend"','MT_PlanLTBIE','checkbox');
-            MenuDisplay_Input('Ignore Rollover budgets, always use Budget minus Spent for “Left to spend”','MT_PlanLTBIR','checkbox');
+            MenuDisplay_Input('Ignore Budget Income remaining in "Left to Spend"','MT_PlanLTBII','checkbox','margin-left: 22px;');
+            MenuDisplay_Input('Ignore Budget Expenses remaining in "Left to Spend"','MT_PlanLTBIE','checkbox','margin-left: 22px;');
+            MenuDisplay_Input('Ignore Rollover budgets, always use actual Budget minus actual Spent for “Left to Spend”','MT_PlanLTBIR','checkbox','margin-left: 22px;');
         }
     }
 }
 
-function MenuDisplay_Input(inValue,inCookie,inType) {
+function MenuDisplay_Input(inValue,inCookie,inType,inStyle) {
 
     let qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2')
     if(qs != null) {
@@ -1927,6 +1927,7 @@ function MenuDisplay_Input(inValue,inCookie,inType) {
         if(inType == 'checkbox') {
             e2 = document.createElement('input');
             e2.type = inType;
+            if(inStyle) {e2.style=inStyle;}
             e2.className = 'MTCheckboxClass';
             if(OldValue == 1) {e2.checked = 'checked';}
             e1.appendChild(e2);
