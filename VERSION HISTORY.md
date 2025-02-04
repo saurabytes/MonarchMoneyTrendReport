@@ -4,7 +4,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 Email any issues directly:  robert @ paresi.net
 
 
-**Version 2.23 (beta - "Left to Spend" work in Progress/Fixes based on User Feedback):** 
+**Version 2.23:** 
 
 • NEW:  "Left to Spend" direct link for Pending Transactions
 
