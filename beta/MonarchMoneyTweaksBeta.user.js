@@ -1920,7 +1920,7 @@ function MenuDisplay_Input(inValue,inCookie,inType,inStyle) {
 
         if(inType == 'header') {
             e1.innerText = inValue;
-            e1.style = 'font-size: 18px; font-weight: 500; margin-left:24px;';
+            e1.style = 'font-size: 18px; font-weight: 500; margin-left:24px;padding-bottom:20px;';
         } else { e1.style = 'margin: 11px 25px;';}
         qs.after(e1);
         const OldValue = getCookie(inCookie,false);
