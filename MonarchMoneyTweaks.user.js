@@ -742,6 +742,10 @@ async function MenuReportsAccountsGoExt(){
 
     snapshotData = await getAccountsData();
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
+        if (snapshotData.accounts[i].displayName.startsWith('Hide')) {
+            console.log("Skip", snapshotData.accounts[i].displayName);
+            continue;
+        }
         MTP = [];
         MTP.isHeader = false;
         MTP.UID = snapshotData.accounts[i].id;
@@ -766,7 +770,10 @@ async function MenuReportsAccountsGoExt(){
         let used = false;
         snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
         for (let j = 0; j < snapshotData3.accounts.length; j += 1) {
-            MT_GridUpdateUID(snapshotData3.accounts[j].id,i+2,snapshotData3.accounts[j].displayBalance);
+            if (snapshotData3.accounts[j].displayName == null || snapshotData3.accounts[j].displayName.startsWith('Hide')) {
+                continue;
+            }
+            MT_GridUpdateUID(snapshotData3.accounts[j].id, i+2,snapshotData3.accounts[j].displayBalance);
             if(snapshotData3.accounts[j].displayBalance != null) {used = true;};
         }
         if(MTFlex.Button2 == 10) {
@@ -832,7 +839,10 @@ async function MenuReportsAccountsGoStd(){
 
     for (let i = 0; i < 5; i += 1) { if(getCookie('MT_AccountsCard' + i.toString(),true) == 1) {cards+=1;}}
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
-
+        if (snapshotData.accounts[i].displayName.startsWith('Hide')) {
+            console.log("Skip", snapshotData.accounts[i].displayName);
+            continue;
+        }
         if(snapshotData.accounts[i].hideFromList == false || skipHidden == 0) {
 
             MTP = [];
@@ -905,7 +915,9 @@ async function MenuReportsAccountsGoStd(){
                 if(snapshotData.accounts[i].subtype.name == 'savings') {acard[1] = acard[1] + MTFlexRow[MTFlexCR][MTFields+7];}
                 if(snapshotData.accounts[i].subtype.name == 'credit_card') {acard[2] = acard[2] + MTFlexRow[MTFlexCR][MTFields+7];}
                 if(snapshotData.accounts[i].type.display == 'Investments') {acard[3] = acard[3] + MTFlexRow[MTFlexCR][MTFields+7];}
-                if(snapshotData.accounts[i].subtype.display == '401k') {acard[4] = acard[4] + MTFlexRow[MTFlexCR][MTFields+7];}
+                if(snapshotData.accounts[i].subtype.display == '401k' || snapshotData.accounts[i].subtype.display == 'Individual Retirement Account (IRA)' || snapshotData.accounts[i].subtype.display == 'Roth IRA') {
+                    acard[4] = acard[4] + MTFlexRow[MTFlexCR][MTFields+7];
+                }
                 if((snapshotData.accounts[i].subtype.name == 'credit_card') && cards < 5) {
                     MTP = [];MTP.Col = cards;
                     MTP.Title = getDollarValue(MTFlexRow[MTFlexCR][MTFields+7],MTFlexTitle[3].Format == 2 ? true : false);
@@ -2441,7 +2453,7 @@ async function GetTransactions(startDate,endDate, offset, isPending) {
 
 async function getDisplayBalanceAtDateData(date) {
     const options = callGraphQL({ operationName: 'Common_GetDisplayBalanceAtDate',variables: {date: date, },
-          query: "query Common_GetDisplayBalanceAtDate($date: Date!) {\n accounts {\n id\n displayBalance(date: $date)\n type {\n name\n}\n }\n }\n"
+          query: "query Common_GetDisplayBalanceAtDate($date: Date!) {\n accounts {\n id\n displayName\n displayBalance(date: $date)\n type {\n name\n}\n }\n }\n"
       });
   return fetch(graphql, options)
     .then((response) => response.json())
