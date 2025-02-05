@@ -730,6 +730,7 @@ async function MenuReportsAccountsGoExt(){
     let NumMonths = (MTFlex.Button2 === 7) ? 6 : 12;
     let useDate = getDates('d_Minus1Year');
     let AccountGroupFilter = getAccountGroupFilter();
+    let skipHidden = getCookie('MT_AccountsHidden',true);
 
     MTFlex.Title2 = 'Last ' + NumMonths + ' Months as of ' + getDates('s_FullDate');
     MTFlex.Title3 = '(Based on beginning of each month)';
@@ -760,10 +761,14 @@ async function MenuReportsAccountsGoExt(){
 
     snapshotData = await getAccountsData();
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
+        if (snapshotData.accounts[i].hideFromList == true && skipHidden) {
+            continue;
+        }
         if(AccountGroupFilter == '' || AccountGroupFilter == localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id)) {
             MTP = [];
             MTP.isHeader = false;
             MTP.UID = snapshotData.accounts[i].id;
+            
             if(snapshotData.accounts[i].isAsset == true) {
                 MTP.BasedOn = 1;MTP.Section = 2;
             } else {
@@ -786,6 +791,9 @@ async function MenuReportsAccountsGoExt(){
         let used = false;
         snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
         for (let j = 0; j < snapshotData3.accounts.length; j += 1) {
+            if (snapshotData3.accounts[i].hideFromList == true && skipHidden) {
+                continue;
+            }
             MT_GridUpdateUID(snapshotData3.accounts[j].id,i+3,snapshotData3.accounts[j].displayBalance,false);
             if(snapshotData3.accounts[j].displayBalance != null) {used = true;}
         }
@@ -927,7 +935,9 @@ async function MenuReportsAccountsGoStd(){
                     if(snapshotData.accounts[i].subtype.name == 'savings') {acard[1] = acard[1] + MTFlexRow[MTFlexCR][MTFields+8];}
                     if(snapshotData.accounts[i].subtype.name == 'credit_card') {acard[2] = acard[2] + MTFlexRow[MTFlexCR][MTFields+8];}
                     if(snapshotData.accounts[i].type.display == 'Investments') {acard[3] = acard[3] + MTFlexRow[MTFlexCR][MTFields+8];}
-                    if(snapshotData.accounts[i].subtype.display == '401k') {acard[4] = acard[4] + MTFlexRow[MTFlexCR][MTFields+8];}
+                    if(snapshotData.accounts[i].subtype.display == '401k' || snapshotData.accounts[i].subtype.display == 'Individual Retirement Account (IRA)' || snapshotData.accounts[i].subtype.display == 'Roth IRA') {
+                        acard[4] = acard[4] + MTFlexRow[MTFlexCR][MTFields+8];
+                    }
                     if((snapshotData.accounts[i].subtype.name == 'credit_card') && cards < 5) {
                         MTP = [];MTP.Col = cards;
                         MTP.Title = getDollarValue(MTFlexRow[MTFlexCR][MTFields+8],MTFlexTitle[3].Format == 2 ? true : false);
