@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.23
+// @version      2.24.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.23';
+const version = '2.24.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -78,7 +78,8 @@ function MM_Init() {
     addStyle('.MTFlexBig {font-size: 18px; ' + standardText + 'font-weight: 500; padding-top: 8px;}');
     addStyle('.MTFlexSmall {font-size: 12px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
     addStyle('.MTFlexLittle {font-size: 10px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
-    addStyle('.MTFlexCellArrow, .MTTrendCellArrow, .MTTrendCellArrow2 {' + panelBackground + standardText + 'width: 24px; height:24px; font-size: 18px; font-family: MonarchIcons, sans-serif; transition: 0.1s ease-out; cursor: pointer; border-radius: 100%; border-style: none;}');
+    addStyle('.MTFlexCellArrow, .MTTrendCellArrow, .MTTrendCellArrow2, .BudgetExpand {' + panelBackground + standardText + 'width: 24px; height:24px; font-size: 18px; font-family: MonarchIcons, sans-serif; transition: 0.1s ease-out; cursor: pointer; border-radius: 100%; border-style: none;}');
+    addStyle('.BudgetExpand {margin-right: 10px;font-size: 16px;}');
     addStyle('.MTFlexCellArrow:hover {border: 1px solid ' + sidepanelBackground + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;}');
     addStyle('.MTIcons {font-family: MonarchIcons; margin-left: 4px; vertical-align:middle;}');
     addStyle('.MTSideDrawerRoot {position: absolute;  inset: 0px;  display: flex;  -moz-box-pack: end;  justify-content: flex-end;}');
@@ -312,7 +313,7 @@ function MT_GridDrawDetails() {
             }
             else if(isSubTotal == false && useRow.SKTriggerEvent) {
                 elx = cec('td','',el,'','','style',ArrowSpacing);
-                elx = cec('button','MTFlexCellArrow',elx,'','','triggers',useRow.SKTriggerEvent + '|');
+                elx = cec('button','MTFlexCellArrow',elx,'','','triggers',useRow.SKTriggerEvent + '/');
                 let elx2 = cec('span','',elx,'','','','');
             } else {
                 elx = cec('td','',el,'','','style',ArrowSpacing );
@@ -1185,13 +1186,13 @@ async function WriteByMonthData() {
                     MTFlexRow[i].PKTriggerEvent = 'category-groups|' + retGroup.GROUP;
                 }
                 MTFlexRow[i].SKHRef = useURL + retGroup.ID + '|';
-                MTFlexRow[i].SKTriggerEvent = 'categories|' + retGroup.ID;
+                MTFlexRow[i].SKTriggerEvent = 'categories/' + retGroup.ID;
                 useDesc = retGroup.NAME;
             } else {
                 useDesc = retGroup.GROUPNAME;
                 MTFlexRow[i].SKHRef = useURL + '|' + retGroup.GROUP + '|';
                 MTFlexRow[i].PKTriggerEvent = '';
-                MTFlexRow[i].SKTriggerEvent = 'category-groups|' + retGroup.GROUP;
+                MTFlexRow[i].SKTriggerEvent = 'category-groups/' + retGroup.GROUP;
             }
             MTFlexRow[i].Icon = retGroup.ICON;
             MTFlexRow[i].SKExpand = '';
@@ -1253,13 +1254,13 @@ async function WriteCompareData() {
                      MTP.PKTriggerEvent = 'category-groups|' + retGroup.GROUP + '|';
                  }
                  MTP.SKHRef = useURL + retGroup.ID + '|';
-                 MTP.SKTriggerEvent = 'categories|' + retGroup.ID + '|';
+                 MTP.SKTriggerEvent = 'categories/' + retGroup.ID + '/';
                  useDesc = retGroup.NAME;
              } else {
                  useDesc = retGroup.GROUPNAME;
                  MTP.SKHRef = useURL + '|' + retGroup.GROUP + '|';
                  MTP.PKTriggerEvent = '';
-                 MTP.SKTriggerEvent = 'category-groups|' + retGroup.GROUP + '|';
+                 MTP.SKTriggerEvent = 'category-groups/' + retGroup.GROUP + '/';
              }
             MTP.Icon = retGroup.ICON;
             MTP.SKExpand = '';
@@ -1555,7 +1556,24 @@ function MenuTrendsHistoryExport() {
     downloadFile('Monarch Trends History ' + getDates('s_FullDate'),csvContent);
 }
 // Budget Plans
+function MenuPlanExpand() {
+
+    buildCategoryGroups();
+    const elements = document.querySelectorAll('div[class^="PlanRowTitle__Root"]');
+    for (const li of elements) {
+        if(li.outerHTML.includes('href')) {
+            const btn = document.createElement("button");
+            btn.className = 'BudgetExpand MTFlexCellArrow';
+            btn.textContent = '';
+            const secondChildNode = li.children[1];
+            li.insertBefore(btn, secondChildNode);
+        }
+    }
+}
+
 async function MenuPlanRefresh() {
+
+    MenuPlanExpand();
 
     if(getCookie('MT_PlanLTB',true) == 0) return;
 
@@ -1785,6 +1803,13 @@ function MM_FixCalendarDropdown(InList) {
     }
 }
 
+function replaceUpto(InValue,InRep) {
+
+    const si = InValue.indexOf('/');
+    if (si !== -1) { return InValue.slice(si + 1);}
+    return InValue;
+}
+
 function replaceBetweenWith(InValue,InStart,InEnd,InReplaceWith) {
 
     let result = InValue;
@@ -1920,7 +1945,7 @@ function MenuDisplay_Input(inValue,inCookie,inType,inStyle) {
 
         if(inType == 'header') {
             e1.innerText = inValue;
-            e1.style = 'font-size: 18px; font-weight: 500; margin-left:24px;padding-bottom:20px;';
+            e1.style = 'font-size: 18px; font-weight: 500; margin-left:24px;padding-bottom:12px;';
         } else { e1.style = 'margin: 11px 25px;';}
         qs.after(e1);
         const OldValue = getCookie(inCookie,false);
@@ -2015,6 +2040,12 @@ window.onclick = function(event) {
                 return;
             case 'MTFlexButtonExport':
                 MT_GridExport();
+                break;
+            case 'MTBub1':
+                if(event.target.textContent.startsWith('SUM') == true) {navigator.clipboard.writeText(MTFlexSum[1]);}
+                if(event.target.textContent.startsWith('AVG') == true) {navigator.clipboard.writeText(getCleanValue('$' + MTFlexSum[1]/MTFlexSum[0],2));}
+                if(event.target.textContent.startsWith('CNT') == true) {navigator.clipboard.writeText(MTFlexSum[0]);}
+                return;
         }
         if(cn.includes('AbstractButton')) {
             if(event.target.innerText.startsWith('\uf10b')) {
@@ -2029,10 +2060,13 @@ window.onclick = function(event) {
             if(event.target.innerText == 'Budget') { MTFlexReady = 3;}
             return;
         }
-        if(cn == 'MTBub1') {
-            if(event.target.textContent.startsWith('SUM') == true) {navigator.clipboard.writeText(MTFlexSum[1]);}
-            if(event.target.textContent.startsWith('AVG') == true) {navigator.clipboard.writeText(getCleanValue('$' + MTFlexSum[1]/MTFlexSum[0],2));}
-            if(event.target.textContent.startsWith('CNT') == true) {navigator.clipboard.writeText(MTFlexSum[0]);}
+        if(cn.startsWith('BudgetExpand')) {
+            const lipn = event.target.nextElementSibling.firstChild.pathname;
+            if(lipn != 'undefined') {
+                let p = lipn.split('/');
+                if(p){MenuTrendsHistory(p[1],p[2]);}
+                return;
+            }
         }
         if(cn == 'MTFlexGridDCell2') {
             let x = Number(getCleanValue(event.target.textContent,2));
@@ -2100,7 +2134,7 @@ function onClickMTFlexBig() {
 
 function onClickMTFlexArrow() {
 
-    let p = event.target.parentNode.getAttribute("triggers").split('|');
+    let p = event.target.parentNode.getAttribute("triggers").split('/');
     if(p == null) {return;}
     if(MTFlex.Name == 'MTTrend') { MenuTrendsHistory(p[0],p[1]); }
 }
@@ -2374,7 +2408,6 @@ function addStyle(aCss) {
     MM_Init();
     setInterval(() => {
         if(window.location.pathname != SaveLocationPathName) {
-
             if(SaveLocationPathName) {
                 MenuLogin(false);
                 MenuReports(false);
