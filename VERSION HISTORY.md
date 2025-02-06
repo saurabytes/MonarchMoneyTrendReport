@@ -4,6 +4,10 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 Email any issues directly:  robert @ paresi.net
 
 
+**Version 2.24 (beta):** 
+
+• NEW:  Budget can now expand Category Groups side panel for last three years of actual.
+
 **Version 2.23:** 
 
 • NEW:  "Left to Spend" direct link for Pending Transactions
