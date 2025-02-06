@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.24.04
+// @version      2.24.06
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.24.04';
+const version = '2.24.06';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -78,8 +78,7 @@ function MM_Init() {
     addStyle('.MTFlexBig {font-size: 18px; ' + standardText + 'font-weight: 500; padding-top: 8px;}');
     addStyle('.MTFlexSmall {font-size: 12px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
     addStyle('.MTFlexLittle {font-size: 10px;' + panelText + 'font-weight: 600; padding-top: 8px; text-transform: uppercase; line-height: 150%; letter-spacing: 1.2px;}');
-    addStyle('.MTFlexCellArrow, .MTTrendCellArrow, .MTTrendCellArrow2, .BudgetExpand {' + panelBackground + standardText + 'width: 24px; height:24px; font-size: 18px; font-family: MonarchIcons, sans-serif; transition: 0.1s ease-out; cursor: pointer; border-radius: 100%; border-style: none;}');
-    addStyle('.BudgetExpand {margin-right: 10px;font-size: 16px;}');
+    addStyle('.MTFlexCellArrow, .MTTrendCellArrow, .MTTrendCellArrow2 {' + panelBackground + standardText + 'width: 24px; height:24px; font-size: 18px; font-family: MonarchIcons, sans-serif; transition: 0.1s ease-out; cursor: pointer; border-radius: 100%; border-style: none;}');
     addStyle('.MTFlexCellArrow:hover {border: 1px solid ' + sidepanelBackground + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;}');
     addStyle('.MTIcons {font-family: MonarchIcons; margin-left: 4px; vertical-align:middle;}');
     addStyle('.MTSideDrawerRoot {position: absolute;  inset: 0px;  display: flex;  -moz-box-pack: end;  justify-content: flex-end;}');
@@ -1555,24 +1554,8 @@ function MenuTrendsHistoryExport() {
     });
     downloadFile('Monarch Trends History ' + getDates('s_FullDate'),csvContent);
 }
+
 // Budget Plans
-function MenuPlanExpand() {
-
-    const elements = document.querySelectorAll('div[class^="PlanRowTitle__Root"]');
-    console.log('total elements',elements.length);
-    for (const li of elements) {
-
-        if(li.outerHTML.includes('href')) {
-            console.log('href found for',li.innerText);
-            const btn = document.createElement("button");
-            btn.className = 'BudgetExpand MTFlexCellArrow';
-            btn.textContent = '';
-            const secondChildNode = li.children[1];
-            li.insertBefore(btn, secondChildNode);
-        } else {console.log('href not found',li.innerText);}
-    }
-}
-
 async function MenuPlanRefresh() {
 
     if(getCookie('MT_PlanLTB',true) == 0) return;
@@ -1595,8 +1578,6 @@ async function MenuPlanRefresh() {
         }
     }
     if(div == null) {MTFlexReady = 3;return;}
-
-    MenuPlanExpand();
 
     removeAllSections('div.MTBudget');
     let bCK = 0,bCC = 0,bSV=0,LeftToSpend=0,LTSLit = 'Left to Spend';
@@ -2061,14 +2042,6 @@ window.onclick = function(event) {
         if(cn.startsWith('PlanHeader__Tab')) {
             if(event.target.innerText == 'Budget') { MTFlexReady = 3;}
             return;
-        }
-        if(cn.startsWith('BudgetExpand')) {
-            const lipn = event.target.nextElementSibling.firstChild.pathname;
-            if(lipn != 'undefined') {
-                let p = lipn.split('/');
-                if(p){MenuTrendsHistory(p[1],p[2]);}
-                return;
-            }
         }
         if(cn == 'MTFlexGridDCell2') {
             let x = Number(getCleanValue(event.target.textContent,2));
