@@ -1560,14 +1560,17 @@ function MenuPlanExpand() {
 
     buildCategoryGroups();
     const elements = document.querySelectorAll('div[class^="PlanRowTitle__Root"]');
+    console.log('total elements',elements.length);
     for (const li of elements) {
+
         if(li.outerHTML.includes('href')) {
+            console.log('href found for',li.innerText);
             const btn = document.createElement("button");
             btn.className = 'BudgetExpand MTFlexCellArrow';
             btn.textContent = '';
             const secondChildNode = li.children[1];
             li.insertBefore(btn, secondChildNode);
-        }
+        } else {console.log('href not found',li.innerText);}
     }
 }
 
