@@ -1559,7 +1559,6 @@ function MenuTrendsHistoryExport() {
 async function MenuPlanRefresh() {
 
     if(getCookie('MT_PlanLTB',true) == 0) return;
-    console.log('updating');
 
     let budgetI = [0,0,0,0],budgetE = [0,0,0,0]; // 0=remaining,1=budget,2=spent,3=use
     let div=null,noBudget=true;
