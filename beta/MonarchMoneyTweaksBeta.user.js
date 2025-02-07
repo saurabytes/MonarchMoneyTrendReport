@@ -1847,9 +1847,9 @@ function MenuHistory(OnFocus) {
         let div = document.querySelector('[class^="FilteredCashFlowPage__DateLabel"]');
         if(div) {
             const hbt = document.createElement('button');
-            hbt.className = 'MTHistoryButton' ;
-            hbt.style='float:right;width:100px;';
-            hbt.textContent = ' History';
+            hbt.className = 'MTHistoryButton';
+            hbt.style = 'float:right;';
+            hbt.textContent = ' Monthly Summary';
             div.appendChild(hbt);
             buildCategoryGroups();
         }
