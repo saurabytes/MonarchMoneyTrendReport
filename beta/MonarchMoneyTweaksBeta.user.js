@@ -41,7 +41,7 @@ function MM_Init() {
     MM_RefreshAll();
 
     if(getCookie('MT_PlanCompressed',true) == 1) {addStyle('.joBqTh, .jsBiA-d {padding-bottom: 0px; padding-top: 0px; !important;}'); addStyle('.earyfo, .fxLfmT {height: 42px;}'); addStyle('.dVgTYt, .exoRCJ, .bgDnMb, .zoivW {font-size: 15px;}');}
-    if(getCookie('MT_CompressedTx',true) == 1) {addStyle('.dnAUzj {font-size: 14px !important; padding-top: 1px; padding-bottom: 1px;}');addStyle('.oRgik, .bVcoEc {font-size: 14px !important;');}
+    if(getCookie('MT_CompressedTx',true) == 1) {addStyle('.dnAUzj {font-size: 14px !important; padding-top: 1px; padding-bottom: 1px;}');addStyle('.oRgik, .bVcoEc, .erRzVO, .dEMbMu {font-size: 14px !important;');}
     if(getCookie('MT_PendingIsRed',true) == 1) {addStyle('.cxLoFP {color:' + accentColor + '}');}
     addStyle('.MTBub {margin-bottom: 12px;}');
     addStyle('.MTBub1 {cursor: pointer;float: right; margin-left: 12px;font-size: 13px; margin-bottom: 10px;padding: 2px;border: 1px solid #e4e1de; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;border-radius: 8px;width: 150px;text-align: center;font-weight: 500;}');
@@ -2001,7 +2001,7 @@ window.onclick = function(event) {
         switch (cn) {
             case 'MTFlexGridDCell':
             case 'MTSideDrawerDetail2':
-                if(event.target.hash != '') {
+                if(event.target.hash) {
                     if(event.target.hash.startsWith('#') == true) {
                         event.stopImmediatePropagation();
                         event.stopPropagation();
