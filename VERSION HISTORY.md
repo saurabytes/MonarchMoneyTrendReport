@@ -4,6 +4,12 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 Email any issues directly:  robert @ paresi.net
 
 
+**Version 2.25 (beta):** 
+
+• NEW: History button when expanding Categories and Category Groups from Transactions & Budgets.
+
+• NEW: Budget Summary Panel removed if Budgets Menu item is turned off.
+
 **Version 2.24:** 
 
 • REGRESSION:  Changes on Monarch side caused Transaction Compressed Grid not to work.
