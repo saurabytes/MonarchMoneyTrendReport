@@ -4,9 +4,11 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 Email any issues directly:  robert @ paresi.net
 
 
-**Version 2.24 (beta):** 
+**Version 2.24:** 
 
-• NEW:  Budget can now expand Category Groups side panel for last three years of actual.
+• REGRESSION:  Changes on Monarch side causeed Transaction Compressed Grid not to work.
+
+• REGRESSION:  Changes on Monarch side causeed Left to Spend to not always appear during Flex Budget.
 
 **Version 2.23:** 
 
