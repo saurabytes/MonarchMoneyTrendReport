@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.24.06
+// @version      2.24
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.24.06';
+const version = '2.24';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -41,7 +41,7 @@ function MM_Init() {
     MM_RefreshAll();
 
     if(getCookie('MT_PlanCompressed',true) == 1) {addStyle('.joBqTh, .jsBiA-d {padding-bottom: 0px; padding-top: 0px; !important;}'); addStyle('.earyfo, .fxLfmT {height: 42px;}'); addStyle('.dVgTYt, .exoRCJ, .bgDnMb, .zoivW {font-size: 15px;}');}
-    if(getCookie('MT_CompressedTx',true) == 1) {addStyle('.oRgik, .bVcoEc, .XbVLi, .erRzVO, .dEMbMu {font-size: 14px;}');addStyle('.XbVLi {padding-top: 1px; padding-bottom: 1px;}');}
+    if(getCookie('MT_CompressedTx',true) == 1) {addStyle('.dnAUzj {font-size: 14px !important; padding-top: 1px; padding-bottom: 1px;}');addStyle('.oRgik, .bVcoEc {font-size: 14px !important;')}
     if(getCookie('MT_PendingIsRed',true) == 1) {addStyle('.cxLoFP {color:' + accentColor + '}');}
     addStyle('.MTBub {margin-bottom: 12px;}');
     addStyle('.MTBub1 {cursor: pointer;float: right; margin-left: 12px;font-size: 13px; margin-bottom: 10px;padding: 2px;border: 1px solid #e4e1de; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;border-radius: 8px;width: 150px;text-align: center;font-weight: 500;}');
@@ -1559,6 +1559,7 @@ function MenuTrendsHistoryExport() {
 async function MenuPlanRefresh() {
 
     if(getCookie('MT_PlanLTB',true) == 0) return;
+    console.log('updating');
 
     let budgetI = [0,0,0,0],budgetE = [0,0,0,0]; // 0=remaining,1=budget,2=spent,3=use
     let div=null,noBudget=true;
@@ -2042,6 +2043,9 @@ window.onclick = function(event) {
         if(cn.startsWith('PlanHeader__Tab')) {
             if(event.target.innerText == 'Budget') { MTFlexReady = 3;}
             return;
+        }
+        if(cn.startsWith('Flex-sc-165659u-0')) {
+            if(event.target.innerText == 'Summary') { MTFlexReady = 3;}
         }
         if(cn == 'MTFlexGridDCell2') {
             let x = Number(getCleanValue(event.target.textContent,2));
