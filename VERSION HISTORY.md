@@ -6,9 +6,12 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.25 (beta):** 
 
-• NEW: History button when expanding Categories and Category Groups from Transactions & Budgets.
+• NEW: History button goes to three year Monthly Summary when expanding Categories and Category Groups from Transactions & Budgets.
 
 • NEW: Budget Summary Panel removed if Budgets Menu item is turned off.
+
+• CHANGE: Better Trends/Accounts button for pull-down.
+
 
 **Version 2.24:** 
 
