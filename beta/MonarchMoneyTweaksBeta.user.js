@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.24
+// @version      2.25.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.24';
+const version = '2.25.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -41,7 +41,7 @@ function MM_Init() {
     MM_RefreshAll();
 
     if(getCookie('MT_PlanCompressed',true) == 1) {addStyle('.joBqTh, .jsBiA-d {padding-bottom: 0px; padding-top: 0px; !important;}'); addStyle('.earyfo, .fxLfmT {height: 42px;}'); addStyle('.dVgTYt, .exoRCJ, .bgDnMb, .zoivW {font-size: 15px;}');}
-    if(getCookie('MT_CompressedTx',true) == 1) {addStyle('.dnAUzj {font-size: 14px !important; padding-top: 1px; padding-bottom: 1px;}');addStyle('.oRgik, .bVcoEc {font-size: 14px !important;')}
+    if(getCookie('MT_CompressedTx',true) == 1) {addStyle('.dnAUzj {font-size: 14px !important; padding-top: 1px; padding-bottom: 1px;}');addStyle('.oRgik, .bVcoEc {font-size: 14px !important;');}
     if(getCookie('MT_PendingIsRed',true) == 1) {addStyle('.cxLoFP {color:' + accentColor + '}');}
     addStyle('.MTBub {margin-bottom: 12px;}');
     addStyle('.MTBub1 {cursor: pointer;float: right; margin-left: 12px;font-size: 13px; margin-bottom: 10px;padding: 2px;border: 1px solid #e4e1de; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px;border-radius: 8px;width: 150px;text-align: center;font-weight: 500;}');
@@ -54,7 +54,7 @@ function MM_Init() {
     addStyle('.MTSpacerClassTR {padding: 0px 0px 0px 0px;}');
     addStyle('.MTSpacerClass2 {margin-bottom: 0px;border-bottom: 1px solid ' + borderColor +';}');
     addStyle('.MThRefClass {' + standardText + '}');
-    addStyle('.MTFlexButtonExport, .MTFlexButton1, .MTFlexButton2 {' + panelBackground + standardText + 'margin-left: 20px; font-weight: 500; border: 1px solid ' + borderColor + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px; font-size: 14px; padding: 7.5px 12px;cursor: pointer;border-radius: 4px;line-height: 150%;}');
+    addStyle('.MTFlexButtonExport, .MTFlexButton1, .MTFlexButton2, .MTHistoryButton {font-family: MonarchIcons, "Oracle", sans-serif;' + panelBackground + standardText + 'margin-left: 20px; font-weight: 500; border: 1px solid ' + borderColor + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px; font-size: 14px; padding: 7.5px 12px;cursor: pointer;border-radius: 4px;line-height: 150%;}');
     addStyle('.MTFlexContainer {display:block; padding: 20px;}');
     addStyle('.MTFlexContainer2 {margin: 0px;  gap: 20px;  display: flex; }');
     addStyle('.MTFlexContainerPanel { display: flex; flex-flow: column; place-content: stretch flex-start; ' + panelBackground + 'border-radius: 8px; box-shadow: rgba(8, 40, 100, 0.04) 0px 4px 8px;}');
@@ -121,9 +121,12 @@ function MM_RefreshAll() {
     if (localStorage.getItem('MT:LastRefresh') != getDates('s_FullDate')) {
         if(getCookie('MT_RefreshAll',true) == 1) {refreshAccountsData();}}}
 
-function MM_hideElement(InList,InValue) {
+function MM_hideElement(InList,InValue,inStartsWith) {
     const els = document.querySelectorAll(InList);
-    for (const el of els) { InValue == 1 ? el.style.display = 'none' : el.style.display = ''; }}
+    for (const el of els) {
+        if(inStartsWith == null || el.innerText.startsWith(inStartsWith)) {InValue == 1 ? el.style.display = 'none' : el.style.display = '';}
+    }
+}
 
 // [ Flex Queue ]
 function MF_QueueAddTitle(p) {
@@ -308,12 +311,12 @@ function MT_GridDrawDetails() {
             if(isSubTotal == true && useRow.PKTriggerEvent) {
                 elx = cec('td','',el,'','','style',ArrowSpacing + 'vertical-align: top;');
                 elx = cec('button','MTFlexCellArrow',elx,'','','triggers',useRow.PKTriggerEvent + '|');
-                let elx2 = cec('span','',elx,'','','','');
+                cec('span','',elx,'','','','');
             }
             else if(isSubTotal == false && useRow.SKTriggerEvent) {
                 elx = cec('td','',el,'','','style',ArrowSpacing);
                 elx = cec('button','MTFlexCellArrow',elx,'','','triggers',useRow.SKTriggerEvent + '/');
-                let elx2 = cec('span','',elx,'','','','');
+                cec('span','',elx,'','','','');
             } else {
                 elx = cec('td','',el,'','','style',ArrowSpacing );
             }
@@ -374,11 +377,10 @@ function MT_GridDrawContainer() {
         MTFlex.bub1 = cec('div','MTBub1',MTFlex.bub,'','','','');
 
         div2 = cec('div','MTdropdown',tbs,'','','','');
-        div2 = cec('button','MTFlexButtonExport',div2,'Export','','','');
+        div2 = cec('button','MTFlexButtonExport',div2,'Export ','','','');
         if(MTFlex.Button1Options) {
             div2 = cec('div','MTdropdown',tbs,'','','','');
-            div2 = cec('button','MTFlexButton1',div2,MTFlex.Button1Options[MTFlex.Button1],'','','');
-            let div3 = cec('span','MTIcons',div2,'','','','');
+            div2 = cec('button','MTFlexButton1',div2,MTFlex.Button1Options[MTFlex.Button1] + ' ','','','');
             let divContent = cec('div','MTFlexdown-content',div2,'','','id','MTDropdown1');
             for (let i = 0; i < MTFlex.Button1Options.length; i++) {
                 div2 = cec('a','',divContent,MTFlex.Button1Options[i],SaveLocationPathName + "?MTButton1=" + i,'','');
@@ -386,8 +388,8 @@ function MT_GridDrawContainer() {
         }
         if(MTFlex.Button2Options) {
             div2 = cec('div','MTdropdown',tbs,'','','','');
-            div2 = cec('button','MTFlexButton2',div2,MTFlex.Button2Options[MTFlex.Button2],'','','');
-            let div3 = cec('span','MTIcons',div2,'','','','');
+            div2 = cec('button','MTFlexButton2',div2,MTFlex.Button2Options[MTFlex.Button2] + ' ','','','');
+            //let div3 = cec('span','MTIcons',div2,'','','','');
             let divContent = cec('div','MTFlexdown-content',div2,'','','id','MTDropdown2');
             for (let i = 0; i < MTFlex.Button2Options.length; i++) {
                 div2 = cec('a','',divContent,MTFlex.Button2Options[i],SaveLocationPathName + "?MTButton2=" + i,'','');
@@ -448,7 +450,7 @@ function MT_GridExport() {
 
     for (let i = 0; i < MTFlexTitle.length; i += 1) {
         if(MTFlexTitle[i].isHidden == false) { csvContent = csvContent + '"' + MTFlexTitle[i].Title + '"' + c;}
-    };
+    }
     csvContent = csvContent + CRLF;
 
     for (let i = 0; i < MTFlexRow.length; i += 1) {
@@ -496,10 +498,7 @@ function MT_GridDrawEmbed(inSection,inCol,inValue, inDesc) {
 }
 
 function MT_GridGetUID(inSec,inUID,inCol) {
-    for (let i = 0; i < MTFlexRow.length; i += 1) {
-        if(MTFlexRow[i].UID == inUID && MTFlexRow[i].Section == inSec) {
-            return MTFlexRow[i][MTFields + inCol];
-    }}
+    for (let i = 0; i < MTFlexRow.length; i += 1) {if(MTFlexRow[i].UID == inUID && MTFlexRow[i].Section == inSec) { return MTFlexRow[i][MTFields + inCol]; }}
     return 0;
 }
 
@@ -708,7 +707,7 @@ async function MenuReportsAccountsGo() {
 
 async function MenuReportsAccountsGoExt(){
 
-    let snapshotData = null, snapshotData3 = null
+    let snapshotData = null, snapshotData3 = null;
     let skipHidden = getCookie('MT_AccountsHidden',true);
     let CurMonth = getDates('n_CurMonth'),CurYear = 0;
     let NumMonths = (MTFlex.Button2 === 7) ? 6 : 12;
@@ -767,7 +766,7 @@ async function MenuReportsAccountsGoExt(){
         snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
         for (let j = 0; j < snapshotData3.accounts.length; j += 1) {
             MT_GridUpdateUID(snapshotData3.accounts[j].id,i+2,snapshotData3.accounts[j].displayBalance);
-            if(snapshotData3.accounts[j].displayBalance != null) {used = true;};
+            if(snapshotData3.accounts[j].displayBalance != null) {used = true;}
         }
         if(MTFlex.Button2 == 10) {
             if(used == false) {MTFlexTitle[i+2].isHidden = true;}
@@ -1198,7 +1197,6 @@ async function WriteByMonthData() {
             MTFlexRow[i][MTFields] = useDesc;
         }
     }
-    for(let i = MTFlexRow.length - 1; i >= 0; i--){ if(MTFlexRow[i].UID == '') {const x = MTFlexRow.splice(i, 1);}}
     if(MTFlex.Button2 == 8) {
         for(let i = 1; i <= 12; i++){ if(i < lowestMonth) {MTFlexTitle[i].isHidden = true;}}
         MTFlex.Title2 = MTFlex.Title2.substring(0, 7) + MTFlexTitle[lowestMonth].Title + MTFlex.Title2.substring(11);
@@ -1514,7 +1512,7 @@ function MenuTrendsHistoryDraw() {
 
         detailQue.sort((a, b) => b.YR3 - a.YR3 || b.YR2 - a.YR2);
         let useURL = '#|';
-        if(topDiv.getAttribute("cattype") == 'expense') {useURL = useURL + 'spending|'} else {useURL = useURL + 'income|';}
+        if(topDiv.getAttribute("cattype") == 'expense') {useURL = useURL + 'spending|';} else {useURL = useURL + 'income|';}
 
         for (let i = 0; i < detailQue.length; i++) {
             let div2 = cec('div','TrendHistoryDetail MTSideDrawerItem',inDiv,'','','style',os4);
@@ -1529,7 +1527,7 @@ function MenuTrendsHistoryDraw() {
                 div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue((detailQue[i].YR1 + detailQue[i].YR2)/(curYears-1)),'','','');
             }
         }
-        let div2 = cec('div','TrendHistoryDetail MTSideDrawerItem',inDiv,'','','style',os4);
+        cec('div','TrendHistoryDetail MTSideDrawerItem',inDiv,'','','style',os4);
     }
 
     function MTHistoryFind(inDesc) {
@@ -1561,7 +1559,7 @@ async function MenuPlanRefresh() {
     if(getCookie('MT_PlanLTB',true) == 0) return;
 
     let budgetI = [0,0,0,0],budgetE = [0,0,0,0]; // 0=remaining,1=budget,2=spent,3=use
-    let div=null,noBudget=true;
+    let div=null;
     const elements = document.querySelectorAll('[class*="PlanSummaryWidgetRow"]');
     for (const li of elements) {
         const ca = li.innerText.split('\n');
@@ -1581,6 +1579,7 @@ async function MenuPlanRefresh() {
 
     removeAllSections('div.MTBudget');
     let bCK = 0,bCC = 0,bSV=0,LeftToSpend=0,LTSLit = 'Left to Spend';
+    let noBudget=true;
     let snapshotData = await getAccountsData();
     let snapshotData4 = await GetTransactions(formatQueryDate(getDates('d_StartofLastMonth')),formatQueryDate(getDates('d_Today')),0,true);
 
@@ -1839,6 +1838,24 @@ function MM_SplitTransaction() {
     }
 }
 
+function MenuHistory(OnFocus) {
+
+    if (SaveLocationPathName.startsWith('/categor')) {
+        if(OnFocus == true) {
+            if(getCookie('MT_Budget',true) == 1) { MM_hideElement('[class*="CategoryDetails__PlanSummaryCard"]',1);}
+        }
+        let div = document.querySelector('[class^="FilteredCashFlowPage__DateLabel"]');
+        if(div) {
+            const hbt = document.createElement('button');
+            hbt.className = 'MTHistoryButton' ;
+            hbt.style='float:right;width:100px;';
+            hbt.textContent = ' History';
+            div.appendChild(hbt);
+            buildCategoryGroups();
+        }
+    }
+}
+
 function MenuPlan(OnFocus) {
 
     if (SaveLocationPathName.startsWith('/plan') || SaveLocationPathName.startsWith('/dashboard')) {
@@ -1908,7 +1925,7 @@ function MenuDisplay(OnFocus) {
 
 function MenuDisplay_Input(inValue,inCookie,inType,inStyle) {
 
-    let qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2')
+    let qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2');
     if(qs != null) {
         qs = qs.firstChild.lastChild;
 
@@ -2029,22 +2046,22 @@ window.onclick = function(event) {
                 if(event.target.textContent.startsWith('AVG') == true) {navigator.clipboard.writeText(getCleanValue('$' + MTFlexSum[1]/MTFlexSum[0],2));}
                 if(event.target.textContent.startsWith('CNT') == true) {navigator.clipboard.writeText(MTFlexSum[0]);}
                 return;
+            case 'MTHistoryButton':
+                onClickMTFlexArrow(SaveLocationPathName.slice(1));
+                return;
         }
         if(cn.includes('AbstractButton')) {
             if(event.target.innerText.startsWith('\uf10b')) {
                 MM_FixCalendarShortcuts();return;
             }
         }
-        if(cn.startsWith('Tab__Root-ilk1fo-0')) {
+        if(cn.startsWith('Tab__Root-ilk1fo-0') || cn.startsWith('Flex-sc-165659u-0')) {
             if(event.target.innerText == 'Summary') { MTFlexReady = 3;}
             return;
         }
         if(cn.startsWith('PlanHeader__Tab')) {
             if(event.target.innerText == 'Budget') { MTFlexReady = 3;}
             return;
-        }
-        if(cn.startsWith('Flex-sc-165659u-0')) {
-            if(event.target.innerText == 'Summary') { MTFlexReady = 3;}
         }
         if(cn == 'MTFlexGridDCell2') {
             let x = Number(getCleanValue(event.target.textContent,2));
@@ -2070,7 +2087,8 @@ window.onclick = function(event) {
             case 'MTFlexGridTitleRow':
                 onClickGridSort();return;
             case 'MTFlexCellArrow':
-                onClickMTFlexArrow();return;
+                if(MTFlex.Name == 'MTTrend') {onClickMTFlexArrow(event.target.parentNode.getAttribute("triggers"));}
+                return;
             case 'MTdropdown':
                 onClickFilter();return;
         }
@@ -2110,11 +2128,10 @@ function onClickMTFlexBig() {
   }
 }
 
-function onClickMTFlexArrow() {
+function onClickMTFlexArrow(inP) {
 
-    let p = event.target.parentNode.getAttribute("triggers").split('/');
-    if(p == null) {return;}
-    if(MTFlex.Name == 'MTTrend') { MenuTrendsHistory(p[0],p[1]); }
+    let p = inP.split('/');
+    if(p) { MenuTrendsHistory(p[0],p[1]); }
 }
 
 function onClickGridSort() {
@@ -2392,12 +2409,11 @@ function addStyle(aCss) {
                 MenuDisplay(false);
                 MenuPlan(false);
             }
-
             SaveLocationPathName = window.location.pathname;
-
             MenuReports(true);
             MenuDisplay(true);
             MenuPlan(true);
+            MenuHistory(true);
         }
         MenuCheckSpawnProcess();
     },330);
