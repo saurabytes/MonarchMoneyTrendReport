@@ -8,7 +8,7 @@ Email any issues directly:  robert @ paresi.net
 
 • REGRESSION:  Changes on Monarch side causeed Transaction Compressed Grid not to work.
 
-• REGRESSION:  Changes on Monarch side causeed Left to Spend to not always appear during Flex Budget.
+• REGRESSION:  Changes on Monarch side caused Left to Spend to not always appear during Flex Budget.
 
 **Version 2.23:** 
 
