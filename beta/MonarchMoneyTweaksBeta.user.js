@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.25.01
+// @version      2.25.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.25.01';
+const version = '2.25.02';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -1747,7 +1747,7 @@ function MM_FixCalendarShortcuts() {
             li[5].nextSibling.after(div);
             div.addEventListener('click', () => {
                 inputTwoFields('input.DateInput_input', getDates(startDate), getDates(endDate));
-                const sb = findButton('', 'Apply');
+                const sb = findButton('Apply');
                 if (sb) {
                     focus(sb);
                     sb.click();
@@ -1826,7 +1826,7 @@ function MM_SplitTransaction() {
                 let div = cec('div','',li[1],'','','style','float: right;');
 
                 let div2 = document.createElement('button');
-                let sb = findButton('','');
+                let sb = findButton('Add a split');
                 if(sb) { div2.className = sb.className; }
                 div2.innerText = 'Split 50/50  (' + Splitby2 + ') ';
                 div2.addEventListener('click', () => {
@@ -1844,13 +1844,9 @@ function MenuHistory(OnFocus) {
         if(OnFocus == true) {
             if(getCookie('MT_Budget',true) == 1) { MM_hideElement('[class*="CategoryDetails__PlanSummaryCard"]',1);}
         }
-        let div = document.querySelector('[class^="FilteredCashFlowPage__DateLabel"]');
+        let div = findButton('Filters')
         if(div) {
-            const hbt = document.createElement('button');
-            hbt.className = 'MTHistoryButton';
-            hbt.style = 'float:right;';
-            hbt.textContent = ' Monthly Summary';
-            div.appendChild(hbt);
+            cec('button','MTHistoryButton',div.parentNode,' Monthly Summary');
             buildCategoryGroups();
         }
     }
@@ -2317,10 +2313,10 @@ function daysInMonth(iMonth, iYear) {
     return 32 - new Date(iYear, iMonth, 32).getDate();
 }
 
-function findButton(inValue, inName) {
+function findButton(inName) {
     const buttons = document.querySelectorAll('button');
     for (const button of buttons) {
-        if ((inValue && button.textContent.startsWith(inValue)) || (inName && inName === button.innerText)) {return button;}
+        if (inName && button.innerText.includes(inName)) {return button;}
     }
     return null;
 }
