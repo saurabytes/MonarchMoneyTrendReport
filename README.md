@@ -1,6 +1,6 @@
 # Monarch Money Tweaks - GET STARTED! 
 
-[Already have MM Tweaks? - Click here to Update to V3.01](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js) - Settings have to be redone in this update.  See Version History for more information.
+[Already have MM Tweaks? - Click here to Update to V3.01](https://github.com/saurabytes/MonarchMoneyTrendReport/raw/refs/heads/HACKS/MonarchMoneyTweaks.user.js) - Settings have to be redone in this update.  See Version History for more information.
 
 Hello!  I use **Monarch Money**.  
 
@@ -73,7 +73,7 @@ Search App store for "User Script and Style Manager" by Justin Wasack
 > [!IMPORTANT]
 > Chrome Users - In your Chrome browser, using the menu, click on **Extensions / Manage Extensions** and set **Developer mode** to **on** found in upper-right corner. 
 
-[Click here to install or Update MM Tweaks](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
+[Click here to install or Update MM Tweaks](https://github.com/saurabytes/MonarchMoneyTrendReport/raw/refs/heads/HACKS/MonarchMoneyTweaks.user.js)
 
 **STEP 3**
 
