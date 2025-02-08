@@ -10,7 +10,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Budget Summary Panel removed if Budgets Menu item is turned off.
 
-• CHANGE: Better Trends/Accounts button for pull-down.
+• CHANGE: Better Trends/Accounts buttons for pull-down.
 
 
 **Version 2.24:** 
