@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.25
+// @version      2.26
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.25';
+const version = '2.26';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -33,9 +33,9 @@ function MM_Init() {
     const sidepanelBackground = 'background: ' + ['#def7f9;','#222221;'][a];
     const selectBackground = 'background-color: ' + ['#def7f9;','#082c36;'][a];
     const selectForground = 'color: ' + ['#107d98;','#4ccce6;'][a];
-    const lineForground = ['#F6F5F3','#363532'][a];
+    const lineForground = ['#e4e1de','#363532'][a];
     const borderColor = ['#e4e1de','#62605D'][a];
-    const accentColor = ['#ff692d;','#ff692d;'][a];
+    const accentColor = '#ff692d;';
 
     MM_MenuFix();
     MM_RefreshAll();
@@ -50,9 +50,8 @@ function MM_Init() {
     addStyle('.MTWait2 p {' + standardText + 'font-family:  MonarchIcons, sans-serif, "Oracle" !important; font-size: 15px; font-weight: 200;}');
     addStyle('.MTlink, .MTBudget a {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer;}');
     addStyle('.MTCheckboxClass, .MTFlexCheckbox {width: 19px; height: 19px; margin-right: 10px;float: inline-start; color: #FFFFFF; accent-color: ' + accentColor + '}');
-    addStyle('.MTSpacerClass {margin-top: 4px; margin-bottom: 4px; border-bottom: 1px solid ' + lineForground +';}');
+    addStyle('.MTSpacerClass {margin: 4px 24px 4px 24px; border-bottom: 1px solid ' + lineForground +';}');
     addStyle('.MTSpacerClassTR {padding: 0px 0px 0px 0px;}');
-    addStyle('.MTSpacerClass2 {margin-bottom: 0px;border-bottom: 1px solid ' + borderColor +';}');
     addStyle('.MThRefClass {' + standardText + '}');
     addStyle('.MTFlexButtonExport, .MTFlexButton1, .MTFlexButton2, .MTHistoryButton {font-family: MonarchIcons, "Oracle", sans-serif;' + panelBackground + standardText + 'margin-left: 20px; font-weight: 500; border: 1px solid ' + borderColor + '; box-shadow: rgba(8, 40, 100, 0.1) 0px 1px 2px; font-size: 14px; padding: 7.5px 12px;cursor: pointer;border-radius: 4px;line-height: 150%;}');
     addStyle('.MTFlexContainer {display:block; padding: 20px;}');
@@ -67,6 +66,7 @@ function MM_Init() {
     addStyle('.MTFlexGridTitleCell2 { text-align: right; border-bottom: 1px solid ' + borderColor + ';}');
     addStyle('.MTFlexGridTitleCell:hover, .MTFlexGridTitleCell2:hover, .MTFlexGridDCell:hover, .MTFlexGridSCell:hover, .MThRefClass:hover,  .MTSideDrawerDetail4:hover {cursor:pointer; color: rgb(50, 170, 240);}');
     addStyle('.MTFlexGridRow { font-size: 14px; font-weight: 500; height: 40px; vertical-align: bottom;}');
+    addStyle('.MTFlexSpacer {width: 100%; margin-bottom: 0px;border-bottom: 1px solid ' + borderColor +';}');
     addStyle('.MTFlexGridItem { font-size: 14px; ; height: 26px }');
     addStyle('.MTFlexGridHCell { font-size: 15px;}');
     addStyle('.MTFlexGridHCell2 { text-align: right; font-size: 15px;}');
@@ -234,7 +234,7 @@ function MT_GridDrawDetails() {
             } else {
                 let el2 = cec('tr','MTSpacerClassTR',Header,'','','style',hide);
                 let el3 = cec('td','MTSpacerClassTR',el2,'','','colspan',MTFlexTitle.length);
-                cec('div','MTSpacerClass2',el3);
+                cec('div','MTFlexSpacer',el3);
                 el = cec('tr','MTFlexGridItem',Header);
                 useStyle = 'MTFlexGridDCell';
             }
@@ -310,7 +310,7 @@ function MT_GridDrawDetails() {
         if(MTFlex.TriggerEvents) {
             if(isSubTotal == true && useRow.PKTriggerEvent) {
                 elx = cec('td','',el,'','','style',ArrowSpacing + 'vertical-align: top;');
-                elx = cec('button','MTFlexCellArrow',elx,'','','triggers',useRow.PKTriggerEvent + '|');
+                elx = cec('button','MTFlexCellArrow',elx,'','','triggers',useRow.PKTriggerEvent + '/');
                 cec('span','',elx,'','','','');
             }
             else if(isSubTotal == false && useRow.SKTriggerEvent) {
@@ -389,7 +389,6 @@ function MT_GridDrawContainer() {
         if(MTFlex.Button2Options) {
             div2 = cec('div','MTdropdown',tbs,'','','','');
             div2 = cec('button','MTFlexButton2',div2,MTFlex.Button2Options[MTFlex.Button2] + ' ','','','');
-            //let div3 = cec('span','MTIcons',div2,'','','','');
             let divContent = cec('div','MTFlexdown-content',div2,'','','id','MTDropdown2');
             for (let i = 0; i < MTFlex.Button2Options.length; i++) {
                 div2 = cec('a','',divContent,MTFlex.Button2Options[i],SaveLocationPathName + "?MTButton2=" + i,'','');
@@ -1181,7 +1180,7 @@ async function WriteByMonthData() {
                 if(MTFlex.Button1 == 2) {
                     MTFlexRow[i].PK = retGroup.GROUPNAME;
                     MTFlexRow[i].PKHRef = useURL + '|' + retGroup.GROUP + '|';
-                    MTFlexRow[i].PKTriggerEvent = 'category-groups|' + retGroup.GROUP;
+                    MTFlexRow[i].PKTriggerEvent = 'category-groups/' + retGroup.GROUP;
                 }
                 MTFlexRow[i].SKHRef = useURL + retGroup.ID + '|';
                 MTFlexRow[i].SKTriggerEvent = 'categories/' + retGroup.ID;
@@ -1248,7 +1247,7 @@ async function WriteCompareData() {
                  if(MTFlex.Button1 == 2) {
                      MTP.PK = retGroup.GROUPNAME;
                      MTP.PKHRef = useURL + '|' + retGroup.GROUP + '|';
-                     MTP.PKTriggerEvent = 'category-groups|' + retGroup.GROUP + '|';
+                     MTP.PKTriggerEvent = 'category-groups/' + retGroup.GROUP + '/';
                  }
                  MTP.SKHRef = useURL + retGroup.ID + '|';
                  MTP.SKTriggerEvent = 'categories/' + retGroup.ID + '/';
@@ -1429,13 +1428,13 @@ function MenuTrendsHistoryDraw() {
         div3 = cec('span','MTSideDrawerDetail3',div2,'','','','');
         div3 = cec('span','MTSideDrawerDetail',div2,'Average for Month','','','');
         div2 = cec('div','MTSideDrawerItem',div,'','','style',os2);
-        div3 = cec('span','MTSpacerClass',div2,'','','','');
+        div3 = cec('span','MTFlexSpacer',div2,'','','','');
 
         let T = ['Total',0,0,0,0];
         for (let i = 0; i < 12; i++) {
             if(i > 0 && i == curMonth) {
                 div2 = cec('div','MTSideDrawerItem',div,'','','style',os2);
-                div3 = cec('span','MTSpacerClass',div2,'','','','');
+                div3 = cec('span','MTFlexSpacer',div2,'','','','');
             }
             if(sumQue[i].YR2 == sumQue[i].YR3){
                 useArrow = 2;}
@@ -1469,7 +1468,7 @@ function MenuTrendsHistoryDraw() {
         if(tot != 0) { T[4] = tot / curYears; }
 
         div2 = cec('div','MTSideDrawerItem',div,'','','style',os2);
-        div3 = cec('span','MTSpacerClass',div2,'','','');
+        div3 = cec('span','MTFlexSpacer',div2,'','','');
         div2 = cec('div','MTSideDrawerItem',div,'','','style',os2);
         div3 = cec('span','MTSideDrawerDetail',div2,T[0],'','style',os);
         for (let i = 1; i < 5; i++) {
