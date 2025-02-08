@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.25.02
+// @version      2.25.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.25.02';
+const version = '2.25.03';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -65,7 +65,7 @@ function MM_Init() {
     addStyle('.MTFlexGridTitleRow { font-size: 16px; font-weight: 500; height: 56px; position: sticky; top: 0; ' + panelBackground + '}');
     addStyle('.MTFlexGridTitleCell { border-bottom: 1px solid ' + borderColor + ';}');
     addStyle('.MTFlexGridTitleCell2 { text-align: right; border-bottom: 1px solid ' + borderColor + ';}');
-    addStyle('.MTFlexGridTitleCell:hover, .MTFlexGridTitleCell2:hover, .MTFlexGridDCell:hover, .MTFlexGridSCell:hover, .MThRefClass:hover, .MTSideDrawerDetail2:hover {cursor:pointer; color: rgb(50, 170, 240);}');
+    addStyle('.MTFlexGridTitleCell:hover, .MTFlexGridTitleCell2:hover, .MTFlexGridDCell:hover, .MTFlexGridSCell:hover, .MThRefClass:hover,  .MTSideDrawerDetail4:hover {cursor:pointer; color: rgb(50, 170, 240);}');
     addStyle('.MTFlexGridRow { font-size: 14px; font-weight: 500; height: 40px; vertical-align: bottom;}');
     addStyle('.MTFlexGridItem { font-size: 14px; ; height: 26px }');
     addStyle('.MTFlexGridHCell { font-size: 15px;}');
@@ -87,7 +87,7 @@ function MM_Init() {
     addStyle('.MTSideDrawerHeader { ' + standardText + ' padding: 12px; }');
     addStyle('.MTSideDrawerItem { font-size: 14px;  margin-bottom: 10px;  place-content: stretch space-between;  display: flex;');
     addStyle('.MTSideDrawerDetail { ' + standardText + ' width: 24%; text-align: right; font-size: 13px; }');
-    addStyle('.MTSideDrawerDetail2 { ' + standardText + ' width: 24%; text-align: right; font-size: 12px; }');
+    addStyle('.MTSideDrawerDetail2, .MTSideDrawerDetail4 { ' + standardText + ' width: 24%; text-align: right; font-size: 12px; }');
     addStyle('.MTSideDrawerDetail3 { ' + standardText + ' width: 13px; text-align: center; font-size: 13px; font-family: MonarchIcons, sans-serif !important; }');
     addStyle('.dropbtn {' + panelBackground + standardText + '; border: none; cursor: pointer;}');
     addStyle('.dropbtn:hover, .dropbtn:focus {' + selectBackground + selectForground + '}');
@@ -1455,7 +1455,7 @@ function MenuTrendsHistoryDraw() {
             if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR1),'','','');}
             div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR2),'','','');
             div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR3),'','','');
-            div3 = cec('span','MTSideDrawerDetail3',div2,['','',' '][useArrow],'','style','color: ' + [c_r,c_g][useArrow]);
+            div3 = cec('span','MTSideDrawerDetail3',div2,['','',' '][useArrow],'','style','color: ' + [c_r,c_g,''][useArrow]);
 
             if(i < curMonth) {
                 div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue((sumQue[i].YR1 + sumQue[i].YR2 + sumQue[i].YR3) / curYears),'','','');
@@ -1475,6 +1475,9 @@ function MenuTrendsHistoryDraw() {
         for (let i = 1; i < 5; i++) {
             if(skiprow == false || i > 1) {
                 div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(T[i]),'','','');
+                if(i == 3) {
+                     div3 = cec('span','MTSideDrawerDetail3',div2,' ');
+                }
             }
         }
         div = cec('div','MTSideDrawerHeader',topDiv,'','','','');
@@ -1516,7 +1519,7 @@ function MenuTrendsHistoryDraw() {
 
         for (let i = 0; i < detailQue.length; i++) {
             let div2 = cec('div','TrendHistoryDetail MTSideDrawerItem',inDiv,'','','style',os4);
-            let div3 = cec('a','MTSideDrawerDetail2',div2,' ' + detailQue[i].DESC,useURL + detailQue[i].ID+'|','style',os3);
+            let div3 = cec('a','MTSideDrawerDetail4',div2,' ' + detailQue[i].DESC,useURL + detailQue[i].ID+'|','style',os3);
             if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR1),'','','');}
             div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR2),'','','');
             div3 = cec('span','MTSideDrawerDetail2',div2,getDollarValue(detailQue[i].YR3),'','','');
@@ -1996,7 +1999,7 @@ window.onclick = function(event) {
     if(typeof cn === 'string') {
         switch (cn) {
             case 'MTFlexGridDCell':
-            case 'MTSideDrawerDetail2':
+            case 'MTSideDrawerDetail4':
                 if(event.target.hash) {
                     if(event.target.hash.startsWith('#') == true) {
                         event.stopImmediatePropagation();
