@@ -4,6 +4,10 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 Email any issues directly:  robert @ paresi.net
 
 
+**Version 2.27:** 
+
+• BUG: Reports / Trends could fail when running Monthly.
+
 **Version 2.26:** 
 
 • NEW: "Monthly Summary" button goes to three year Monthly Summary when expanding Categories and Category Groups from Transactions & Budgets.
