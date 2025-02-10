@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.26
+// @version      2.27
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.26';
+const version = '2.27';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -326,12 +326,14 @@ function MT_GridDrawDetails() {
 
 function MT_GridDrawSort() {
 
+
     let cn = MTFlex.Name + 'Sort' + (MTFlex.SortSeq ? MTFlex.SortSeq[MTFlex.Button2] : '');
     let useSort = getCookie(cn, true);
     useSort = Math.abs(useSort) > MTFlexTitle.length ? 0 : useSort;
     const useCol = MTFields + Math.abs(useSort);
 
-    MTFlexRow.forEach(row => { row.SK = row[useCol]; });
+
+    MTFlexRow.forEach(row => {row.SK = row[useCol]; });
     MTFlexTitle.forEach((title, i) => {title.ShowSort = (i == useSort) ? '▲' : (i == Math.abs(useSort)) ? '▼' : '';});
 
     const sortable = MTFlexTitle[useCol - MTFields].isSortable;
@@ -1158,6 +1160,7 @@ async function WriteByMonthData() {
     let useDesc = '',lowestMonth = 13,useURL = '';
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         let retGroup = await getCategoryGroup(MTFlexRow[i].UID);
+
         if(retGroup.TYPE == 'transfer') {
             MTFlexRow[i].UID = '';
         } else {
@@ -1191,10 +1194,10 @@ async function WriteByMonthData() {
                 MTFlexRow[i].PKTriggerEvent = '';
                 MTFlexRow[i].SKTriggerEvent = 'category-groups/' + retGroup.GROUP;
             }
-            MTFlexRow[i].Icon = retGroup.ICON;
-            MTFlexRow[i].SKExpand = '';
-            MTFlexRow[i][MTFields] = useDesc;
         }
+        MTFlexRow[i].Icon = retGroup.ICON;
+        MTFlexRow[i].SKExpand = '';
+        MTFlexRow[i][MTFields] = useDesc;
     }
     if(MTFlex.Button2 == 8) {
         for(let i = 1; i <= 12; i++){ if(i < lowestMonth) {MTFlexTitle[i].isHidden = true;}}
@@ -1306,7 +1309,8 @@ async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,in
             case 0: useID = snapshotData.aggregates[i].groupBy.categoryGroup.id;break;
             case 1: useID = snapshotData.aggregates[i].groupBy.category.id;break;
             case 2: useID = snapshotData.aggregates[i].groupBy.category.id;break;
-            case 3: useID = snapshotData.aggregates[i].groupBy.category.id;retGroups = getCategoryGroup(useID);
+            case 3: useID = snapshotData.aggregates[i].groupBy.category.id;
+                retGroups = getCategoryGroup(useID);
                 useID = retGroups.GROUP;useType = retGroups.TYPE;break;
         }
         if(inID == '' || inID == useID) {
