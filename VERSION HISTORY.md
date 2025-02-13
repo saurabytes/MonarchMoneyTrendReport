@@ -4,6 +4,10 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 Email any issues directly:  robert @ paresi.net
 
 
+**Version 2.28:** 
+
+• REGRESSION: Reports / Trends & Reports / Accounts would fail because of changes made by Monarch Money to the Reports menus.
+
 **Version 2.27:** 
 
 • BUG: Reports / Trends could fail when running Monthly.
