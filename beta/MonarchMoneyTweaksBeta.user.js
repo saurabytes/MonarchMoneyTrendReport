@@ -488,11 +488,6 @@ function MT_GridDrawEmbed(inSection,inCol,inValue, inDesc) {
     return '';
 }
 
-function MT_GridGetUID(inSec,inUID,inCol) {
-    for (let i = 0; i < MTFlexRow.length; i += 1) {if(MTFlexRow[i].UID == inUID && MTFlexRow[i].Section == inSec) { return MTFlexRow[i][MTFields + inCol]; }}
-    return 0;
-}
-
 function MT_GridUpdateUID(inUID,inCol,inValue) {
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         if(MTFlexRow[i].UID == inUID) {
@@ -662,7 +657,7 @@ function MenuReportsCustomUpdate(inValue) {
 
     let div = document.querySelector('[class*="ReportsHeaderTabs__Root"]');
     for (let i = 0; i < 5; i += 1) {
-        let useClass = div.childNodes[i].className
+        let useClass = div.childNodes[i].className;
         if(inValue == i) {
             if(!useClass.includes(' tab-nav-item-active')) {
                 useClass = useClass + ' tab-nav-item-active';
@@ -716,7 +711,6 @@ async function MenuReportsAccountsGo() {
 async function MenuReportsAccountsGoExt(){
 
     let snapshotData = null, snapshotData3 = null;
-    let skipHidden = getCookie('MT_AccountsHidden',true);
     let CurMonth = getDates('n_CurMonth'),CurYear = 0;
     let NumMonths = (MTFlex.Button2 === 7) ? 6 : 12;
     let useDate = getDates('d_Minus1Year');
@@ -1857,7 +1851,7 @@ function MenuHistory(OnFocus) {
         if(OnFocus == true) {
             if(getCookie('MT_Budget',true) == 1) { MM_hideElement('[class*="CategoryDetails__PlanSummaryCard"]',1);}
         }
-        let div = findButton('Filters')
+        let div = findButton('Filters');
         if(div) {
             cec('button','MTHistoryButton',div.parentNode,' Monthly Summary');
             buildCategoryGroups();
