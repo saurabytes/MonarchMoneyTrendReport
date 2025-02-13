@@ -1,6 +1,6 @@
 # Issue with Trends/Accounts
 
-I am aware that the **Trends & Accounts** reports are not firing.  It seems that Monarch has changed the URL and their Reports menu structure, but breaks my hack so I can insert my reports into their sub-menu.  I'm 90% there with a resolution (actually it will be smoother & nicer) but there is a small part I'm trying to resolve to finish this fix.  Please give me a day to finish resolving it and I'll get out an update.
+I am aware that the **Trends & Accounts** reports are not firing.  It seems that Monarch has changed the URL and their Reports menu structure, but breaks my hack so I can insert my reports into their sub-menu.  I have a beta update out there for testing that resolves the issue.  It actually makes things so much smoother now as well.
 
 Thank you for your patience!
 
