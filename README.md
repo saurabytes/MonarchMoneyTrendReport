@@ -1,3 +1,12 @@
+# Issue with Trends/Accounts
+
+I am aware that the **Trends & Accounts** reports are not firing.  It seems that Monarch has changed the URL and their Reports menu structure, but breaks my hack so I can insert my reports into their sub-menu.  I'm 90% there is a resolution (actually it will be smoother & nicer) but there is a small part I'm trying to resolve to put out a fix.  Please give me a day to finish resolving it and I'll get out an update.
+
+Thank you for your patience!
+
+-Robert
+
+
 # Monarch Money Tweaks - GET STARTED! 
 
 [Already have MM Tweaks - Click here to Update to V2.27](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
