@@ -51,6 +51,7 @@ function MM_Init() {
     addStyle('.MTlink, .MTBudget a {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer;}');
     addStyle('.MTCheckboxClass, .MTFlexCheckbox {width: 19px; height: 19px; margin-right: 10px;float: inline-start; color: #FFFFFF; accent-color: ' + accentColor + '}');
     addStyle('.MTSpacerClass {margin: 4px 24px 4px 24px; border-bottom: 1px solid ' + lineForground +';}');
+    addStyle(`.MTInputClass { padding: 6px 12px; border-radius: 4px; background-color: transparent; border: solid 1px ${borderColor}; ${standardText}; }`);
     addStyle('.MTSpacerClassTR {padding: 0px 0px 0px 0px;}');
     addStyle('.MThRefClass {' + standardText + '}');
     addStyle('.MTTrend:hover, .MTAccounts:hover {cursor:pointer;}');
@@ -1964,12 +1965,8 @@ function MenuDisplay(OnFocus) {
 }
 
 function MenuDisplay_Input(inValue,inCookie,inType,inStyle,defaultValue) {
-    const isDark = isDarkMode();
-    const commonStyle = "padding: 6px 12px; border-radius: 4px; background-color: rgba(0, 0, 0, 0);";
-    const darkStyle = `border: solid 1px rgb(49, 49, 46); color: rgb(238, 238, 236); ${commonStyle}`;
-    const lightStyle = `border: solid 1px rgb(228, 225, 222); color: rgb(34, 32, 29); ${commonStyle}`;
 
-    let qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2')
+    let qs = document.querySelector('.SettingsCard__Placeholder-sc-189f681-2');
     if(qs != null) {
         qs = qs.firstChild.lastChild;
 
@@ -2014,7 +2011,7 @@ function MenuDisplay_Input(inValue,inCookie,inType,inStyle,defaultValue) {
             e2.min = 2000;
             e2.max = getDates('n_CurYear');
             e2.value = OldValue;
-            e2.style = isDark ? darkStyle : lightStyle;
+            e2.className = 'MTInputClass';
             e1.appendChild(e2);
             e2.addEventListener('change', () => { setCookie(inCookie,e2.value);});
         }
@@ -2039,7 +2036,8 @@ function MenuDisplay_Input(inValue,inCookie,inType,inStyle,defaultValue) {
                     e2.min = 0;
                     e2.max = 99;
                     e2.value = value[idx];
-                    e2.style = `${isDark ? darkStyle : lightStyle} margin-bottom: 10px;`;
+                    e2.style = `margin-bottom: 10px;`;
+                    e2.className = 'MTInputClass';
                     e1.appendChild(e2);
                     e2.addEventListener('change', (e) => {
                         const inputVal = Math.max(0, Math.min(99, parseInt(e2.value) || 0))
