@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.28
+// @version      2.29
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.28';
+const version = '2.29';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -51,7 +51,7 @@ function MM_Init() {
     addStyle('.MTlink, .MTBudget a {background-color: transparent; color: rgb(50, 170, 240); font-weight: 500; font-size: 14px; cursor: pointer;}');
     addStyle('.MTCheckboxClass, .MTFlexCheckbox {width: 19px; height: 19px; margin-right: 10px;float: inline-start; color: #FFFFFF; accent-color: ' + accentColor + '}');
     addStyle('.MTSpacerClass {margin: 4px 24px 4px 24px; border-bottom: 1px solid ' + lineForground +';}');
-    addStyle(`.MTInputClass { padding: 6px 12px; border-radius: 4px; background-color: transparent; border: solid 1px ${borderColor}; ${standardText}; }`);
+    addStyle('.MTInputClass { padding: 6px 12px; border-radius: 4px; background-color: transparent; border: solid 1px ${borderColor}; ${standardText}; }');
     addStyle('.MTSpacerClassTR {padding: 0px 0px 0px 0px;}');
     addStyle('.MThRefClass {' + standardText + '}');
     addStyle('.MTTrend:hover, .MTAccounts:hover {cursor:pointer;}');
@@ -1959,7 +1959,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Ignore Budget Income remaining in "Left to Spend"','MT_PlanLTBII','checkbox','margin-left: 22px;');
             MenuDisplay_Input('Ignore Budget Expenses remaining in "Left to Spend"','MT_PlanLTBIE','checkbox','margin-left: 22px;');
             MenuDisplay_Input('Ignore Rollover budgets, always use actual Budget minus actual Spent for “Left to Spend”','MT_PlanLTBIR','checkbox','margin-left: 22px;');
-            MenuDisplay_Input('Reorder budget categories (income, expenses, contributions)','MT_BudgetOrder','number-array',"",[0,1,2]);
+            MenuDisplay_Input('Reorder budget categories (Income, Expenses, Contributions)','MT_BudgetOrder','number-array',"",[0,1,2]);
         }
     }
 }
@@ -2036,15 +2036,13 @@ function MenuDisplay_Input(inValue,inCookie,inType,inStyle,defaultValue) {
                     e2.min = 0;
                     e2.max = 99;
                     e2.value = value[idx];
-                    e2.style = `margin-bottom: 10px;`;
+                    e2.style = 'margin-bottom: 10px;';
                     e2.className = 'MTInputClass';
                     e1.appendChild(e2);
                     e2.addEventListener('change', (e) => {
                         const inputVal = Math.max(0, Math.min(99, parseInt(e2.value) || 0))
                         value[idx] = inputVal;
-
                         e.target.value = inputVal;
-
                         setCookie(inCookie, JSON.stringify(value));
                     });
                 })
