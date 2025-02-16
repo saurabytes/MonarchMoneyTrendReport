@@ -3,6 +3,9 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 2.29:** 
+
+• NEW: Ability to change order of Income, Expenses and Contributions in Budgets.
 
 **Version 2.28:** 
 
