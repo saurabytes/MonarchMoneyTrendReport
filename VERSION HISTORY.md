@@ -3,6 +3,12 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 2.30 (beta):** 
+
+• NEW: Added "Household" name to Accounts / Edit screen.  (ie: Parents, Kids, etc.)
+
+• NEW: Added ability to Filter Reports / Accounts by All or by Household group.
+
 **Version 2.29:** 
 
 • NEW: Ability to change order of Income, Expenses and Contributions in Budgets.
