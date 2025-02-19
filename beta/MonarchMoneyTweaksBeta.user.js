@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.30.01
+// @version      2.30.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.30.01';
+const version = '2.30.02';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -486,12 +486,12 @@ function MT_GridDrawEmbed(inSection,inCol,inValue, inDesc) {
             break;
         case 'MTAccounts':
             if(MTFlex.Button2 < 7) {
-                if((inSection == 2) && inCol == 8 ) {if(inValue < 0) {return css_red;}}
-                if((inSection == 2) && inCol == 8 ) {if(inValue > 0) {return css_green;}}
-                if((inSection == 2) && inCol == 10 ) {if(inValue < 0) {return css_red;}}
-                if((inSection == 4) && inCol == 8 ) {if(inValue > 0) {return css_red;}}
-                if((inSection == 4) && inCol == 8 ) {if(inValue < 0) {return css_green;}}
-                if((inSection == 4) && inCol == 10 ) {if(inValue < 0) {return css_red;}}
+                if((inSection == 2) && inCol == 9 ) {if(inValue < 0) {return css_red;}}
+                if((inSection == 2) && inCol == 9 ) {if(inValue > 0) {return css_green;}}
+                if((inSection == 2) && inCol == 11 ) {if(inValue < 0) {return css_red;}}
+                if((inSection == 4) && inCol == 9 ) {if(inValue > 0) {return css_red;}}
+                if((inSection == 4) && inCol == 9 ) {if(inValue < 0) {return css_green;}}
+                if((inSection == 4) && inCol == 11 ) {if(inValue < 0) {return css_red;}}
             }
             break;
     }
