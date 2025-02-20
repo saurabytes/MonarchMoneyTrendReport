@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.30.04
+// @version      2.30.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.30.04';
+const version = '2.30.05';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -1012,8 +1012,11 @@ async function MenuAccountsSummary() {
             MenuAccountSummaryUpdate(HouseholdFilter, snapshotData.accounts[i].isAsset, snapshotData.accounts[i].displayBalance);
         }
     }
+
     const elements = document.querySelectorAll('[class*="AccountSummaryCardGroup__CardSection"]');
     if(elements) {
+        MTFlexReady=0;
+        aSummary.sort();
         MenuAccountSummaryShow(elements[0],true);
         MenuAccountSummaryShow(elements[1],false);
     }
@@ -1024,15 +1027,16 @@ async function MenuAccountsSummary() {
         let cnClass = cn.className;
         let div = document.createElement('div');
         div = inParent.insertBefore(div, cn.nextSibling);
-
+        let valid = false;
         for (let j = 0; j < aSummary.length; j += 1) {
             if((isAsset && aSummary[j].Asset != 0) || (!isAsset && aSummary[j].Liability !=0)) {
                 const useDiv = cec('div',cnClass,div,'','','style','margin-bottom: 5px;');
                 cec('span','',useDiv,aSummary[j].HouseHoldDesc);
                 cec('span','',useDiv,isAsset == true ? getDollarValue(aSummary[j].Asset) : getDollarValue(aSummary[j].Liability),'','style','color: rgb(119, 117, 115)');
+                valid = true;
             }
         }
-        const useDiv = cec('div','',div,'','','style','margin-bottom: 12px;');
+        if(valid) {cec('div','',div,'','','style','margin-bottom: 12px;');}
     }
 
     function MenuAccountSummaryUpdate(inH,inA,inBal) {
@@ -2021,7 +2025,7 @@ function MenuAccounts(OnFocus) {
             MTUpdateAccountPartner();
         }
         if (SaveLocationPathName == '/accounts' ) {
-            MenuAccountsSummary();
+            MTFlexReady = 4;
         }
     }
 }
@@ -2182,6 +2186,9 @@ function MenuCheckSpawnProcess() {
             MTFlexReady = false;
             MenuPlanRefresh();
             BudgetReorder();
+            break;
+        case 4:
+            MenuAccountsSummary();
             break;
     }
 }
