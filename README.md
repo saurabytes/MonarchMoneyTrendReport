@@ -25,6 +25,7 @@ I found there were opportunities to enhance the Monarch Money web application wi
      - Sort the data by any column and export your data to Excel or Numbers
     
        
+* Separate Accounts to see breakdown with a Household description. (Parents vs Children or Partner 1 vs Partner 2)
 
 * Save and restore your Report filters and other report options on **Reports / Datasets**.  No longer have to redo your filters over each time!
 
@@ -108,3 +109,7 @@ Enjoy!
 
 **Monarch Tweaks Reports tag multiple cells**
 ![Settings](/images/MT_V2_09.png)
+
+**Monarch Tweaks Household Description for Breakdown**
+![Settings](/images/MT_V2_10.png)
+![Settings](/images/MT_V2_11.png)
