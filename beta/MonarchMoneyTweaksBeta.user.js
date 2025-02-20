@@ -801,7 +801,7 @@ async function MenuReportsAccountsGoExt(){
             useDate.setMonth(CurMonth);
         }
     }
-    if(MTFlex.Button2 == 9 && CurMonth == 0) {MTFlexTitle[2].isHidden = false;}
+    if(MTFlex.Button2 == 9 && CurMonth == 0) {MTFlexTitle[3].isHidden = false;}
     MT_GridRollup(1,2,1,'Assets');
     MT_GridRollup(3,4,2,'Liabilities');
     MT_GridRollDifference(5,1,3,1,'Net Worth/Totals','Add');
