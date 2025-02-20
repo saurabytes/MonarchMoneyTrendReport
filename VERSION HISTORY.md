@@ -7,6 +7,8 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Added "Household" name to Accounts / Edit screen.  (ie: Parents, Kids, etc.)
 
+• NEW: Accounts Summary pane will now show "Household" breakdown of Assets and Liabilities.
+
 • NEW: Added ability to Filter Reports / Accounts by All or by Household group.
 
 **Version 2.29:** 
