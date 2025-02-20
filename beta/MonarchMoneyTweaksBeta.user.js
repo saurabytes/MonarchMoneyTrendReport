@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.30.05
+// @version      2.30.06
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.30.05';
+const version = '2.30.06';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -1004,6 +1004,9 @@ function getAccountHouseholdFilter() {
 
 async function MenuAccountsSummary() {
 
+    const topDiv = document.getElementById('MTAccountSummary');
+    if(topDiv) {MTFlexReady=0;return;}
+
     let aSummary = [];
     let snapshotData = await getAccountsData();
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
@@ -1014,7 +1017,7 @@ async function MenuAccountsSummary() {
     }
 
     const elements = document.querySelectorAll('[class*="AccountSummaryCardGroup__CardSection"]');
-    if(elements) {
+    if(elements.length > 1) {
         MTFlexReady=0;
         aSummary.sort();
         MenuAccountSummaryShow(elements[0],true);
@@ -1026,6 +1029,7 @@ async function MenuAccountsSummary() {
         let cn = inParent.childNodes[0];
         let cnClass = cn.className;
         let div = document.createElement('div');
+        div.id = 'MTAccountSummary';
         div = inParent.insertBefore(div, cn.nextSibling);
         let valid = false;
         for (let j = 0; j < aSummary.length; j += 1) {
