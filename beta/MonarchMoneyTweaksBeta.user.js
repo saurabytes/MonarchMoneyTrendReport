@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.30.03
+// @version      2.30.04
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.30.03';
+const version = '2.30.04';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -1002,6 +1002,50 @@ function getAccountHouseholdFilter() {
     return '';
 }
 
+async function MenuAccountsSummary() {
+
+    let aSummary = [];
+    let snapshotData = await getAccountsData();
+    for (let i = 0; i < snapshotData.accounts.length; i += 1) {
+        if(snapshotData.accounts[i].hideFromList == false) {
+            let HouseholdFilter = localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id);
+            MenuAccountSummaryUpdate(HouseholdFilter, snapshotData.accounts[i].isAsset, snapshotData.accounts[i].displayBalance);
+        }
+    }
+    const elements = document.querySelectorAll('[class*="AccountSummaryCardGroup__CardSection"]');
+    if(elements) {
+        MenuAccountSummaryShow(elements[0],true);
+        MenuAccountSummaryShow(elements[1],false);
+    }
+
+    function MenuAccountSummaryShow(inParent,isAsset) {
+
+        let cn = inParent.childNodes[0];
+        let cnClass = cn.className;
+        let div = document.createElement('div');
+        div = inParent.insertBefore(div, cn.nextSibling);
+
+        for (let j = 0; j < aSummary.length; j += 1) {
+            if((isAsset && aSummary[j].Asset != 0) || (!isAsset && aSummary[j].Liability !=0)) {
+                const useDiv = cec('div',cnClass,div,'','','style','margin-bottom: 5px;');
+                cec('span','',useDiv,aSummary[j].HouseHoldDesc);
+                cec('span','',useDiv,isAsset == true ? getDollarValue(aSummary[j].Asset) : getDollarValue(aSummary[j].Liability),'','style','color: rgb(119, 117, 115)');
+            }
+        }
+        const useDiv = cec('div','',div,'','','style','margin-bottom: 12px;');
+    }
+
+    function MenuAccountSummaryUpdate(inH,inA,inBal) {
+        for (let j = 0; j < aSummary.length; j += 1) {
+            if(aSummary[j].HouseHoldDesc == inH) {
+                if(inA == true) {aSummary[j].Asset += Number(inBal)} else {aSummary[j].Liability += Number(inBal);}
+                return;
+            }
+        }
+        aSummary.push({"HouseHoldDesc": inH, "Asset": inA == true ? Number(inBal) : 0, "Liability": inA == true ? 0 : Number(inBal) });
+    }
+}
+
 async function MenuReportsTrendsGo() {
 
     TrendQueue = [];
@@ -1970,11 +2014,14 @@ function MenuLogin(OnFocus) {
     }
 }
 
-// Accounts
-function MenuEditAccount(OnFocus) {
-    if (SaveLocationPathName.startsWith('/accounts/details') && SaveLocationPathName.endsWith('/edit') ) {
-        if(OnFocus == true) {
+function MenuAccounts(OnFocus) {
+
+    if(OnFocus == true) {
+        if (SaveLocationPathName.startsWith('/accounts/details') && SaveLocationPathName.endsWith('/edit') ) {
             MTUpdateAccountPartner();
+        }
+        if (SaveLocationPathName == '/accounts' ) {
+            MenuAccountsSummary();
         }
     }
 }
@@ -2601,7 +2648,7 @@ function addStyle(aCss) {
             MenuDisplay(true);
             MenuPlan(true);
             MenuHistory(true);
-            MenuEditAccount(true);
+            MenuAccounts(true);
         }
         MenuCheckSpawnProcess();
     },330);
