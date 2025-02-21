@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.30 (beta):** 
+**Version 2.30:** 
 
 • NEW: Added "Household" name to Accounts / Edit screen.  (ie: Parents, Kids, etc.)
 
