@@ -118,4 +118,4 @@ Enjoy!
 
 ## Contributions:
 
-This project is not setup for contributions, however I am happy to hear ideas.  Feel free to send me a private message / email.   
+This Github repo is not setup for contributions, however I am happy to hear ideas.  Feel free to send me a private message / email to discuss.   
