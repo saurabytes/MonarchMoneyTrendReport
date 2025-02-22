@@ -1031,7 +1031,7 @@ async function MenuAccountsSummary() {
                 cec('span','',divChild,isAsset == true ? getDollarValue(aSummary[j].Asset) : getDollarValue(aSummary[j].Liability),'','style','color: rgb(119, 117, 115)');
             }
         }
-        if(divChild) {cec('div','',div,'','','style','margin-bottom: 12px;');}
+        if(divChild) {cec('div','',div,'','','style','margin-bottom: 18px;');}
     }
 
     function MenuAccountSummaryUpdate(inH,inA,inBal) {
