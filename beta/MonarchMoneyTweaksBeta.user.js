@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.30
+// @version      2.31
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.30';
+const version = '2.31';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -997,15 +997,14 @@ function getAccountHouseholdFilter() {
 
 async function MenuAccountsSummary() {
 
-    const topDiv = document.getElementById('MTAccountSummary');
-    if(topDiv) {MTSpawnProcess = 0;return;}
+    const topDiv = document.querySelector('div.MTAccountSummary');
+    if(topDiv) return;
 
     let aSummary = [];
 
     const elements = document.querySelectorAll('[class*="AccountSummaryCardGroup__CardSection"]');
     if(elements.length > 1) {
         let snapshotData = await getAccountsData();
-        MTSpawnProcess = 0;
         for (let i = 0; i < snapshotData.accounts.length; i += 1) {
             if(snapshotData.accounts[i].hideFromList == false) {
                 let HouseholdFilter = localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id);
@@ -1015,31 +1014,30 @@ async function MenuAccountsSummary() {
         aSummary.sort();
         MenuAccountSummaryShow(elements[0],true);
         MenuAccountSummaryShow(elements[1],false);
-    }
+    } else { MTSpawnProcess = 4; }
 
     function MenuAccountSummaryShow(inParent,isAsset) {
 
         let cn = inParent.childNodes[0];
         let cnClass = cn.className;
         let div = document.createElement('div');
-        div.id = 'MTAccountSummary';
+        div.className = 'MTAccountSummary';
         div = inParent.insertBefore(div, cn.nextSibling);
-        let valid = false;
+        let divChild = null;
         for (let j = 0; j < aSummary.length; j += 1) {
             if((isAsset && aSummary[j].Asset != 0) || (!isAsset && aSummary[j].Liability !=0)) {
-                const useDiv = cec('div',cnClass,div,'','','style','margin-bottom: 5px;');
-                cec('span','',useDiv,aSummary[j].HouseHoldDesc);
-                cec('span','',useDiv,isAsset == true ? getDollarValue(aSummary[j].Asset) : getDollarValue(aSummary[j].Liability),'','style','color: rgb(119, 117, 115)');
-                valid = true;
+                divChild = cec('div',cnClass,div,'','','style','margin-bottom: 5px;');
+                cec('span','',divChild,aSummary[j].HouseHoldDesc);
+                cec('span','',divChild,isAsset == true ? getDollarValue(aSummary[j].Asset) : getDollarValue(aSummary[j].Liability),'','style','color: rgb(119, 117, 115)');
             }
         }
-        if(valid) {cec('div','',div,'','','style','margin-bottom: 12px;');}
+        if(divChild) {cec('div','',div,'','','style','margin-bottom: 12px;');}
     }
 
     function MenuAccountSummaryUpdate(inH,inA,inBal) {
         for (let j = 0; j < aSummary.length; j += 1) {
             if(aSummary[j].HouseHoldDesc == inH) {
-                if(inA == true) {aSummary[j].Asset += Number(inBal)} else {aSummary[j].Liability += Number(inBal);}
+                if(inA == true) {aSummary[j].Asset += Number(inBal);} else {aSummary[j].Liability += Number(inBal);}
                 return;
             }
         }
@@ -1467,18 +1465,18 @@ function MenuTrendsHistory(inType,inID) {
         let retGroups = getCategoryGroup(inID),inGroup = 1,useURL = '';
 
         topDiv = topDiv.childNodes[0];
-        let div = cec('div','MTHistoryPanel',topDiv,'','','','');
+        let div = cec('div','MTHistoryPanel',topDiv);
         let div2 = cec('div','MTSideDrawerRoot',div,'','','tabindex','0');
-        let div3 = cec('div','MTSideDrawerContainer',div2,'','','','');
+        let div3 = cec('div','MTSideDrawerContainer',div2);
         let div4 = cec('div','MTSideDrawerMotion',div3,'','','grouptype',inType);
         div4.setAttribute('cattype',retGroups.TYPE);
-        div = cec('span','MTSideDrawerHeader',div4,'','','','');
+        div = cec('span','MTSideDrawerHeader',div4);
         div2 = cec('button','MTTrendCellArrow',div,'','','style','float:right;');
         if(inType == 'category-groups') {
             div2 = cec('button','MTTrendCellArrow2',div,['',''][getCookie('MTC_div.TrendHistoryDetail',true)],'','style','float:right;margin-right: 16px;');
         }
         div2 = cec('div','MTFlexCardBig',div,'Monthly Summary');
-        div = cec('span','MTSideDrawerHeader',div4,'','','','');
+        div = cec('span','MTSideDrawerHeader',div4);
         div2 = cec('div','MTFlexSmall',div, retGroups.TYPE,'','style','float:right;');
         if(retGroups.TYPE == 'expense') {useURL = '#|spending|';} else {useURL = '#|income|';}
         if(inType == 'category-groups') {
@@ -1508,7 +1506,7 @@ function MenuTrendsHistoryDraw() {
     if(topDiv) {
         if(topDiv.getAttribute("grouptype") == 'category-groups') { inGroup = 2;}
         if(topDiv.getAttribute("cattype") == 'income') { c_g = 'red'; c_r = 'green'; }
-        let div = cec('div','MTSideDrawerHeader',topDiv,'','','','');
+        let div = cec('div','MTSideDrawerHeader',topDiv);
 
         for (let i = 0; i < 12; i++) {
             sumQue.push({"MONTH": i,"YR1": MTHistoryDraw(i+1,startYear),"YR2": MTHistoryDraw(i+1,startYear + 1),"YR3": MTHistoryDraw(i+1,startYear + 2)});
@@ -1519,19 +1517,19 @@ function MenuTrendsHistoryDraw() {
         let div2 = cec('div','MTSideDrawerItem',div,'','','style',os2);
         let div3 = cec('span','MTSideDrawerDetail',div2,'Month','','style',os);
         for (let j = startYear; j <= curYear; j++) {
-            if(skiprow == false || j > startYear) { div3 = cec('span','MTSideDrawerDetail',div2,j,'','','');}
+            if(skiprow == false || j > startYear) { div3 = cec('span','MTSideDrawerDetail',div2,j);}
         }
 
-        div3 = cec('span','MTSideDrawerDetail3',div2,'','','','');
-        div3 = cec('span','MTSideDrawerDetail',div2,'Average for Month','','','');
+        div3 = cec('span','MTSideDrawerDetail3',div2);
+        div3 = cec('span','MTSideDrawerDetail',div2,'Average for Month');
         div2 = cec('div','MTSideDrawerItem',div,'','','style',os2);
-        div3 = cec('span','MTFlexSpacer',div2,'','','','');
+        div3 = cec('span','MTFlexSpacer',div2);
 
         let T = ['Total',0,0,0,0];
         for (let i = 0; i < 12; i++) {
             if(i > 0 && i == curMonth) {
                 div2 = cec('div','MTSideDrawerItem',div,'','','style',os2);
-                div3 = cec('span','MTFlexSpacer',div2,'','','','');
+                div3 = cec('span','MTFlexSpacer',div2);
             }
             if(sumQue[i].YR2 == sumQue[i].YR3){
                 useArrow = 2;}
@@ -1542,21 +1540,21 @@ function MenuTrendsHistoryDraw() {
                     if(sumQue[i].YR3 > sumQue[i].YR2) {useArrow = 0;} else {useArrow = 1;}
                 }
             }
-            div2 = cec('div','MTSideDrawerItem',div,'','','','');
+            div2 = cec('div','MTSideDrawerItem',div);
             if(sumQue[i].YR1 != 0) {curYears = 3;}
             if(curYears < 3) {
                 if(sumQue[i].YR2 != 0) {curYears = 2;}
             }
             div3 = cec('span','MTSideDrawerDetail',div2,getMonthName(i,true),'','style',os);
-            if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR1),'','','');}
-            div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR2),'','','');
-            div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR3),'','','');
+            if(skiprow == false) {div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR1));}
+            div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR2));
+            div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(sumQue[i].YR3));
             div3 = cec('span','MTSideDrawerDetail3',div2,['','',' '][useArrow],'','style','color: ' + [c_r,c_g,''][useArrow]);
 
             if(i < curMonth) {
-                div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue((sumQue[i].YR1 + sumQue[i].YR2 + sumQue[i].YR3) / curYears),'','','');
+                div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue((sumQue[i].YR1 + sumQue[i].YR2 + sumQue[i].YR3) / curYears));
             } else {
-                div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue((sumQue[i].YR1 + sumQue[i].YR2)/(curYears-1)),'','','');
+                div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue((sumQue[i].YR1 + sumQue[i].YR2)/(curYears-1)));
             }
             T[1] = T[1] + sumQue[i].YR1;T[2] = T[2] + sumQue[i].YR2;T[3] = T[3] + sumQue[i].YR3;
             if(inGroup == 2) { MTHistoryDrawDetail(i+1,div); }
@@ -1565,18 +1563,18 @@ function MenuTrendsHistoryDraw() {
         if(tot != 0) { T[4] = tot / curYears; }
 
         div2 = cec('div','MTSideDrawerItem',div,'','','style',os2);
-        div3 = cec('span','MTFlexSpacer',div2,'','','');
+        div3 = cec('span','MTFlexSpacer',div2);
         div2 = cec('div','MTSideDrawerItem',div,'','','style',os2);
         div3 = cec('span','MTSideDrawerDetail',div2,T[0],'','style',os);
         for (let i = 1; i < 5; i++) {
             if(skiprow == false || i > 1) {
-                div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(T[i]),'','','');
+                div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(T[i]));
                 if(i == 3) {
                      div3 = cec('span','MTSideDrawerDetail3',div2,' ');
                 }
             }
         }
-        div = cec('div','MTSideDrawerHeader',topDiv,'','','','');
+        div = cec('div','MTSideDrawerHeader',topDiv);
         div2 = cec('div','MTlink',div,'Download CSV','','style','padding: 0px; display:block; text-align:center;');
     }
 
@@ -1702,16 +1700,16 @@ async function MenuPlanRefresh() {
     if(getCookie('MT_PlanLTBIE',true) == 0) {noBudget = false; if(budgetE[3] > 0) { LeftToSpend = LeftToSpend - budgetE[3];} else {LTSLit=LTSLit + ' (Over Budget!)';}}
     let LeftToSpendStyle = css_green;if(LeftToSpend < 0) {LeftToSpendStyle = css_red;}
 
-    div = cec('div','MTBudget',div,'','','','');
-    let div2 = cec('div','',div,'','','','');
-    cec('span','MTBudget1',div2,'Total in Checking','','','');
-    cec('span','MTBudget2',div2,getDollarValue(bCK,true),'','','');
+    div = cec('div','MTBudget',div);
+    let div2 = cec('div','',div);
+    cec('span','MTBudget1',div2,'Total in Checking');
+    cec('span','MTBudget2',div2,getDollarValue(bCK,true));
     div2 = cec('div','',div,'','','','');
-    cec('span','MTBudget1',div2,'Total in Credit Cards','','','');
-    cec('span','MTBudget2',div2,getDollarValue(bCC,true),'','','');
+    cec('span','MTBudget1',div2,'Total in Credit Cards');
+    cec('span','MTBudget2',div2,getDollarValue(bCC,true));
     div2 = cec('div','',div,'','','','');
-    cec('a','MTBudget1',div2,'Total Pending (' + bPDtx + ')','/transactions?isPending=true','','');
-    cec('span','MTBudget2',div2,getDollarValue(bPD,true),'','','');
+    cec('a','MTBudget1',div2,'Total Pending (' + bPDtx + ')','/transactions?isPending=true');
+    cec('span','MTBudget2',div2,getDollarValue(bPD,true));
     div2 = cec('div','',div,'','','','');
     cec('span','MTBudget1',div2,'Total Available','','style','font-weight: 500;');
     cec('span','MTBudget2',div2,getDollarValue(bCK-bCC-bPD,true),'','style','font-weight: 500;');
@@ -1721,9 +1719,9 @@ async function MenuPlanRefresh() {
         cec('span','MTBudget2',div2,getDollarValue(LeftToSpend,true),'','style','font-weight: 500; ' + LeftToSpendStyle);
     }
     if(bSV > 0) {
-        div2 = cec('div','',div,'','','','');
-        cec('span','MTBudget1',div2,'Total in Savings','','','');
-        cec('span','MTBudget2',div2,getDollarValue(bSV,true),'','','');
+        div2 = cec('div','',div,'');
+        cec('span','MTBudget1',div2,'Total in Savings');
+        cec('span','MTBudget2',div2,getDollarValue(bSV,true));
     }
 
     function getPendingBalance() {
@@ -1736,7 +1734,7 @@ async function MenuPlanRefresh() {
     }
 }
 
-function BudgetReorder() {
+function MenuPlanBudgetReorder() {
     const budgetGrid = document.querySelector('[class*="Plan__SectionsContainer"]');
     const separator = document.querySelector('[class*="PlanSectionFooter__Separator"]');
 
@@ -2157,12 +2155,12 @@ function MenuDisplay_Input(inValue,inCookie,inType,inStyle,defaultValue) {
                     e2.className = 'MTInputClass';
                     e1.appendChild(e2);
                     e2.addEventListener('change', (e) => {
-                        const inputVal = Math.max(0, Math.min(99, parseInt(e2.value) || 0))
+                        const inputVal = Math.max(0, Math.min(99, parseInt(e2.value) || 0));
                         value[idx] = inputVal;
                         e.target.value = inputVal;
                         setCookie(inCookie, JSON.stringify(value));
                     });
-                })
+                });
             }
         }
     }
@@ -2182,14 +2180,15 @@ function MenuCheckSpawnProcess() {
         case 3:
             MTSpawnProcess = 0;
             MenuPlanRefresh();
-            BudgetReorder();
+            MenuPlanBudgetReorder();
             break;
         case 4:
+            MTSpawnProcess = 0;
             MenuAccountsSummary();
             break;
     }
 }
-
+// Generic on-click event handler
 window.onclick = function(event) {
 
     const cn = event.target.className;
@@ -2197,19 +2196,6 @@ window.onclick = function(event) {
     //console.log(cn,event.target,pcn,event.target.parentNode);
     if(typeof cn === 'string') {
         switch (cn) {
-            case 'MTFlexGridDCell':
-            case 'MTSideDrawerDetail4':
-                if(event.target.hash) {
-                    if(event.target.hash.startsWith('#') == true) {
-                        event.stopImmediatePropagation();
-                        event.stopPropagation();
-                        event.preventDefault();
-                        const p = event.target.hash.split('|');
-                        MenuReportsSetFilter(p[1],p[2],p[3]);
-                        window.location.replace('/reports/' + p[1]);
-                    }
-                }
-                return;
             case 'MTSideDrawerRoot':
             case 'MTTrendCellArrow':
                 removeAllSections('div.MTSideDrawerRoot');
@@ -2224,20 +2210,17 @@ window.onclick = function(event) {
             case 'MTFlexBig MThRefClass':
                 onClickMTFlexBig();return;
             case 'MTFlexButton1':
-                if(r_FlexButtonActive == 2) {document.getElementById("MTDropdown2").className = 'MTFlexdown-content';}
-                if(r_FlexButtonActive == 4) {document.getElementById("MTDropdown4").className = 'MTFlexdown-content';}
-                if(document.getElementById("MTDropdown1").classList.toggle("show") == true) { r_FlexButtonActive = 1;} else { r_FlexButtonActive = 0;}
-                return;
             case 'MTFlexButton2':
-                if(r_FlexButtonActive == 1) {document.getElementById("MTDropdown1").className = 'MTFlexdown-content';}
-                if(r_FlexButtonActive == 4) {document.getElementById("MTDropdown4").className = 'MTFlexdown-content';}
-                if(document.getElementById("MTDropdown2").classList.toggle("show") == true) { r_FlexButtonActive = 2;} else { r_FlexButtonActive = 0;}
-                return;
             case 'MTFlexButton4':
-                if(r_FlexButtonActive == 1) {document.getElementById("MTDropdown1").className = 'MTFlexdown-content';}
-                if(r_FlexButtonActive == 2) {document.getElementById("MTDropdown2").className = 'MTFlexdown-content';}
-                if(document.getElementById("MTDropdown4").classList.toggle("show") == true) { r_FlexButtonActive = 4;} else { r_FlexButtonActive = 0;}
+                onClickMTDropdown(cn.slice(12));
                 return;
+            case 'MTButton1':
+            case 'MTButton2':
+            case 'MTButton4':
+                setCookie(MTFlex.Name + cn.slice(2),event.target.getAttribute('mtoption'));
+                MenuReportsGo(MTFlex.Name);
+                return;
+
             case 'MTFlexCheckbox':
                 MTFlex.Button3 = event.target.checked;
                 setCookie(MTFlex.Name + 'Button3',MTFlex.Button3);
@@ -2254,11 +2237,18 @@ window.onclick = function(event) {
             case 'MTHistoryButton':
                 onClickMTFlexArrow(SaveLocationPathName.slice(1));
                 return;
-            case 'MTButton1':
-            case 'MTButton2':
-            case 'MTButton4':
-                setCookie(MTFlex.Name + cn.slice(2),event.target.getAttribute('mtoption'));
-                MenuReportsGo(MTFlex.Name);
+            case 'MTFlexGridDCell':
+            case 'MTSideDrawerDetail4':
+                if(event.target.hash) {
+                    if(event.target.hash.startsWith('#') == true) {
+                        event.stopImmediatePropagation();
+                        event.stopPropagation();
+                        event.preventDefault();
+                        const p = event.target.hash.split('|');
+                        MenuReportsSetFilter(p[1],p[2],p[3]);
+                        window.location.replace('/reports/' + p[1]);
+                    }
+                }
                 return;
         }
         if(cn.includes('AbstractButton')) {
@@ -2343,13 +2333,21 @@ window.onclick = function(event) {
         }
     }
     if(r_DatasetActive == true) {onClickFilter();}
+    onClickMTDropdownRelease();
+};
+
+function onClickMTDropdown(cActive) {
+    onClickMTDropdownRelease();
+    if(document.getElementById("MTDropdown"+cActive).classList.toggle("show") == true) { r_FlexButtonActive = cActive;} else { r_FlexButtonActive = 0;}
+}
+
+function onClickMTDropdownRelease() {
     if(r_FlexButtonActive > 0) {
-        let li = document.getElementById("MTDropdown1");if(li) {li.className = 'MTFlexdown-content';}
-        li = document.getElementById("MTDropdown2");if(li) {li.className = 'MTFlexdown-content';}
-        li = document.getElementById("MTDropdown4");if(li) {li.className = 'MTFlexdown-content';}
+        let li = document.getElementById("MTDropdown" + r_FlexButtonActive);
+        if(li) {li.className = 'MTFlexdown-content';}
         r_FlexButtonActive = 0;
     }
-};
+}
 
 function onClickMTFlexBig() {
 
@@ -2598,7 +2596,6 @@ function setCookie(cName, cValue) {
 }
 
 function getCookie(cname,isNum) {
-
     let name = cname + '=';
     let ca = document.cookie.split(';');
     for(let i = 0; i < ca.length; i++) {
@@ -2636,28 +2633,28 @@ function addStyle(aCss) {
     style.textContent = aCss;
     r_headStyle.appendChild(style);
 }
-
+// Main Execution Loop
 (function() {
     MM_Init();
     setInterval(() => {
         if(window.location.pathname != SaveLocationPathName) {
-            if(SaveLocationPathName) {
-                MenuLogin(false);
-                MenuReports(false);
-                MenuDisplay(false);
-                MenuPlan(false);
-            }
+            if(SaveLocationPathName) {MM_MenuRun(false);}
             SaveLocationPathName = window.location.pathname;
-            MenuReports(true);
-            MenuDisplay(true);
-            MenuPlan(true);
-            MenuHistory(true);
-            MenuAccounts(true);
+            MM_MenuRun(true);
         }
         MenuCheckSpawnProcess();
     },330);
 }());
-
+// Run when leaving & entering a page
+function MM_MenuRun(onFocus) {
+    MenuLogin(onFocus);
+    MenuReports(onFocus);
+    MenuPlan(onFocus);
+    MenuAccounts(onFocus);
+    MenuHistory(onFocus);
+    MenuDisplay(onFocus);
+}
+// Query functions
 function getGraphqlToken() {
   return JSON.parse(JSON.parse(localStorage.getItem('persist:root')).user).token;
 }
