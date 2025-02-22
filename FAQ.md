@@ -13,7 +13,7 @@ Tampermonkey is an open-source script extension used by over 11 million users, c
 
 This extension is exclusively available on GitHub, which is a reputable source hub used by more than 20 million users and secured with Two-Factor Authentication. 
 
-Having been available for over 11 months to members of the Monarch Money community, I welcome any questions, concerns, or requests for assistance. Please do not hesitate to email me at robert@paresi.net.
+Having been available for over a year to members of the Monarch Money community, I welcome any questions, concerns, or requests for assistance. Please do not hesitate to email me at robert@paresi.net.
 
 
 > [!IMPORTANT]
