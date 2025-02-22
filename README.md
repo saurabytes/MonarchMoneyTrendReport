@@ -6,7 +6,7 @@ Hello!  I use **Monarch Money**.
 
 I found there were opportunities to enhance the Monarch Money web application with more functionality and configuration options.
 
-# FEATURES:
+# Features:
 
 * **Reports / Trends**
     - Summarize your Monarch Money history comparing to Last month, Same month last year or Same quarter last year
@@ -52,7 +52,7 @@ I found there were opportunities to enhance the Monarch Money web application wi
 * Highlight Pending Transactions when **Settings / Preferences / Allow Edits to Pending Transactions** is set to "Off".
 
 
-# INSTALLING MONARCH MONEY TWEAKS:
+# Installing MONARCH MONEY TWEAKS:
 
 You can install the script by using the **Tampermonkey** app extension in Chrome, Microsoft Edge, Safari, Firefox and Opera Next.  For the iPad, use the **Safari </> Userscripts** app.
 
@@ -81,7 +81,7 @@ Refresh/Reload the Monarch Money webpage and select **Settings / Display** in Mo
 
 Enjoy!
 
-## SCREENSHOTS:
+## Screenshots:
 
 **Monarch Tweaks Settings**
 ![Settings](/images/MT_V2_01.png)
