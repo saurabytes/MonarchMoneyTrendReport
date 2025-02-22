@@ -81,7 +81,7 @@ Refresh/Reload the Monarch Money webpage and select **Settings / Display** in Mo
 
 Enjoy!
 
-# SCREENSHOTS:
+## SCREENSHOTS:
 
 **Monarch Tweaks Settings**
 ![Settings](/images/MT_V2_01.png)
@@ -112,4 +112,5 @@ Enjoy!
 
 **Monarch Tweaks Household Description for Breakdown**
 ![Settings](/images/MT_V2_10.png)
+
 ![Settings](/images/MT_V2_11.png)
