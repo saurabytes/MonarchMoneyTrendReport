@@ -28,7 +28,7 @@ I found there were opportunities to enhance the Monarch Money web application wi
        
 * Separate Accounts for a clearer breakdown with household descriptions (e.g., Parents vs. Children or Partner 1 vs. Partner 2).
 * Save and restore report filters and options in Reports / Datasets, eliminating the need to redo filters each time.
-* Use a compressed and smaller font in the Transactions grid to display more items.
+* Apply a compressed and smaller font in the Transactions grid to display more items.
 * Apply a compressed and smaller font in the Budget grid to show additional items.
 * Display "Left for Spending" (Checking minus Credit Cards minus Pending) in the Budget Summary and Budget Summary Dashboard.
 * Enable/Disable (hide) specific menu items as needed.
