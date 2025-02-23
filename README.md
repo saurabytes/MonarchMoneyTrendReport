@@ -15,7 +15,7 @@ I found there were opportunities to enhance the Monarch Money web application wi
     - Customize comparisons and averages to include the current month if desired.
     - Highlight spending based on thresholds: 25%, 50%, 100%
     - Drill down to view monthly and year-to-date totals to identify trends in your groups and categories.
-    - Sort data by any column and export it to Excel or Numbers.
+    - Sort history data by any column and export it to Excel or Numbers.
 
 * **Reports / Accounts**
      - Summarize all your Account balances on one screen
@@ -23,7 +23,7 @@ I found there were opportunities to enhance the Monarch Money web application wi
      - Show Monthly Account balances with average for current year, last 6 months or last 12 months
      - Quickly view total amount owed on credit cards and other Checking and Credit card balances
      - View Income, Expenses and Transfers done by Account for the current month
-     - Sort the data by any column and export your data to Excel or Numbers
+     - Sort accounts data by any column and export it to Excel or Numbers.
     
        
 * Separate Accounts for a clearer breakdown with household descriptions (e.g., Parents vs. Children or Partner 1 vs. Partner 2).
