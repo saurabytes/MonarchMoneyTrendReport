@@ -9,8 +9,8 @@ I found there were opportunities to enhance the Monarch Money web application wi
 # Features:
 
 * **Reports / Trends**
-    - Summarize your Monarch Money history:
-    -      Compare to: Last month, Same month last year, Same quarter last year
+    - Summarize your Monarch Money history.
+    - Compare to: Last month, Same month last year, Same quarter last year.
     - Display a monthly grid of your history for: This year, Last year, Last 12 months, All years (including YTD totals and monthly/yearly averages)
     - Customize comparisons and averages to include the current month if desired.
     - Highlight spending based on thresholds: 25%, 50%, 100%
