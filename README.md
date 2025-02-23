@@ -21,36 +21,24 @@ I found there were opportunities to enhance the Monarch Money web application wi
      - Summarize all your Account balances on one screen
      - Compare to different time periods (This week, Last two weeks, This month, 3 months, 6 months, 1 year, 2 years and 3 years)
      - Show Monthly Account balances with average for current year, last 6 months or last 12 months
-     - Quickly see total amount owed on credit cards and other Checking and Credit card balances
-     - See Income, Expenses and Transfers done by Account for the current month
+     - Quickly view total amount owed on credit cards and other Checking and Credit card balances
+     - View Income, Expenses and Transfers done by Account for the current month
      - Sort the data by any column and export your data to Excel or Numbers
     
        
-* Separate Accounts to see breakdown with a Household description. (Parents vs Children or Partner 1 vs Partner 2)
-
-* Save and restore your Report filters and other report options on **Reports / Datasets**.  No longer have to redo your filters over each time!
-
-* Compressed & smaller font for **Transactions** grid to show more items
-  
-* Compressed & smaller font for **Budget** grid to show more items
-  
-* Show "Left for Spending" (Checking minus Credit Cards minis Pending) in Budget Summary & Budget Summary Dashboard. 
-  
-* Turn ON/OFF (hide) menu items
-
-* Hide Report Tooltip "Difference Amount" in graphs
-
-* Hide Create Rule Popup when add/changing transactions
-
-* Quickly split a transaction 50/50 by auto-filling the amounts
-
-* Correct Calendar Year pull-down to only be years of data instead of since 2000
-
-* Added "Last year YTD", "Last 12 months" and "This quarter" to pop-up calendar
-
-* Hide Accounts Net Worth Graph Panel
-
-* Highlight Pending Transactions when **Settings / Preferences / Allow Edits to Pending Transactions** is set to "Off".
+* Separate Accounts for a clearer breakdown with household descriptions (e.g., Parents vs. Children or Partner 1 vs. Partner 2).
+* Save and restore report filters and options in Reports / Datasets, eliminating the need to redo filters each time.
+* Use a compressed and smaller font in the Transactions grid to display more items.
+* Apply a compressed and smaller font in the Budget grid to show additional items.
+* Display "Left for Spending" (Checking minus Credit Cards minus Pending) in the Budget Summary and Budget Summary Dashboard.
+* Enable/Disable (hide) specific menu items as needed.
+* Remove the "Difference Amount" tooltip from graphs in reports for a cleaner view.
+* Hide the Create Rule popup when adding or changing transactions to streamline the process.
+* Easily split a transaction 50/50 with auto-filled amounts for quick adjustments.
+* Correct the Calendar Year dropdown to display only years with available data (instead of starting from 2000).
+* Add options for "Last Year YTD," "Last 12 Months," and "This Quarter" to the pop-up calendar.
+* Hide the Accounts Net Worth Graph Panel for a simplified view.
+* Highlight pending transactions when the Allow Edits to Pending Transactions setting is set to "Off."
 
 
 # Installing MONARCH MONEY TWEAKS:
