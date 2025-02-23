@@ -23,10 +23,11 @@ I found there were opportunities to enhance the Monarch Money web application wi
      - Show Monthly Account balances with average for current year, last 6 months or last 12 months
      - Quickly view total amount owed on credit cards and other Checking and Credit card balances
      - View Income, Expenses and Transfers done by Account for the current month
+     - Filter Accounts by household descriptions (e.g., Parents vs. Children or Partner 1 vs. Partner 2).
      - Sort accounts data by any column and export it to Excel or Numbers.
     
        
-* Separate Accounts for a clearer breakdown with household descriptions (e.g., Parents vs. Children or Partner 1 vs. Partner 2).
+* Breakdown Assets & Liabilities Account Summary by household members (Parents vs. Children or Partner 1 vs. Partner 2)
 * Save and restore report filters and options in Reports / Datasets, eliminating the need to redo filters each time.
 * Apply a compressed and smaller font in the Transactions grid to display more items.
 * Apply a compressed and smaller font in the Budget grid to show additional items.
