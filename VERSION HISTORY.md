@@ -3,6 +3,11 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+
+**Version 2.32:** 
+
+• CHANGE: Made Househould more generic by calling it "Account Group" and updated screens.
+
 **Version 2.31:** 
 
 • CHANGE: More streamlined code / Correction of possible duplicate Household information in Account Summary
