@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.31
+// @version      2.32
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.31';
+const version = '2.32';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -707,10 +707,10 @@ async function MenuReportsAccountsGo() {
     MTFlex.TriggerEvents = false;
     MTFlex.Button1Options = ['Hide subtotals','Show subtotals'];
     MTFlex.Button2Options = ['This month','3 months', '6 months', 'This year', '1 year', '2 years', '3 years','Last 6 months with average','Last 12 months with average','This year with average','Last 3 years with average'];
-    MTFlex.Button4Options = getAccountHouseholdNames();
+    MTFlex.Button4Options = getAccountGroupNames();
     MTFlex.Subtotals = MTFlex.Button1;
     MTP = [];
-    MTP.Column = 0; MTP.Title = 'Account';MTP.isSortable = 1; MTP.Format = 0; MF_QueueAddTitle(MTP);
+    MTP.Column = 0; MTP.Title = 'Group';MTP.isSortable = 1; MTP.Format = 0; MF_QueueAddTitle(MTP);
     MTP.Column = 1; MTP.Title = 'Type'; MF_QueueAddTitle(MTP);
     if(MTFlex.Button2 > 6) {await MenuReportsAccountsGoExt();} else {await MenuReportsAccountsGoStd();}
     MTSpawnProcess = 1;
@@ -722,11 +722,11 @@ async function MenuReportsAccountsGoExt(){
     let CurMonth = getDates('n_CurMonth'),CurYear = 0;
     let NumMonths = (MTFlex.Button2 === 7) ? 6 : 12;
     let useDate = getDates('d_Minus1Year');
-    let HouseholdFilter = getAccountHouseholdFilter();
+    let AccountGroupFilter = getAccountGroupFilter();
 
     MTFlex.Title2 = 'Last ' + NumMonths + ' Months as of ' + getDates('s_FullDate');
     MTFlex.Title3 = '(Based on beginning of each month)';
-    MTP.Column = 2; MTP.Title = 'Household';MTP.Format = 0;MF_QueueAddTitle(MTP);
+    MTP.Column = 2; MTP.Title = 'Account Group';MTP.Format = 0;MF_QueueAddTitle(MTP);
 
     if(MTFlex.Button2 == 9) { NumMonths = CurMonth;MTFlex.Title2 = 'This year as of ' + getDates('s_FullDate'); }
     if (MTFlex.Button2 == 10) {
@@ -753,7 +753,7 @@ async function MenuReportsAccountsGoExt(){
 
     snapshotData = await getAccountsData();
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
-        if(HouseholdFilter == '' || HouseholdFilter == localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id)) {
+        if(AccountGroupFilter == '' || AccountGroupFilter == localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id)) {
             MTP = [];
             MTP.isHeader = false;
             MTP.UID = snapshotData.accounts[i].id;
@@ -822,7 +822,7 @@ async function MenuReportsAccountsGoStd(){
     MTFlex.Title2 = getDates('s_FullDate',useDate) + ' - ' + getDates('s_FullDate',useDate2);
 
     MTP.Column = 2; MTP.Title = 'Updated';MTP.Format = -1;MF_QueueAddTitle(MTP);
-    MTP.Column = 3; MTP.Title = 'Household';MTP.Format = 0;MF_QueueAddTitle(MTP);
+    MTP.Column = 3; MTP.Title = 'Group';MTP.Format = 0;MF_QueueAddTitle(MTP);
     MTP.Column = 4; MTP.Title = 'Beg Balance'; MTP.isSortable = 2; MTP.Format = [1,2][getCookie('MT_AccountsNoDecimals',true)];MF_QueueAddTitle(MTP);
     if(MTFlex.Button2 > 0) { MTP.isHidden = true; }
     MTP.Column = 5; MTP.Title = 'Income'; MF_QueueAddTitle(MTP);
@@ -839,7 +839,7 @@ async function MenuReportsAccountsGoStd(){
     let useBalance = 0, pastBalance = 0, useAmount = 0;
     let skipTxs = getCookie('MT_AccountsBalance',true);
     let skipHidden = getCookie('MT_AccountsHidden',true);
-    let HouseholdFilter = getAccountHouseholdFilter();
+    let AccountGroupFilter = getAccountGroupFilter();
 
     snapshotData = await getAccountsData();
     snapshotData2 = await GetTransactions(formatQueryDate(useDate),formatQueryDate(useDate2),0,false);
@@ -848,7 +848,7 @@ async function MenuReportsAccountsGoStd(){
 
     for (let i = 0; i < 5; i += 1) { if(getCookie('MT_AccountsCard' + i.toString(),true) == 1) {cards+=1;}}
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
-        if(HouseholdFilter == '' || HouseholdFilter == localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id)) {
+        if(AccountGroupFilter == '' || AccountGroupFilter == localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id)) {
             if(snapshotData.accounts[i].hideFromList == false || skipHidden == 0) {
                 MTP = [];
                 MTP.isHeader = false;
@@ -971,7 +971,7 @@ async function MenuReportsAccountsGoStd(){
     }
 }
 
-function getAccountHouseholdNames() {
+function getAccountGroupNames() {
     let items = [];
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -982,14 +982,14 @@ function getAccountHouseholdNames() {
     }
     if(items.length > 0) {
         items.sort();
-        items.unshift('All Household');
+        items.unshift('All Groups');
     }
     return items;
 }
 
-function getAccountHouseholdFilter() {
+function getAccountGroupFilter() {
     if(MTFlex.Button4 > 0) {
-        const p = getAccountHouseholdNames();
+        const p = getAccountGroupNames();
         if(p.length >= MTFlex.Button4) {return p[MTFlex.Button4];}
     }
     return '';
@@ -1007,8 +1007,8 @@ async function MenuAccountsSummary() {
         let snapshotData = await getAccountsData();
         for (let i = 0; i < snapshotData.accounts.length; i += 1) {
             if(snapshotData.accounts[i].hideFromList == false) {
-                let HouseholdFilter = localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id);
-                MenuAccountSummaryUpdate(HouseholdFilter, snapshotData.accounts[i].isAsset, snapshotData.accounts[i].displayBalance);
+                let AccountGroupFilter = localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id);
+                MenuAccountSummaryUpdate(AccountGroupFilter, snapshotData.accounts[i].isAsset, snapshotData.accounts[i].displayBalance);
             }
         }
         aSummary.sort();
@@ -1027,21 +1027,21 @@ async function MenuAccountsSummary() {
         for (let j = 0; j < aSummary.length; j += 1) {
             if((isAsset && aSummary[j].Asset != 0) || (!isAsset && aSummary[j].Liability !=0)) {
                 divChild = cec('div',cnClass,div,'','','style','margin-bottom: 5px;');
-                cec('span','',divChild,aSummary[j].HouseHoldDesc);
+                cec('span','',divChild,aSummary[j].AccountGroup);
                 cec('span','',divChild,isAsset == true ? getDollarValue(aSummary[j].Asset) : getDollarValue(aSummary[j].Liability),'','style','color: rgb(119, 117, 115)');
             }
         }
         if(divChild) {cec('div','',div,'','','style','margin-bottom: 18px;');}
     }
 
-    function MenuAccountSummaryUpdate(inH,inA,inBal) {
+    function MenuAccountSummaryUpdate(inGroup,inA,inBal) {
         for (let j = 0; j < aSummary.length; j += 1) {
-            if(aSummary[j].HouseHoldDesc == inH) {
+            if(aSummary[j].AccountGroup == inGroup) {
                 if(inA == true) {aSummary[j].Asset += Number(inBal);} else {aSummary[j].Liability += Number(inBal);}
                 return;
             }
         }
-        aSummary.push({"HouseHoldDesc": inH, "Asset": inA == true ? Number(inBal) : 0, "Liability": inA == true ? 0 : Number(inBal) });
+        aSummary.push({"AccountGroup": inGroup, "Asset": inA == true ? Number(inBal) : 0, "Liability": inA == true ? 0 : Number(inBal) });
     }
 }
 
@@ -1777,7 +1777,7 @@ function MTUpdateAccountPartner() {
         let li2 = li.childNodes[4];
         let div = document.createElement('div');
         div = li.insertBefore(div, li2);
-        cec('div','',div,'Household Description','','style','font-size: 14px;font-weight: 500;');
+        cec('div','',div,'Account Group (Accounts / Summary & Reports / Accounts)','','style','font-size: 14px;font-weight: 500;');
         div = cec('input','MTInputClass',div,'','','style','margin-bottom: 12px;width: 100%;');
         const p = SaveLocationPathName.split('/');
         if(p) {div.value = localStorage.getItem('MTAccounts:' + p[3]);}
@@ -2563,7 +2563,7 @@ function findButton(inName) {
 
 function getCleanValue(inValue,inDec) {
 
-    if(inValue.startsWith('$') || inValue.startsWith('-')) {
+    if(inValue.startsWith('$') || inValue.startsWith('-') || inValue.startsWith('+')) {
         inValue = inValue.split(" ")[0];
         inValue = replaceBetweenWith(inValue,'(',')','');
         const AmtStr = inValue.replace(/[$,]+/g,"");
