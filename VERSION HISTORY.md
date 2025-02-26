@@ -4,6 +4,15 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 Email any issues directly:  robert @ paresi.net
 
 
+**Version 2.40 (beta - Work in Progress):** 
+
+• CHANGE: Removed Datasets - no longer need for Saved Reports as now part of Monarch Money (Yea!)
+
+• CHANGE: Removed Calendar shortcuts - no longer compatible with changes in Monarch Money 
+
+• CHANGE: Streamlined code (onclick) under the covers
+
+
 **Version 2.32:** 
 
 • CHANGE: Made Househould more generic by calling it "Account Group" and updated screens.
