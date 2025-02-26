@@ -6,7 +6,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.40 (beta - Work in Progress):** 
 
-• CHANGE: Removed Datasets - no longer need for Saved Reports as now part of Monarch Money (Yea!)
+• CHANGE: Removed Datasets & Corrected Trends/Account header - no longer need for Saved Reports as now part of Monarch Money (Yea!)
 
 • CHANGE: Removed Calendar shortcuts - no longer compatible with changes in Monarch Money 
 
