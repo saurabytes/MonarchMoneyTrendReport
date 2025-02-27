@@ -1,6 +1,6 @@
 # Monarch Money Tweaks - GET STARTED! 
 
-[Already have MM Tweaks - Click here to Update to V2.32](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
+[Already have MM Tweaks - Click here to Update to V2.40](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js)
 
 Hello!  I use **Monarch Money**.  
 
@@ -28,7 +28,6 @@ I found there were opportunities to enhance the Monarch Money web application wi
     
        
 * Breakdown Assets & Liabilities Account Summary by a custom Group (e.g., "Parents, Children" or "Partner 1, Partner 2, Both" or "Taxable, Tax Deferred" etc).
-* Save and restore report filters and options in Reports / Datasets, eliminating the need to redo filters each time.
 * Apply a compressed and smaller font in the Transactions grid to display more items.
 * Apply a compressed and smaller font in the Budget grid to show additional items.
 * Display "Left for Spending" (Checking minus Credit Cards minus Pending) in the Budget Summary and Budget Summary Dashboard.
@@ -37,7 +36,6 @@ I found there were opportunities to enhance the Monarch Money web application wi
 * Hide the Create Rule popup when adding or changing transactions to streamline the process.
 * Easily split a transaction 50/50 with auto-filled amounts for quick adjustments.
 * Correct the Calendar Year dropdown to display only years with available data (instead of starting from 2000).
-* Add options for "Last Year YTD," "Last 12 Months," and "This Quarter" to the pop-up calendar.
 * Hide the Accounts Net Worth Graph Panel for a simplified view.
 * Highlight pending transactions when the Allow Edits to Pending Transactions setting is set to "Off."
 
