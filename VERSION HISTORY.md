@@ -6,13 +6,15 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.40 (beta - Work in Progress):** 
 
-• CHANGE: Removed Datasets & Corrected Trends/Account header - no longer need for Saved Reports as now part of Monarch Money (Yea!)
+• CHANGE: Removed Saved Reports Datasets - no longer need for Saved Reports as now part of Monarch Money (Yea!)
+
+• CHANGE: Corrected Trends/Account header to be compatiblre with changes in Monarch Money
 
 • CHANGE: Removed Calendar shortcuts - no longer compatible with changes in Monarch Money 
 
-• CHANGE: Streamlined code (onclick) under the covers
+• NEW: Change Calendar "Last" Number from String to Spinbox
 
-• NEW: Change MM's Calendar Last Number from String to Spinbox
+• FIX: Stop Trends & Accounts report from running twice simultaneously if user double-clicked on a menu item.
 
 
 **Version 2.32:** 
