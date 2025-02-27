@@ -478,12 +478,10 @@ function MT_GridDrawEmbed(inSection,inCol,inValue, inDesc) {
             break;
         case 'MTAccounts':
             if(MTFlex.Button2 < 7) {
-                if((inSection == 2) && inCol == 9 ) {if(inValue < 0) {return css_red;}}
-                if((inSection == 2) && inCol == 9 ) {if(inValue > 0) {return css_green;}}
-                if((inSection == 2) && inCol == 11 ) {if(inValue < 0) {return css_red;}}
-                if((inSection == 4) && inCol == 9 ) {if(inValue > 0) {return css_red;}}
-                if((inSection == 4) && inCol == 9 ) {if(inValue < 0) {return css_green;}}
-                if((inSection == 4) && inCol == 11 ) {if(inValue < 0) {return css_red;}}
+                if (inSection == 2 && inCol == 9) {return inValue < 0 ? css_red : inValue > 0 ? css_green : '';}
+                if (inSection == 2 && inCol == 11 && inValue < 0) {return css_red;}
+                if (inSection == 4 && inCol == 9) {return inValue > 0 ? css_red : inValue < 0 ? css_green : '';}
+                if (inSection == 4 && inCol == 11 && inValue < 0) {return css_red;}
             }
             break;
     }
@@ -1227,7 +1225,7 @@ async function MenuReportsTrendsGo() {
         }
 
         if(TrendFullPeriod == 1) {
-            day2 = daysInMonth(month2,year2);
+            day2 = daysInMonth(month2,year);
             higherDate.setDate(day2);
             useTitle = useTitle + ' *';
         }
@@ -1380,6 +1378,8 @@ async function WriteCompareData() {
 }
 
 async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,inID) {
+
+    // console.log(inCol,inGrouping,inPeriod,lowerDate,higherDate);
 
     const firstDate = formatQueryDate(lowerDate);
     const lastDate = formatQueryDate(higherDate);
