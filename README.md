@@ -74,9 +74,6 @@ Enjoy!
 **Monarch Tweaks Settings**
 ![Settings](/images/MT_V2_01.png)
 
-**Monarch Tweaks Calendar Year Dropdown**
-![Settings](/images/MT_V2_02.png)
-
 **Monarch Tweaks Spit Transaction 50/50**
 ![Settings](/images/MT_V2_03.png)
 
