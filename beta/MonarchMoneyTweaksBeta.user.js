@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.40.02
+// @version      2.40.03
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.40.02';
+const version = '2.40.03';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -632,11 +632,12 @@ function MenuReportsSetFilter(inType,inCategory,inGroup) {
     let useCats = '';
     if(inGroup) {useCats = getCategoryGroupList(inGroup);} else {useCats = '\\"' + inCategory + '\\"';}
     reportsObj = replaceBetweenWith(reportsObj,'"filters":"{','}','"filters":"{\\"startDate\\":\\"' + startDate + '\\",\\"endDate\\":\\"' + endDate + '\\",\\"categories\\":[' + useCats + ']}');
+    reportsObj = reportsObj.replace('}}','}');
     reportsObj = replaceBetweenWith(reportsObj,'"groupByTimeframe":',',','"groupByTimeframe":"\\"month\\"",');
     reportsObj = replaceBetweenWith(reportsObj,'"' + inType + '":"{','}",','"' + inType + '":"{\\"viewMode\\":\\"changeOverTime\\",\\"chartType\\":\\"stackedBarChart\\"}",');
     if(inCategory) {reportsObj = replaceBetweenWith(reportsObj,'"groupBy":',',','"groupBy":"\\"category\\"",');
     } else {reportsObj = replaceBetweenWith(reportsObj,'"groupBy":',',','"groupBy":"\\"category_group\\"",');}
-    localStorage.setItem('persist:reports',reportsObj);
+    localStorage.setItem('persist:reports',reportsObj,JSON.stringify(reportsObj));
 }
 
 // [ Trends Menu ]
@@ -2071,7 +2072,7 @@ window.onclick = function(event) {
 
     let cn = getLeftOf(event.target.className,' ');
     if(typeof cn === 'string') {
-        console.log(cn,event.target);
+        //console.log(cn,event.target);
         switch (cn) {
             case 'Menu__MenuItem-nvthxu-1':
                 if(event.target.innerText == 'Last') {onClickLastNumber();}
