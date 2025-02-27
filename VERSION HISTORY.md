@@ -12,6 +12,8 @@ Email any issues directly:  robert @ paresi.net
 
 • CHANGE: Streamlined code (onclick) under the covers
 
+• NEW: Change MM's Calendar Last Number from String to Spinbox
+
 
 **Version 2.32:** 
 
