@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.40.01
+// @version      2.40.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.40.01';
+const version = '2.40.02';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -682,15 +682,18 @@ function MenuReportsPanels(inType) {
 
 function MenuReportsGo(inName) {
 
-    document.body.style.cursor = "wait";
-    removeAllSections('.MTFlexContainer');
-    MenuReportsPanels('display:none;');
-    if(inName == 'MTTrend') {
-        MenuReportsCustomUpdate(3);
-        MenuReportsTrendsGo();
-    } else {
-        MenuReportsCustomUpdate(4);
-        MenuReportsAccountsGo();
+    let topDiv = document.querySelector('div.MTWait');
+    if(!topDiv) {
+        document.body.style.cursor = "wait";
+        removeAllSections('.MTFlexContainer');
+        MenuReportsPanels('display:none;');
+        if(inName == 'MTTrend') {
+            MenuReportsCustomUpdate(3);
+            MenuReportsTrendsGo();
+        } else {
+            MenuReportsCustomUpdate(4);
+            MenuReportsAccountsGo();
+        }
     }
 }
 
@@ -1908,8 +1911,6 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Monarch Money Tweaks - ' + version,'','header');
             MenuDisplay_Input('Lowest Calendar/Data year','','spacer');
             MenuDisplay_Input('','MT_LowCalendarYear','number');
-            MenuDisplay_Input('General','','spacer');
-            MenuDisplay_Input('Calendar "Last year" and "Last 12 months" include full month','MT_CalendarEOM','checkbox');
             MenuDisplay_Input('Menu','','spacer');
             MenuDisplay_Input('Hide Budget','MT_Budget','checkbox');
             MenuDisplay_Input('Hide Recurring','MT_Recurring','checkbox');
@@ -2043,24 +2044,26 @@ function MenuDisplay_Input(inValue,inCookie,inType,inStyle,defaultValue) {
 
 function MenuCheckSpawnProcess() {
 
-    switch(MTSpawnProcess) {
-        case 1:
-            MTSpawnProcess = 0;
-            MT_GridDraw(0);
-            break;
-        case 2:
-            MTSpawnProcess = 0;
-            MenuTrendsHistoryDraw();
-            break;
-        case 3:
-            MTSpawnProcess = 0;
-            MenuPlanRefresh();
-            MenuPlanBudgetReorder();
-            break;
-        case 4:
-            MTSpawnProcess = 0;
-            MenuAccountsSummary();
-            break;
+    if(MTSpawnProcess > 0) {
+        switch(MTSpawnProcess) {
+            case 1:
+                MTSpawnProcess = 0;
+                MT_GridDraw(0);
+                break;
+            case 2:
+                MTSpawnProcess = 0;
+                MenuTrendsHistoryDraw();
+                break;
+            case 3:
+                MTSpawnProcess = 0;
+                MenuPlanRefresh();
+                MenuPlanBudgetReorder();
+                break;
+            case 4:
+                MTSpawnProcess = 0;
+                MenuAccountsSummary();
+                break;
+        }
     }
 }
 // Generic on-click event handler
@@ -2070,6 +2073,9 @@ window.onclick = function(event) {
     if(typeof cn === 'string') {
         console.log(cn,event.target);
         switch (cn) {
+            case 'Menu__MenuItem-nvthxu-1':
+                if(event.target.innerText == 'Last') {onClickLastNumber();}
+                break;
             case 'Text-qcxgyd-0':
                 if(event.target.innerText == 'Split') { MM_SplitTransaction();}
                 break;
@@ -2176,6 +2182,15 @@ window.onclick = function(event) {
     onClickMTDropdownRelease();
 };
 
+function onClickLastNumber() {
+
+    const id = document.querySelector('input.NumericInput__Input-sc-1km21mm-0');
+    if(id) {
+        id.type = 'Number';
+        id.min = 0;
+        id.max = 365;
+    }
+}
 function onClickSumCells() {
     let x = Number(getCleanValue(event.target.textContent,2));
     if(event.target.id != 'selected') {
