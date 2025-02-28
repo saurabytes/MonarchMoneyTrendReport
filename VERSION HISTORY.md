@@ -4,6 +4,10 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 Email any issues directly:  robert @ paresi.net
 
 
+**Version 2.41:** 
+
+• FIX: You can now change Light and Dark mode without having to refresh the screen.
+
 **Version 2.40:** 
 
 • CHANGE: Removed Datasets (Tweaks Saved Reports) - No longer need since Saved Reports as now part of Monarch Money (Yea!)
