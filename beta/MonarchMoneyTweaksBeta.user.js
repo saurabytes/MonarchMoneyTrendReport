@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.40
+// @version      2.41
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.40';
+const version = '2.41';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -2076,6 +2076,7 @@ window.onclick = function(event) {
         switch (cn) {
             case 'Menu__MenuItem-nvthxu-1':
                 if(event.target.innerText == 'Last') {onClickLastNumber();}
+                if(event.target.innerText.startsWith('\uf183') || event.target.innerText.startsWith('\uf13e')) {MM_Init();}
                 break;
             case 'Text-qcxgyd-0':
                 if(event.target.innerText == 'Split') { MM_SplitTransaction();}
