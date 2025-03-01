@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.41
+// @version      2.42.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.41';
+const version = '2.42.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -115,8 +115,8 @@ function MM_RefreshAll() {
     if (localStorage.getItem('MT:LastRefresh') != getDates('s_FullDate')) {
         if(getCookie('MT_RefreshAll',true) == 1) {refreshAccountsData();}}}
 
-function MM_hideElement(InList,InValue,inStartsWith) {
-    const els = document.querySelectorAll(InList);
+function MM_hideElement(qList,InValue,inStartsWith) {
+    const els = document.querySelectorAll(qList);
     for (const el of els) {
         if(inStartsWith == null || el.innerText.startsWith(inStartsWith)) {InValue == 1 ? el.style.display = 'none' : el.style.display = '';}
     }
@@ -1799,39 +1799,14 @@ function MM_FixCalendarYears() {
     }
 }
 
-function MM_FixCalendarDropdown(InList) {
+function MM_FixCalendarDropdown(calItems) {
 
     let ii = parseInt(getCookie("MT_LowCalendarYear",false));
     if(ii < 2000) {ii = 2000;}
     ii -= 2000;
     for (let i = 0; i < ii; i++) {
-        InList.removeChild(InList.firstChild);
+        calItems.removeChild(calItems.firstChild);
     }
-}
-
-function getLeftOf(InValue,InRep) {
-
-    if(InRep) {
-        const si = InValue.indexOf(InRep);
-        if (si > 0) { return InValue.slice(0,si);}
-        return InValue;
-    } else {return '';}
-}
-
-function replaceBetweenWith(InValue,InStart,InEnd,InReplaceWith) {
-
-    let result = InValue;
-    if(InValue != null) {
-        let a = InValue.indexOf(InStart);
-        if(a > 0) {
-            let b = InValue.indexOf(InEnd,a+1);
-            if(b > a) {
-                b = b + InEnd.length;
-                result = InValue.substring(0, a) + InReplaceWith + InValue.substring(b);
-            }
-        }
-    }
-    return result;
 }
 
 // [ Splits ]
@@ -2064,6 +2039,10 @@ function MenuCheckSpawnProcess() {
                 MTSpawnProcess = 0;
                 MenuAccountsSummary();
                 break;
+            case 5:
+                MTSpawnProcess = 0;
+                MM_Init();
+                break;
         }
     }
 }
@@ -2072,11 +2051,11 @@ window.onclick = function(event) {
 
     let cn = getLeftOf(event.target.className,' ');
     if(typeof cn === 'string') {
-        //console.log(cn,event.target);
+        console.log(cn,event.target);
         switch (cn) {
             case 'Menu__MenuItem-nvthxu-1':
                 if(event.target.innerText == 'Last') {onClickLastNumber();}
-                if(event.target.innerText.startsWith('\uf183') || event.target.innerText.startsWith('\uf13e')) {MM_Init();}
+                if(inList(event.target.innerText,['\uf183','\uf13e','Light','Dark'],true)) {MTSpawnProcess = 5;}
                 break;
             case 'Text-qcxgyd-0':
                 if(event.target.innerText == 'Split') { MM_SplitTransaction();}
@@ -2400,6 +2379,42 @@ function findButton(inName) {
         if (inName && button.innerText.includes(inName)) {return button;}
     }
     return null;
+}
+
+function inList(v,p,sW) {
+    for (let i = 0; i < p.length; ++i) {
+        if(sW == true) {
+            if(v.startsWith(p[i]) == true) {return true;}
+        } else {
+            if(v == p[i]) {return true;}
+        }
+    }
+    return false;
+}
+
+function getLeftOf(InValue,InRep) {
+
+    if(InRep) {
+        const si = InValue.indexOf(InRep);
+        if (si > 0) { return InValue.slice(0,si);}
+        return InValue;
+    } else {return '';}
+}
+
+function replaceBetweenWith(InValue,InStart,InEnd,InReplaceWith) {
+
+    let result = InValue;
+    if(InValue != null) {
+        let a = InValue.indexOf(InStart);
+        if(a > 0) {
+            let b = InValue.indexOf(InEnd,a+1);
+            if(b > a) {
+                b = b + InEnd.length;
+                result = InValue.substring(0, a) + InReplaceWith + InValue.substring(b);
+            }
+        }
+    }
+    return result;
 }
 
 function getCleanValue(inValue,inDec) {
