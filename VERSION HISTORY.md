@@ -4,7 +4,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 Email any issues directly:  robert @ paresi.net
 
 
-**Version 2.41:** 
+**Version 2.41-2.42:** 
 
 • FIX: You can now change Light and Dark mode without having to refresh the screen.
 
