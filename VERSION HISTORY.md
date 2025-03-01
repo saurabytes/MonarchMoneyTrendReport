@@ -6,7 +6,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.41-2.42:** 
 
-• FIX: You can now change Light and Dark mode without having to refresh the screen.
+• FIX: You can now change Light and Dark mode in Trends/Accounts reports without having to refresh the screen.
 
 **Version 2.40:** 
 
