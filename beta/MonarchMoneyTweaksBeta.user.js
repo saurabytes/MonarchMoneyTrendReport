@@ -100,6 +100,8 @@ function MM_Init() {
     addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster",false),'block;') + '}');
     addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff",false),'block;') + '}');
     addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph",false),'block;') + '}');
+    const x = inList(MTFlex.Name,['MTTrend','MTAccounts']);
+    if(x) {MenuReportsCustom();MenuReportsCustomUpdate(x+2);}
 }
 
 function MM_MenuFix() {
@@ -616,9 +618,8 @@ function MT_GridAddCard (inSec,inStart,inEnd,inOp,inPosMsg,inNegMsg,inPosColor,i
 function MenuReports(OnFocus) {
 
     if (SaveLocationPathName.startsWith('/reports/')) {
-        if(OnFocus == true) {
-            MenuReportsCustom();
-        }
+        if(OnFocus == false) {MTFlex = [];}
+        if(OnFocus == true) {MenuReportsCustom();}
     }
 }
 
@@ -668,6 +669,7 @@ function MenuReportsCustomUpdate(inValue) {
         }
         div.childNodes[i].className = useClass;
     }
+    if(inValue < 3) {MTFlex = [];}
 }
 
 function MenuReportsPanels(inType) {
@@ -913,7 +915,6 @@ async function MenuReportsAccountsGoStd(){
                     MTFlexRow[MTFlexCR][MTFields+9] = parseFloat(MTFlexRow[MTFlexCR][MTFields+9].toFixed(2));
                     MTFlexRow[MTFlexCR][MTFields+10] = parseFloat(MTFlexRow[MTFlexCR][MTFields+10].toFixed(2));
                     MTFlexRow[MTFlexCR][MTFields+11] = MTFlexRow[MTFlexCR][MTFields+8] + MTFlexRow[MTFlexCR][MTFields+10];
-
                     if(snapshotData.accounts[i].subtype.name == 'checking') {acard[0] = acard[0] + MTFlexRow[MTFlexCR][MTFields+8];}
                     if(snapshotData.accounts[i].subtype.name == 'savings') {acard[1] = acard[1] + MTFlexRow[MTFlexCR][MTFields+8];}
                     if(snapshotData.accounts[i].subtype.name == 'credit_card') {acard[2] = acard[2] + MTFlexRow[MTFlexCR][MTFields+8];}
@@ -2050,7 +2051,7 @@ window.onclick = function(event) {
 
     let cn = getLeftOf(event.target.className,' ');
     if(typeof cn === 'string') {
-        console.log(cn,event.target);
+        // console.log(cn,event.target);
         switch (cn) {
             case 'Menu__MenuItem-nvthxu-1':
             case 'Flex-sc-165659u-0':
@@ -2111,10 +2112,12 @@ window.onclick = function(event) {
                 MT_GridExport();
                 break;
             case 'MTBub1':
-                if(event.target.textContent.startsWith('SUM') == true) {navigator.clipboard.writeText(MTFlexSum[1]);}
-                if(event.target.textContent.startsWith('AVG') == true) {navigator.clipboard.writeText(getCleanValue('$' + MTFlexSum[1]/MTFlexSum[0],2));}
-                if(event.target.textContent.startsWith('CNT') == true) {navigator.clipboard.writeText(MTFlexSum[0]);}
-                return;
+                switch (startsInList(event.target.textContent,['SUM','AVG','CNT'])) {
+                    case 1: navigator.clipboard.writeText(MTFlexSum[1]);return;
+                    case 2: navigator.clipboard.writeText(getCleanValue('$' + MTFlexSum[1]/MTFlexSum[0],2));return;
+                    case 3: navigator.clipboard.writeText(MTFlexSum[0]);return;
+                }
+                break;
             case 'MTHistoryButton':
                 onClickMTFlexArrow(SaveLocationPathName.slice(1));
                 return;
@@ -2149,14 +2152,8 @@ window.onclick = function(event) {
             if(event.target.pathname == window.location.pathname) {
                 removeAllSections('.MTFlexContainer');
                 MenuReportsPanels('');
-                switch(window.location.pathname) {
-                    case '/reports/spending':
-                        MenuReportsCustomUpdate(1);return;
-                    case '/reports/income':
-                        MenuReportsCustomUpdate(2);return;
-                    default:
-                        MenuReportsCustomUpdate(0);return;
-                }
+                MenuReportsCustomUpdate(inList(window.location.pathname,['/reports/spending','/reports/income']));
+                return;
             }
         }
     }
