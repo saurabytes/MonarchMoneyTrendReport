@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.41
+// @version      2.42
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.41';
+const version = '2.42';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -115,8 +115,8 @@ function MM_RefreshAll() {
     if (localStorage.getItem('MT:LastRefresh') != getDates('s_FullDate')) {
         if(getCookie('MT_RefreshAll',true) == 1) {refreshAccountsData();}}}
 
-function MM_hideElement(InList,InValue,inStartsWith) {
-    const els = document.querySelectorAll(InList);
+function MM_hideElement(qList,InValue,inStartsWith) {
+    const els = document.querySelectorAll(qList);
     for (const el of els) {
         if(inStartsWith == null || el.innerText.startsWith(inStartsWith)) {InValue == 1 ? el.style.display = 'none' : el.style.display = '';}
     }
@@ -638,7 +638,6 @@ function MenuReportsSetFilter(inType,inCategory,inGroup) {
     localStorage.setItem('persist:reports',reportsObj,JSON.stringify(reportsObj));
 }
 
-// [ Trends Menu ]
 function MenuReportsCustom() {
 
     let div = document.querySelector('[class*="ReportsHeaderTabs__Root"]');
@@ -1650,7 +1649,7 @@ function MenuTrendsHistoryExport() {
     downloadFile('Monarch Trends History ' + getDates('s_FullDate'),csvContent);
 }
 
-// Budget Plans
+// [ Budgets ]
 async function MenuPlanRefresh() {
 
     if(getCookie('MT_PlanLTB',true) == 0) return;
@@ -1733,7 +1732,7 @@ async function MenuPlanRefresh() {
         amt = amt * -1;return [amt,cnt];
     }
 }
-
+// [ Budget Plan Reorder ]
 function MenuPlanBudgetReorder() {
     const budgetGrid = document.querySelector('[class*="Plan__SectionsContainer"]');
     const separator = document.querySelector('[class*="PlanSectionFooter__Separator"]');
@@ -1770,7 +1769,7 @@ function MenuPlanBudgetReorder() {
     }
 }
 
-// Menu Accounts Update
+// [ Edit Account ]
 function MTUpdateAccountPartner() {
     const li = document.querySelector('[class*="EditAccountForm__FormContainer"]');
     if(li) {
@@ -1783,7 +1782,7 @@ function MTUpdateAccountPartner() {
         if(p) {div.value = localStorage.getItem('MTAccounts:' + p[3]);}
     }
 }
-
+// [ Calendar ]
 function MM_FixCalendarYears() {
 
     const elements = document.querySelectorAll('select[name]');
@@ -1799,39 +1798,14 @@ function MM_FixCalendarYears() {
     }
 }
 
-function MM_FixCalendarDropdown(InList) {
+function MM_FixCalendarDropdown(calItems) {
 
     let ii = parseInt(getCookie("MT_LowCalendarYear",false));
     if(ii < 2000) {ii = 2000;}
     ii -= 2000;
     for (let i = 0; i < ii; i++) {
-        InList.removeChild(InList.firstChild);
+        calItems.removeChild(calItems.firstChild);
     }
-}
-
-function getLeftOf(InValue,InRep) {
-
-    if(InRep) {
-        const si = InValue.indexOf(InRep);
-        if (si > 0) { return InValue.slice(0,si);}
-        return InValue;
-    } else {return '';}
-}
-
-function replaceBetweenWith(InValue,InStart,InEnd,InReplaceWith) {
-
-    let result = InValue;
-    if(InValue != null) {
-        let a = InValue.indexOf(InStart);
-        if(a > 0) {
-            let b = InValue.indexOf(InEnd,a+1);
-            if(b > a) {
-                b = b + InEnd.length;
-                result = InValue.substring(0, a) + InReplaceWith + InValue.substring(b);
-            }
-        }
-    }
-    return result;
 }
 
 // [ Splits ]
@@ -1863,7 +1837,7 @@ function MM_SplitTransaction() {
         }
     }
 }
-
+// Menu Page Functions
 function MenuHistory(OnFocus) {
 
     if (SaveLocationPathName.startsWith('/categor')) {
@@ -2042,11 +2016,15 @@ function MenuDisplay_Input(inValue,inCookie,inType,inStyle,defaultValue) {
         }
     }
 }
-
+// Function calls which need waits and retries ...
 function MenuCheckSpawnProcess() {
 
     if(MTSpawnProcess > 0) {
         switch(MTSpawnProcess) {
+            case 5:
+                MTSpawnProcess = 0;
+                MM_Init();
+                break;
             case 1:
                 MTSpawnProcess = 0;
                 MT_GridDraw(0);
@@ -2067,16 +2045,17 @@ function MenuCheckSpawnProcess() {
         }
     }
 }
-// Generic on-click event handler
+// Generic on-click event handler ...
 window.onclick = function(event) {
 
     let cn = getLeftOf(event.target.className,' ');
     if(typeof cn === 'string') {
-        //console.log(cn,event.target);
+        console.log(cn,event.target);
         switch (cn) {
             case 'Menu__MenuItem-nvthxu-1':
+            case 'Flex-sc-165659u-0':
                 if(event.target.innerText == 'Last') {onClickLastNumber();}
-                if(event.target.innerText.startsWith('\uf183') || event.target.innerText.startsWith('\uf13e')) {MM_Init();}
+                if(startsInList(event.target.innerText,['\uf183','\uf13e','Light','Dark', 'System preference'])) {MTSpawnProcess = 5;return;}
                 break;
             case 'Text-qcxgyd-0':
                 if(event.target.innerText == 'Split') { MM_SplitTransaction();}
@@ -2259,7 +2238,7 @@ function onClickGridSort() {
     }
 }
 
-// create element child
+// Create Element Child
 function cec(e, c, r, it, hr, a1, a2) {
     const div = document.createElement(e);
     if (it) div.innerText = it;
@@ -2268,7 +2247,7 @@ function cec(e, c, r, it, hr, a1, a2) {
     if (a1) div.setAttribute(a1, a2);
     return r.appendChild(div);
 }
-
+// Generic Functions
 function removeAllSections(inDiv) {
     const divs = document.querySelectorAll(inDiv);
     for (let i = 0; i < divs.length; ++i) { divs[i].remove(); }
@@ -2402,6 +2381,43 @@ function findButton(inName) {
     return null;
 }
 
+function startsInList(v,p) {return inList(v,p,true);}
+function inList(v,p,sW) {
+    for (let i = 0; i < p.length; ++i) {
+        if(sW == true) {
+            if(v.startsWith(p[i]) == true) {return i+1;}
+        } else {
+            if(v == p[i]) {return i+1;}
+        }
+    }
+    return 0;
+}
+
+function getLeftOf(InValue,InRep) {
+
+    if(InRep) {
+        const si = InValue.indexOf(InRep);
+        if (si > 0) { return InValue.slice(0,si);}
+        return InValue;
+    } else {return '';}
+}
+
+function replaceBetweenWith(InValue,InStart,InEnd,InReplaceWith) {
+
+    let result = InValue;
+    if(InValue != null) {
+        let a = InValue.indexOf(InStart);
+        if(a > 0) {
+            let b = InValue.indexOf(InEnd,a+1);
+            if(b > a) {
+                b = b + InEnd.length;
+                result = InValue.substring(0, a) + InReplaceWith + InValue.substring(b);
+            }
+        }
+    }
+    return result;
+}
+
 function getCleanValue(inValue,inDec) {
 
     if(inValue.startsWith('$') || inValue.startsWith('-') || inValue.startsWith('+')) {
@@ -2459,6 +2475,7 @@ function getDisplay(InA,InB) {
 function getChecked(InA,InB) {
     if(InA == 'true') {return 'display: none;';} else {return InB;}
 }
+// Monarch Money needed
 function isDarkMode() {
     const cssObj = window.getComputedStyle(document.querySelector('[class*=Page__Root]'), null);
     const bgColor = cssObj.getPropertyValue('background-color');
