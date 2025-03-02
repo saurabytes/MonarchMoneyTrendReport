@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.42
+// @version      2.43
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.42';
+const version = '2.43';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -100,8 +100,10 @@ function MM_Init() {
     addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster",false),'block;') + '}');
     addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff",false),'block;') + '}');
     addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph",false),'block;') + '}');
-    const x = inList(MTFlex.Name,['MTTrend','MTAccounts']);
-    if(x) {MenuReportsCustom();MenuReportsCustomUpdate(x+2);}
+    if(MTFlex.Name) {
+        const x = inList(MTFlex.Name,['MTTrend','MTAccounts']);
+        if(x) {MenuReportsCustom();MenuReportsCustomUpdate(x+2);}
+    }
 }
 
 function MM_MenuFix() {
@@ -2084,7 +2086,7 @@ window.onclick = function(event) {
             case 'MTPanelLink':
                 MenuTrendsHistoryExport();
                 return;
-            case 'MTFlexBig MThRefClass':
+            case 'MTFlexBig':
                 onClickMTFlexBig();return;
             case 'MTFlexButton1':
             case 'MTFlexButton2':
