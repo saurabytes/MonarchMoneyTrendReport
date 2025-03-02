@@ -3,6 +3,9 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 2.43:** 
+
+• REGRESSION: Clicking on Date in Reports Accounts & Trends goes back to end of previous month.
 
 **Version 2.41-2.42:** 
 
