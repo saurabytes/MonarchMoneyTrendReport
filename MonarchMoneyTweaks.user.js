@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.43
+// @version      2.44
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.43';
+const version = '2.44';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -126,6 +126,12 @@ function MM_hideElement(qList,InValue,inStartsWith) {
     }
 }
 
+function MM_flipElement(inDiv) {
+    flipCookie('MTC_' + inDiv,1);
+    const cv = getCookie('MTC_' + inDiv,true);
+    MM_hideElement(inDiv,cv);
+}
+
 // [ Flex Queue ]
 function MF_QueueAddTitle(p) {
     if(p.isHidden == undefined || p.isHidden == null) {p.isHidden = false;}
@@ -147,9 +153,9 @@ async function MF_GridInit(inName, inDesc) {
     document.body.style.cursor = "wait";
     let topDiv = document.querySelector('[class*="Scroll__Root-sc"]');
     if(topDiv) {
-        let div = cec('div','MTWait',topDiv,'','','','');
-        div = cec('div','MTWait2',div,'Please Wait','','','');
-        div = cec('p','',div,' Loading ' + inDesc + ' ...','','','');
+        let div = cec('div','MTWait',topDiv);
+        div = cec('div','MTWait2',div,'Please Wait');
+        div = cec('p','',div,' Loading ' + inDesc + ' ...');
     }
     MTFlex = [];MTFlexTitle = [];MTFlexRow = []; MTFlexCR = 0;MTFlexCard = [];
     MTSpawnProcess = 0;MTFlex.Name = inName;
@@ -1251,7 +1257,6 @@ async function WriteByMonthData() {
     let useDesc = '',lowestMonth = 13,useURL = '';
     for (let i = 0; i < MTFlexRow.length; i += 1) {
         let retGroup = await getCategoryGroup(MTFlexRow[i].UID);
-
         if(retGroup.TYPE == 'transfer') {
             MTFlexRow[i].UID = '';
         } else {
@@ -1290,6 +1295,8 @@ async function WriteByMonthData() {
         MTFlexRow[i].SKExpand = '';
         MTFlexRow[i][MTFields] = useDesc;
     }
+    MTFlexRow = MTFlexRow.filter(item => item.UID !== '');
+
     if(MTFlex.Button2 == 8) {
         for(let i = 1; i <= 12; i++){ if(i < lowestMonth) {MTFlexTitle[i].isHidden = true;}}
         MTFlex.Title2 = MTFlex.Title2.substring(0, 7) + MTFlexTitle[lowestMonth].Title + MTFlex.Title2.substring(11);
@@ -2080,7 +2087,7 @@ window.onclick = function(event) {
                 removeAllSections('div.MTSideDrawerRoot');
                 return;
             case 'MTTrendCellArrow2':
-                flipAllSections('div.TrendHistoryDetail');
+                MM_flipElement('div.TrendHistoryDetail');
                 event.target.innerText = ['',''][getCookie('MTC_div.TrendHistoryDetail',true)];
                 return;
             case 'MTPanelLink':
@@ -2236,6 +2243,19 @@ function onClickGridSort() {
         MT_GridDraw(1);
     }
 }
+// Monarch Money needed
+function isDarkMode() {
+    const cssObj = window.getComputedStyle(document.querySelector('[class*=Page__Root]'), null);
+    const bgColor = cssObj.getPropertyValue('background-color');
+    if (bgColor === 'rgb(25, 25, 24)') { return 1; } else { return 0; }
+}
+function addStyle(aCss) {
+    if(r_headStyle == null) { r_headStyle = document.getElementsByTagName('head')[0]; }
+    let style = document.createElement('style');
+    style.setAttribute('type', 'text/css');
+    style.textContent = aCss;
+    r_headStyle.appendChild(style);
+}
 
 // Create Element Child
 function cec(e, c, r, it, hr, a1, a2) {
@@ -2250,12 +2270,6 @@ function cec(e, c, r, it, hr, a1, a2) {
 function removeAllSections(inDiv) {
     const divs = document.querySelectorAll(inDiv);
     for (let i = 0; i < divs.length; ++i) { divs[i].remove(); }
-}
-
-function flipAllSections(inDiv) {
-    flipCookie('MTC_' + inDiv,1);
-    const cv = getCookie('MTC_' + inDiv,true);
-    MM_hideElement(inDiv,cv);
 }
 
 function inputTwoFields(InSelector,InValue1,InValue2) {
@@ -2435,6 +2449,7 @@ function getDollarValue(InValue,ignoreCents) {
     if(InValue == null) {return '';}
     if(InValue === -0 || isNaN(InValue)) {InValue = 0;}
     if(ignoreCents == true) { InValue = Math.round(InValue);}
+    InValue = InValue *.08;
     let useValue = InValue.toLocaleString("en-US", {style:"currency", currency:css_currency});
     if(ignoreCents == true) { useValue = useValue.substring(0, useValue.length-3);}
     return useValue;
@@ -2474,19 +2489,7 @@ function getDisplay(InA,InB) {
 function getChecked(InA,InB) {
     if(InA == 'true') {return 'display: none;';} else {return InB;}
 }
-// Monarch Money needed
-function isDarkMode() {
-    const cssObj = window.getComputedStyle(document.querySelector('[class*=Page__Root]'), null);
-    const bgColor = cssObj.getPropertyValue('background-color');
-    if (bgColor === 'rgb(25, 25, 24)') { return 1; } else { return 0; }
-}
-function addStyle(aCss) {
-    if(r_headStyle == null) { r_headStyle = document.getElementsByTagName('head')[0]; }
-    let style = document.createElement('style');
-    style.setAttribute('type', 'text/css');
-    style.textContent = aCss;
-    r_headStyle.appendChild(style);
-}
+
 // Main Execution Loop
 (function() {
     MM_Init();
