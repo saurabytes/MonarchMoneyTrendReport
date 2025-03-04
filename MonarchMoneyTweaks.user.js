@@ -2449,7 +2449,6 @@ function getDollarValue(InValue,ignoreCents) {
     if(InValue == null) {return '';}
     if(InValue === -0 || isNaN(InValue)) {InValue = 0;}
     if(ignoreCents == true) { InValue = Math.round(InValue);}
-    InValue = InValue *.08;
     let useValue = InValue.toLocaleString("en-US", {style:"currency", currency:css_currency});
     if(ignoreCents == true) { useValue = useValue.substring(0, useValue.length-3);}
     return useValue;
