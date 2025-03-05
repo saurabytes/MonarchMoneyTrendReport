@@ -39,20 +39,21 @@ I found there were opportunities to enhance the Monarch Money web application wi
 * Hide the Accounts Net Worth Graph Panel for a simplified view.
 * Highlight pending transactions when the Allow Edits to Pending Transactions setting is set to "Off."
 
-# Quotes for users  
-_This is fantastic! I just installed Money Tweak and it makes up for some serious gaps in Monarch Money reporting. The trends report is exactly what I was looking for and probably the main reason I continue to run Quicken in parallel (which I have used for 15+ yrs). Thanks so much for doing this!_
+# Quotes from Monarch Money users  
+_This is fantastic! I just installed Money Tweak and it makes up for some serious gaps in Monarch Money reporting. The trends report is exactly what I was looking for and probably the main reason I continue to run Quicken in parallel (which I have used for 15+ yrs). Thanks so much for doing this!
 
-_Doing the Lord's work _
+Doing the Lord's work
 
-_Love that they keep updating. Love it_
+Love that they keep updating. Love it
 
-_Amazing work! Thank you! _
+Amazing work! Thank you!
 
-_Left to spend is huge! Thank you_
+Left to spend is huge! Thank you
 
-_I just want to say how much I appreciate the work done on this, it's really helpful. _
+I just want to say how much I appreciate the work done on this, it's really helpful.
 
-_Great work as always! _
+Great work as always! 
+_
 
 # Installing MONARCH MONEY TWEAKS:
 
