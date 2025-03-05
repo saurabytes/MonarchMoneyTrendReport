@@ -40,19 +40,19 @@ I found there were opportunities to enhance the Monarch Money web application wi
 * Highlight pending transactions when the Allow Edits to Pending Transactions setting is set to "Off."
 
 # Quotes from Monarch Money users  
-_This is fantastic! I just installed Money Tweak and it makes up for some serious gaps in Monarch Money reporting. The trends report is exactly what I was looking for and probably the main reason I continue to run Quicken in parallel (which I have used for 15+ yrs). Thanks so much for doing this!_
+- _This is fantastic! I just installed Money Tweak and it makes up for some serious gaps in Monarch Money reporting. The trends report is exactly what I was looking for and probably the main reason I continue to run Quicken in parallel (which I have used for 15+ yrs). Thanks so much for doing this!_
 
-_Doing the Lord's work_
+- _Doing the Lord's work_
 
-Love that they keep updating. Love it
+- Love that they keep updating. Love it
 
-Amazing work! Thank you!
+- Amazing work! Thank you!
 
-Left to spend is huge! Thank you
+- Left to spend is huge! Thank you
 
-I just want to say how much I appreciate the work done on this, it's really helpful.
+- I just want to say how much I appreciate the work done on this, it's really helpful.
 
-Great work as always! 
+- Great work as always! 
 _
 
 # Installing MONARCH MONEY TWEAKS:
