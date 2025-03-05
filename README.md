@@ -44,16 +44,16 @@ I found there were opportunities to enhance the Monarch Money web application wi
 
 - _Doing the Lord's work_
 
-- Love that they keep updating. Love it
+- _Love that they keep updating. Love it_
 
-- Amazing work! Thank you!
+- _Amazing work! Thank you!_
 
-- Left to spend is huge! Thank you
+- _Left to spend is huge! Thank you._
 
-- I just want to say how much I appreciate the work done on this, it's really helpful.
+- _I just want to say how much I appreciate the work done on this, it's really helpful._
 
-- Great work as always! 
-_
+- _Great work as always!_ 
+
 
 # Installing MONARCH MONEY TWEAKS:
 
