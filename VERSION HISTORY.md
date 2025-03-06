@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 2.45 (beta):** 
+**Version 2.45:** 
 
 • FIX: Reports / Accounts could fail if user changed Account Groups to be less than the previous default selection.
 
