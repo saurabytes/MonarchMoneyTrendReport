@@ -3,6 +3,10 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 2.45 (beta):** 
+
+• FIX: Reports / Accounts report could fail if user changed Account Groups to be less than the previous default selection.
+
 **Version 2.44:** 
 
 • FIX: Filter out "transfers" in Monthly Trends report.
