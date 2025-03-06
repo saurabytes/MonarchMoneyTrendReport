@@ -169,20 +169,9 @@ async function MF_GridInit(inName, inDesc) {
 
 function MF_GridOptions(Num,Options) {
 
-    switch (Num) {
-        case 1:
-            MTFlex.Button1Options = Options;
-            if(MTFlex.Button1 >= MTFlex.Button1Options.length) MTFlex.Button1 = 0;
-            break;
-        case 2:
-            MTFlex.Button2Options = Options;
-            if(MTFlex.Button2 >= MTFlex.Button2Options.length) MTFlex.Button2 = 0;
-            break;
-        case 4:
-            MTFlex.Button4Options = Options;
-            if(MTFlex.Button4 >= MTFlex.Button4Options.length) MTFlex.Button4 = 0;
-            break;
-    }
+    const buttonName = 'Button' + Num;
+    MTFlex[`${buttonName}Options`] = Options;
+    if (MTFlex[buttonName] >= MTFlex[`${buttonName}Options`].length) { MTFlex[buttonName] = 0; }
 }
 
 function MF_GridDraw(inRedraw) {
