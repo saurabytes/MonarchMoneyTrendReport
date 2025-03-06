@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.45 (beta):** 
 
-• FIX: Reports / Accounts report could fail if user changed Account Groups to be less than the previous default selection.
+• FIX: Reports / Accounts could fail if user changed Account Groups to be less than the previous default selection.
 
 **Version 2.44:** 
 
