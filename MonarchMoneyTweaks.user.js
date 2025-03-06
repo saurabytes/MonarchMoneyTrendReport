@@ -767,7 +767,7 @@ async function MenuReportsAccountsGoExt(){
     MTP.Column = 16; MTP.Title = 'Average';MF_QueueAddTitle(MTP);
 
     snapshotData = await getAccountsData();
-    if(debug) console.log('MenuReportsAccountsGoExt',snapshotData,MTFlex.Subtotals);
+    if(debug == 1) console.log('MenuReportsAccountsGoExt',snapshotData,MTFlex.Subtotals);
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
         if(AccountGroupFilter == '' || AccountGroupFilter == localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id)) {
             MTP = [];
@@ -864,7 +864,7 @@ async function MenuReportsAccountsGoStd(){
     snapshotData4 = await GetTransactions(formatQueryDate(getDates('d_StartofLastMonth')),formatQueryDate(useDate2),0,true);
 
     for (let i = 0; i < 5; i += 1) { if(getCookie('MT_AccountsCard' + i.toString(),true) == 1) {cards+=1;}}
-    if(debug) console.log('MenuReportsAccountsGoStd',snapshotData,MTFlex.Subtotals,AccountGroupFilter);
+    if(debug == 1) console.log('MenuReportsAccountsGoStd',snapshotData,MTFlex.Subtotals,AccountGroupFilter);
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
         if(AccountGroupFilter == '' || AccountGroupFilter == localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id)) {
             if(snapshotData.accounts[i].hideFromList == false || skipHidden == 0) {
@@ -1398,7 +1398,7 @@ async function WriteCompareData() {
 
 async function BuildTrendData (inCol,inGrouping,inPeriod,lowerDate,higherDate,inID) {
 
-    if(debug) console.log('BuildTrendData',inCol,inGrouping,inPeriod,lowerDate,higherDate);
+    if(debug == 1) console.log('BuildTrendData',inCol,inGrouping,inPeriod,lowerDate,higherDate);
 
     const firstDate = formatQueryDate(lowerDate);
     const lastDate = formatQueryDate(higherDate);
@@ -1846,7 +1846,7 @@ function MM_SplitTransaction() {
                 let div = cec('div','',li[1],'','','float: right;');
 
                 let div2 = document.createElement('button');
-                let sb = findButton('Add a split');
+                let sb = findButton('Date');
                 if(sb) { div2.className = sb.className; }
                 div2.innerText = 'Split 50/50  (' + Splitby2 + ') ';
                 div2.addEventListener('click', () => {
@@ -2061,7 +2061,7 @@ window.onclick = function(event) {
 
     let cn = getLeftOf(event.target.className,' ');
     if(typeof cn === 'string') {
-        if(debug) console.log(cn,event.target);
+        if(debug == 1) console.log(cn,event.target);
         switch (cn) {
             case 'Menu__MenuItem-nvthxu-1':
             case 'Flex-sc-165659u-0':
@@ -2389,9 +2389,11 @@ function daysInMonth(iMonth, iYear) {
 }
 
 function findButton(inName) {
-    const buttons = document.querySelectorAll('button');
-    for (const button of buttons) {
-        if (inName && button.innerText.includes(inName)) {return button;}
+    if(inName) {
+        const buttons = document.querySelectorAll('button');
+        for (const button of buttons) {
+            if (button.innerText.includes(inName)) {return button;}
+        }
     }
     return null;
 }
