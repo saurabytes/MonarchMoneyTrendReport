@@ -12,9 +12,8 @@ const version = '2.45';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
-const debug = getCookie('MT_Debug',true);
 let SaveLocationPathName = '';
-let r_headStyle = null, r_FlexButtonActive = false, MTSpawnProcess=0;
+let r_headStyle = null, r_FlexButtonActive = false, MTSpawnProcess=0, debug=0;
 let accountGroups = [], accountBalances = [];
 let AccountsTodayIs = new Date(), TrendTodayIs = new Date();
 let TrendQueue = [], TrendQueue2 = [];
@@ -114,6 +113,7 @@ function MM_MenuFix() {
     MM_hideElement("[href~='/objectives']",getCookie('MT_Goals',true));
     MM_hideElement("[href~='/recurring']",getCookie('MT_Recurring',true));
     MM_hideElement("[href~='/plan']",getCookie('MT_Budget',true));
+    debug = getCookie('MT_Debug',true);
 }
 
 function MM_RefreshAll() {
@@ -407,8 +407,8 @@ function MT_GridDrawContainer() {
             }
         }
         div2 = cec('div','MTdropdown',tbs);
-        div2 = cec('div','',div2,'Compress Grid','','margin-top: 12px; font-size: 14px; font-weight:500');
-        div2 = cec('input','MTFlexCheckbox',div2,'','','margin-top: 2px;');
+        div2 = cec('label','',div2,'Compress Grid','','margin-top: 10px; font-size: 14px; font-weight:500;display: inline-block;','htmlFor','CompressGrid');
+        div2 = cec('input','MTFlexCheckbox',div2,'','','margin-top: 2px;','id','CompressGrid');
         div2.type = 'checkbox';if(MTFlex.Button3 == 'true') {div2.checked = 'true';}
     }
 }
@@ -2199,8 +2199,10 @@ function onClickSumCells() {
 }
 
 function onClickMTDropdown(cActive) {
-    onClickMTDropdownRelease();
-    if(document.getElementById("MTDropdown"+cActive).classList.toggle("show") == true) { r_FlexButtonActive = cActive;} else { r_FlexButtonActive = 0;}
+    if(cActive == r_FlexButtonActive) { onClickMTDropdownRelease(); } else {
+        onClickMTDropdownRelease();
+        if(document.getElementById("MTDropdown"+cActive).classList.toggle("show") == true) { r_FlexButtonActive = cActive;} else { r_FlexButtonActive = 0;}
+    }
 }
 
 function onClickMTDropdownRelease() {
