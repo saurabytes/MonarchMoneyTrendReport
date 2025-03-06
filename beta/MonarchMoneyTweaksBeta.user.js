@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.45.02
+// @version      2.45
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.45.02';
+const version = '2.45';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -2259,14 +2259,14 @@ function addStyle(aCss) {
 }
 
 // Create Element Child (element,className,parentNode,innerText,href,style,[extra])
-function cec(e, c, r, it, hr, st, a1, a2) {
+function cec(e, c, p, it, hr, st, a1, a2) {
     const div = document.createElement(e);
+    if (c) div.className = c;
     if (it) div.innerText = it;
     if (hr) div.href = hr;
-    if (c) div.className = c;
     if (st) div.style = st;
     if (a1) div.setAttribute(a1, a2);
-    return r.appendChild(div);
+    return p.appendChild(div);
 }
 // Generic Functions
 function removeAllSections(inDiv) {
