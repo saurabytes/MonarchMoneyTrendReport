@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.45.01
+// @version      2.45.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.45.01';
+const version = '2.45.02';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -167,11 +167,22 @@ async function MF_GridInit(inName, inDesc) {
     await buildCategoryGroups();
 }
 
-function MF_GridValidate() {
+function MF_GridOptions(Num,Options) {
 
-    if(MTFlex.Button1Options == undefined || MTFlex.Button1 >= MTFlex.Button1Options.length) MTFlex.Button1 = 0;
-    if(MTFlex.Button2Options == undefined || MTFlex.Button2 >= MTFlex.Button2Options.length) MTFlex.Button2 = 0;
-    if(MTFlex.Button4Options == undefined || MTFlex.Button4 >= MTFlex.Button4Options.length) MTFlex.Button4 = 0;
+    switch (Num) {
+        case 1:
+            MTFlex.Button1Options = Options;
+            if(MTFlex.Button1 >= MTFlex.Button1Options.length) MTFlex.Button1 = 0;
+            break;
+        case 2:
+            MTFlex.Button2Options = Options;
+            if(MTFlex.Button2 >= MTFlex.Button2Options.length) MTFlex.Button2 = 0;
+            break;
+        case 4:
+            MTFlex.Button4Options = Options;
+            if(MTFlex.Button4 >= MTFlex.Button4Options.length) MTFlex.Button4 = 0;
+            break;
+    }
 }
 
 function MF_GridDraw(inRedraw) {
@@ -720,11 +731,10 @@ async function MenuReportsAccountsGo() {
     MTFlex.SortSeq = ['1','1','1','1','1','1','1','2','3','4','5'];
     MTFlex.TriggerEvent = true;
     MTFlex.TriggerEvents = false;
-    MTFlex.Button1Options = ['Hide subtotals','Show subtotals'];
-    MTFlex.Button2Options = ['This month','3 months', '6 months', 'This year', '1 year', '2 years', '3 years','Last 6 months with average','Last 12 months with average','This year with average','Last 3 years with average'];
-    MTFlex.Button4Options = getAccountGroupNames();
+    MF_GridOptions(1,['Hide subtotals','Show subtotals']);
+    MF_GridOptions(2,['This month','3 months', '6 months', 'This year', '1 year', '2 years', '3 years','Last 6 months with average','Last 12 months with average','This year with average','Last 3 years with average']);
+    MF_GridOptions(4,getAccountGroupNames());
     MTFlex.Subtotals = MTFlex.Button1;
-    MF_GridValidate();
     MTP = [];
     MTP.Column = 0; MTP.Title = 'Group';MTP.isSortable = 1; MTP.Format = 0; MF_QueueAddTitle(MTP);
     MTP.Column = 1; MTP.Title = 'Type'; MF_QueueAddTitle(MTP);
@@ -1081,11 +1091,10 @@ async function MenuReportsTrendsGo() {
 
     MTFlex.TriggerEvent = true;
     MTFlex.TriggerEvents = true;
-    MTFlex.Button1Options = ['By group','By category','By both'];
-    MTFlex.Button2Options = ['Compare last month','Compare same month','Compare same quarter','This year by month','Last year by month','Last 12 months by month', 'Two years ago by month', 'Three years ago by month', 'All years by year'];
+    MF_GridOptions(1,['By group','By category','By both']);
+    MF_GridOptions(2,['Compare last month','Compare same month','Compare same quarter','This year by month','Last year by month','Last 12 months by month', 'Two years ago by month', 'Three years ago by month', 'All years by year']);
     MTFlex.SortSeq = ['1','1','1','2','2','2','2','2','2'];
     if(MTFlex.Button1 == 2) {MTFlex.Subtotals = true;}
-    MF_GridValidate();
 
     MTP = [];
     MTP.Column = 0; MTP.Title = ['Group','Category','Group/Category'][MTFlex.Button1]; MTP.isSortable = 1; MTP.Format = 0;
