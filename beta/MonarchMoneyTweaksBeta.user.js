@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      3.00.01
+// @version      3.00.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '3.00.01';
+const version = '3.00.02';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -100,6 +100,7 @@ function MM_Init() {
     addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster",false),'block;') + '}');
     addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff",false),'block;') + '}');
     addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph",false),'block;') + '}');
+
 }
 
 function MM_MenuFix() {
@@ -113,7 +114,7 @@ function MM_MenuFix() {
 }
 
 function MM_RefreshAll() {
-    if (localStorage.getItem('MT:LastRefresh') != getDates('s_FullDate')) {
+    if (getCookie('MT:LastRefresh',false) != getDates('s_FullDate')) {
         if(getCookie('MT_RefreshAll',true) == 1) {refreshAccountsData();}}}
 
 function MM_hideElement(qList,InValue,inStartsWith) {
@@ -124,8 +125,8 @@ function MM_hideElement(qList,InValue,inStartsWith) {
 }
 
 function MM_flipElement(inDiv) {
-    flipCookie('MTC_' + inDiv,1);
-    const cv = getCookie('MTC_' + inDiv,true);
+    flipCookie('MT_' + inDiv,1);
+    const cv = getCookie('MT_' + inDiv,true);
     MM_hideElement(inDiv,cv);
 }
 
@@ -772,7 +773,7 @@ async function MenuReportsAccountsGoExt(){
     snapshotData = await getAccountsData();
     if(debug == 1) console.log('MenuReportsAccountsGoExt',snapshotData,MTFlex.Subtotals);
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
-        if(AccountGroupFilter == '' || AccountGroupFilter == localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id)) {
+        if(AccountGroupFilter == '' || AccountGroupFilter == getCookie('MTAccounts:' + snapshotData.accounts[i].id,false)) {
             MTP = [];
             MTP.isHeader = false;
             MTP.UID = snapshotData.accounts[i].id;
@@ -790,7 +791,7 @@ async function MenuReportsAccountsGoExt(){
             MF_QueueAddRow(MTP);
             MTFlexRow[MTFlexCR][MTFields] = snapshotData.accounts[i].displayName;
             MTFlexRow[MTFlexCR][MTFields+1] = snapshotData.accounts[i].subtype.display;
-            MTFlexRow[MTFlexCR][MTFields+2] = localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id);
+            MTFlexRow[MTFlexCR][MTFields+2] = getCookie('MTAccounts:' + snapshotData.accounts[i].id,false);
             MTFlexRow[MTFlexCR][MTFields+15] = Number(snapshotData.accounts[i].displayBalance);
         }
     }
@@ -869,7 +870,7 @@ async function MenuReportsAccountsGoStd(){
     for (let i = 0; i < 5; i += 1) { if(getCookie('MT_AccountsCard' + i.toString(),true) == 1) {cards+=1;}}
     if(debug == 1) console.log('MenuReportsAccountsGoStd',snapshotData,MTFlex.Subtotals,AccountGroupFilter);
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
-        if(AccountGroupFilter == '' || AccountGroupFilter == localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id)) {
+        if(AccountGroupFilter == '' || AccountGroupFilter == getCookie('MTAccounts:' + snapshotData.accounts[i].id,false)) {
             if(snapshotData.accounts[i].hideFromList == false || skipHidden == 0) {
                 MTP = [];
                 MTP.isHeader = false;
@@ -899,7 +900,7 @@ async function MenuReportsAccountsGoStd(){
                     MTFlexRow[MTFlexCR][MTFields] = snapshotData.accounts[i].displayName;
                     MTFlexRow[MTFlexCR][MTFields+1] = snapshotData.accounts[i].subtype.display;
                     MTFlexRow[MTFlexCR][MTFields+2] = snapshotData.accounts[i].displayLastUpdatedAt.substring(0, 10);
-                    MTFlexRow[MTFlexCR][MTFields+3] = localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id);
+                    MTFlexRow[MTFlexCR][MTFields+3] = getCookie('MTAccounts:' + snapshotData.accounts[i].id,false);
                     MTFlexRow[MTFlexCR][MTFields+8] = useBalance;
 
                     if(snapshotData.accounts[i].hideTransactionsFromReports == false) {
@@ -1027,7 +1028,7 @@ async function MenuAccountsSummary() {
         let snapshotData = await getAccountsData();
         for (let i = 0; i < snapshotData.accounts.length; i += 1) {
             if(snapshotData.accounts[i].hideFromList == false) {
-                let AccountGroupFilter = localStorage.getItem('MTAccounts:' + snapshotData.accounts[i].id);
+                let AccountGroupFilter = getCookie('MTAccounts:' + snapshotData.accounts[i].id,false);
                 MenuAccountSummaryUpdate(AccountGroupFilter, snapshotData.accounts[i].isAsset, snapshotData.accounts[i].displayBalance);
             }
         }
@@ -1495,7 +1496,7 @@ function MenuTrendsHistory(inType,inID) {
         div = cec('span','MTSideDrawerHeader',div4);
         div2 = cec('button','MTTrendCellArrow',div,'','','float:right;');
         if(inType == 'category-groups') {
-            div2 = cec('button','MTTrendCellArrow2',div,['',''][getCookie('MTC_div.TrendHistoryDetail',true)],'','float:right;margin-right: 16px;');
+            div2 = cec('button','MTTrendCellArrow2',div,['',''][getCookie('MT_div.TrendHistoryDetail',true)],'','float:right;margin-right: 16px;');
         }
         div2 = cec('div','MTFlexCardBig',div,'Monthly Summary');
         div = cec('span','MTSideDrawerHeader',div4);
@@ -1518,7 +1519,7 @@ function MenuTrendsHistoryDraw() {
     const os = 'text-align:left; font-weight: 600;';
     const os2 = 'font-weight: 600;';
     const os3 = 'text-align:left; font-weight: 200; font-size: 12px;';
-    const os4 = 'margin-bottom: 10px; line-height: 10px !important; display: ' + getDisplay(getCookie('MTC_div.TrendHistoryDetail',true),'');
+    const os4 = 'margin-bottom: 10px; line-height: 10px !important; display: ' + getDisplay(getCookie('MT_div.TrendHistoryDetail',true),'');
     const startYear = Number(getDates('n_CurYear') - 2);
     const curYear = Number(getDates('n_CurYear'));
     const curMonth = Number(getDates('n_CurMonth'));
@@ -1665,7 +1666,7 @@ function MenuTrendsHistoryExport() {
 
     const CRLF = String.fromCharCode(13,10),c = ',';
     let csvContent = '',j = 0,Cols = 0;
-    const spans = document.querySelectorAll('span.MTSideDrawerDetail' + [',span.MTSideDrawerDetail2',''][getCookie('MTC_div.TrendHistoryDetail',true)]);
+    const spans = document.querySelectorAll('span.MTSideDrawerDetail' + [',span.MTSideDrawerDetail2',''][getCookie('MT_div.TrendHistoryDetail',true)]);
     spans.forEach(span => {
         j=j+1;
         if(Cols == 0) { if(span.innerText.startsWith('Average')) { Cols = j;}}
@@ -1805,7 +1806,7 @@ function MTUpdateAccountPartner() {
         cec('div','',div,'Account Group (Accounts / Summary & Reports / Accounts)','','font-size: 14px;font-weight: 500;');
         div = cec('input','MTInputClass',div,'','','margin-bottom: 12px;width: 100%;');
         const p = SaveLocationPathName.split('/');
-        if(p) {div.value = localStorage.getItem('MTAccounts:' + p[3]);}
+        if(p) {div.value = getCookie('MTAccounts:' + p[3],false);}
     }
 }
 // [ Calendar ]
@@ -2009,8 +2010,10 @@ function MenuDisplay_Input(inValue,inCookie,inType,inStyle,defaultValue) {
             if(!OldValue) {
                 setCookie(inCookie, defaultValue);
             } else {
-                const parsedValue = JSON.parse(OldValue);
-                value = parsedValue;
+                if(OldValue.startsWith('[')) {
+                    const parsedValue = JSON.parse(OldValue);
+                    value = parsedValue;
+                }
             }
 
             if(Array.isArray(value)) {
@@ -2096,7 +2099,7 @@ window.onclick = function(event) {
                 return;
             case 'MTTrendCellArrow2':
                 MM_flipElement('div.TrendHistoryDetail');
-                event.target.innerText = ['',''][getCookie('MTC_div.TrendHistoryDetail',true)];
+                event.target.innerText = ['',''][getCookie('MT_div.TrendHistoryDetail',true)];
                 return;
             case 'MTPanelLink':
                 MenuTrendsHistoryExport();
@@ -2161,7 +2164,7 @@ window.onclick = function(event) {
                 if(li) {
                     const inputValue = li.value;
                     let p = SaveLocationPathName.split('/');
-                    if(p) {localStorage.setItem('MTAccounts:' + p[3],inputValue);}
+                    if(p) {setCookie('MTAccounts:' + p[3],inputValue);}
                 }
             }
         }
@@ -2481,8 +2484,7 @@ function setCookie(cName, cValue) {
 function getCookie(cname,isNum) {
     let value = localStorage.getItem(cname);
     if(value !== null) return value;
-    if(isNum == true) {return 0;}
-    return '';
+    if(isNum == true) {return 0;} else {return '';}
 }
 
 function flipCookie(inCookie,spin) {
@@ -2588,7 +2590,7 @@ async function refreshAccountsData() {
  const options = callGraphQL({operationName:"Common_ForceRefreshAccountsMutation",variables: { },
          query: "mutation Common_ForceRefreshAccountsMutation {\n  forceRefreshAllAccounts {\n    success\n    errors {\n      ...PayloadErrorFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment PayloadErrorFields on PayloadError {\n  fieldErrors {\n    field\n    messages\n    __typename\n  }\n  message\n  code\n  __typename\n}" });
     return fetch(graphql, options)
-    .then((response) => localStorage.setItem('MT:LastRefresh', getDates('s_FullDate')))
+    .then((response) => setCookie('MT:LastRefresh', getDates('s_FullDate')))
     .then((data) => { return data.data; }).catch((error) => { console.error(version,error); });
 }
 
