@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.45
+// @version      2.46.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.45';
+const version = '2.46.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -100,10 +100,6 @@ function MM_Init() {
     addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster",false),'block;') + '}');
     addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff",false),'block;') + '}');
     addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph",false),'block;') + '}');
-    if(MTFlex.Name) {
-        const x = inList(MTFlex.Name,['MTTrend','MTAccounts']);
-        if(x) {MenuReportsCustom();MenuReportsCustomUpdate(x+2);}
-    }
 }
 
 function MM_MenuFix() {
@@ -653,6 +649,13 @@ function MenuReportsSetFilter(inType,inCategory,inGroup) {
     if(inCategory) {reportsObj = replaceBetweenWith(reportsObj,'"groupBy":',',','"groupBy":"\\"category\\"",');
     } else {reportsObj = replaceBetweenWith(reportsObj,'"groupBy":',',','"groupBy":"\\"category_group\\"",');}
     localStorage.setItem('persist:reports',reportsObj,JSON.stringify(reportsObj));
+}
+
+function MenuReportsFix() {
+    if(MTFlex.Name) {
+        const x = inList(MTFlex.Name,['MTTrend','MTAccounts']);
+        if(x > 0) {MenuReportsCustom();MenuReportsCustomUpdate(x+2);}
+    }
 }
 
 function MenuReportsCustom() {
@@ -1521,11 +1524,13 @@ function MenuTrendsHistoryDraw() {
     const curMonth = Number(getDates('n_CurMonth'));
     let curYears = 1,skiprow = false,inGroup = 1,useArrow = 0,c_r = 'red', c_g = 'green';
     let topDiv = document.querySelector('div.MTSideDrawerMotion');
+    let T = ['Total',0,0,0,0];
+    let div=null,div2 = null,div3=null;
 
     if(topDiv) {
         if(topDiv.getAttribute("grouptype") == 'category-groups') { inGroup = 2;}
         if(topDiv.getAttribute("cattype") == 'income') { c_g = 'red'; c_r = 'green'; }
-        let div = cec('div','MTSideDrawerHeader',topDiv);
+        div = cec('div','MTSideDrawerHeader',topDiv);
 
         for (let i = 0; i < 12; i++) {
             sumQue.push({"MONTH": i,"YR1": MTHistoryDraw(i+1,startYear),"YR2": MTHistoryDraw(i+1,startYear + 1),"YR3": MTHistoryDraw(i+1,startYear + 2)});
@@ -1533,8 +1538,8 @@ function MenuTrendsHistoryDraw() {
 
         if(startYear < getCookie('MT_LowCalendarYear',false)) {skiprow = true;}
 
-        let div2 = cec('div','MTSideDrawerItem',div,'','',os2);
-        let div3 = cec('span','MTSideDrawerDetail',div2,'Month','',os);
+        div2 = cec('div','MTSideDrawerItem',div,'','',os2);
+        div3 = cec('span','MTSideDrawerDetail',div2,'Month','',os);
         for (let j = startYear; j <= curYear; j++) {
             if(skiprow == false || j > startYear) { div3 = cec('span','MTSideDrawerDetail',div2,j);}
         }
@@ -1544,11 +1549,9 @@ function MenuTrendsHistoryDraw() {
         div2 = cec('div','MTSideDrawerItem',div,'','',os2);
         div3 = cec('span','MTFlexSpacer',div2);
 
-        let T = ['Total',0,0,0,0];
         for (let i = 0; i < 12; i++) {
             if(i > 0 && i == curMonth) {
-                div2 = cec('div','MTSideDrawerItem',div,'','',os2);
-                div3 = cec('span','MTFlexSpacer',div2);
+                MTHistoryTotals('Sub Total','height:38px;');
             }
             if(sumQue[i].YR2 == sumQue[i].YR3){
                 useArrow = 2;}
@@ -1578,23 +1581,26 @@ function MenuTrendsHistoryDraw() {
             T[1] = T[1] + sumQue[i].YR1;T[2] = T[2] + sumQue[i].YR2;T[3] = T[3] + sumQue[i].YR3;
             if(inGroup == 2) { MTHistoryDrawDetail(i+1,div); }
         }
-        let tot = T[1]+T[2]+T[3];
-        if(tot != 0) { T[4] = tot / curYears; }
+        MTHistoryTotals('Total','');
+        div = cec('div','MTSideDrawerHeader',topDiv);
+        div2 = cec('div','MTPanelLink',div,'Download CSV','','padding: 0px; display:block; text-align:center;');
+    }
 
+    function MTHistoryTotals(inTitle,inStyle) {
+        const tot = T[1]+T[2]+T[3];
+        if(tot != 0) { T[4] = tot / curYears; }
         div2 = cec('div','MTSideDrawerItem',div,'','',os2);
         div3 = cec('span','MTFlexSpacer',div2);
         div2 = cec('div','MTSideDrawerItem',div,'','',os2);
-        div3 = cec('span','MTSideDrawerDetail',div2,T[0],'',os);
+        div3 = cec('span','MTSideDrawerDetail',div2,inTitle,'',os+inStyle);
         for (let i = 1; i < 5; i++) {
             if(skiprow == false || i > 1) {
                 div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(T[i]));
                 if(i == 3) {
-                     div3 = cec('span','MTSideDrawerDetail3',div2,' ');
+                    div3 = cec('span','MTSideDrawerDetail3',div2,' ');
                 }
             }
         }
-        div = cec('div','MTSideDrawerHeader',topDiv);
-        div2 = cec('div','MTPanelLink',div,'Download CSV','','padding: 0px; display:block; text-align:center;');
     }
 
     function MTHistoryDraw(inMonth,inYear) {
@@ -2035,6 +2041,7 @@ function MenuCheckSpawnProcess() {
             case 5:
                 MTSpawnProcess = 0;
                 MM_Init();
+                MenuReportsFix();
                 break;
             case 1:
                 MTSpawnProcess = 0;
