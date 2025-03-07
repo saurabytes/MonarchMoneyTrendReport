@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 2.46 (beta):** 
 
-• NEW: Reports / Trends history side panel will show a sub total up to previous month.
+• NEW: Reports / Trends history side panel will show a current year Sub Total.
 
 **Version 2.45:** 
 
