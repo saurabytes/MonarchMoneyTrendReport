@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 3.00 (beta):** 
 
-• NEW: Monarch Money Tweaks no longer uses Cookies - which should help with people losing their settings.  **You will have to redo all your settings during this update. - Sorry**  
+• NEW: Monarch Money Tweaks no longer uses Cookies - which should help with people losing settings.  **Please redo all your settings during this update. - Sorry**  
 
 • NEW: Reports / Trends history side panel will show a Sub Total.
 
