@@ -2360,8 +2360,8 @@ function getDates(InValue,InDate) {
         case 'i_Last12s':year-=1;break;
         case 'i_Last12e':if(getCookie('MT_CalendarEOM',true) == 1) {day = daysInMonth(month,year);}break;
         case 'i_LastYearYTDs':month = 0;day = 1;year-=1;break;
-        case 'i_LastYearYTDe':year-=1;if(getCookie('MT_CalendarEOM',true) == 1) {day = daysInMonth(month,year); }break;
-
+        case 'i_LastYearYTDe':
+            year-=1;if(getCookie('MT_CalendarEOM',true) == 1) {day = daysInMonth(month,year); }break;
         case 'i_ThisQTRs':
             if(month < 3) {month = 0;}
             if(month == 4 || month == 5) {month = 3;}
