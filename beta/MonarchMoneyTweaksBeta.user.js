@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      2.46.01
+// @version      3.00.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '2.46.01';
+const version = '3.00.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -2475,17 +2475,12 @@ function downloadFile(inTitle,inData) {
 }
 
 function setCookie(cName, cValue) {
-   document.cookie = cName + "=" + cValue + ";expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/" ;
+   localStorage.setItem(cName,cValue);
 }
 
 function getCookie(cname,isNum) {
-    let name = cname + '=';
-    let ca = document.cookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') { c = c.substring(1); }
-        if (c.indexOf(name) == 0) { return c.substring(name.length, c.length);}
-    }
+    let value = localStorage.getItem(cname);
+    if(value !== null) return value;
     if(isNum == true) {return 0;}
     return '';
 }
