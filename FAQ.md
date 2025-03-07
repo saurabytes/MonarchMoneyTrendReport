@@ -34,5 +34,10 @@ Having been available for over a year to members of the Monarch Money community,
 
 ![Settings](/images/MM_Chrome1.png)
 
+## Contributions:
+
+This GitHub repository is currently not set up for contributions, but I welcome your ideas and feedback. Please feel free to reach out via private message or email to discuss any thoughts you may have.
+
+One important guideline for this extension is that it will not include any features that add, change, or delete records in Monarch. This decision is made to maintain a high level of trust and confidence in the extension's use, ensuring that it does not impact anyone's data. Thank you for your understanding!
 
 Enjoy!
