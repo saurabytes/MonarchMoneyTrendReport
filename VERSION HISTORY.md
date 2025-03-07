@@ -7,7 +7,7 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Monarch Money Tweaks no longer uses Cookies - which should help with people losing settings.  **Please redo all your settings during this update. - Sorry**  
 
-• NEW: Reports / Trends history side panel will show a Sub Total.
+• NEW: Reports / Trends history side panel will now show a Sub Total.
 
 **Version 2.00-2.45:** 
 
