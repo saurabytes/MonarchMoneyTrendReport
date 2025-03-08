@@ -1,20 +1,20 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      3.00.03
+// @version      3.00.04
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '3.00.03';
+const version = '3.00.04';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
 let SaveLocationPathName = '';
 let r_headStyle = null, r_FlexButtonActive = false, MTSpawnProcess=0, debug=0;
-let accountGroups = [], accountBalances = [];
+let accountGroups = [];
 let AccountsTodayIs = new Date(), TrendTodayIs = new Date();
 let TrendQueue = [], TrendQueue2 = [];
 
@@ -832,9 +832,8 @@ async function MenuReportsAccountsGoExt(){
 async function MenuReportsAccountsGoStd(){
 
     let isToday = getDates('isToday',AccountsTodayIs);
-    if(isToday) {accountBalances = [];}
 
-    let snapshotData = null, snapshotData2 = null, snapshotData3 = null,snapshotData4 = null;
+    let snapshotData = null, snapshotData2 = null, snapshotData3 = null,snapshotData4 = null,snapshotData5 = null;
     let useDateRange = ['d_StartofMonth','d_Minus3Months','d_Minus6Months','d_StartOfYear','d_Minus1Year','d_Minus2Years','d_Minus3Years','d_Minus4Years','d_Minus5Years'][MTFlex.Button2];
     let useDate = getDates(useDateRange,AccountsTodayIs);
     let useDate2 = AccountsTodayIs;
@@ -866,19 +865,20 @@ async function MenuReportsAccountsGoStd(){
     snapshotData2 = await GetTransactions(formatQueryDate(useDate),formatQueryDate(useDate2),0,false);
     snapshotData3 = await getDisplayBalanceAtDateData(formatQueryDate(useDate));
     snapshotData4 = await GetTransactions(formatQueryDate(getDates('d_StartofLastMonth')),formatQueryDate(useDate2),0,true);
+    if(isToday == false) {snapshotData5 = await getDisplayBalanceAtDateData(formatQueryDate(useDate2));}
 
     for (let i = 0; i < 5; i += 1) { if(getCookie('MT_AccountsCard' + i.toString(),true) == 1) {cards+=1;}}
-    if(debug == 1) console.log('MenuReportsAccountsGoStd',snapshotData,MTFlex.Subtotals,AccountGroupFilter);
+    if(debug == 1) console.log('MenuReportsAccountsGoStd',snapshotData,snapshotData2,AccountGroupFilter);
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
         if(AccountGroupFilter == '' || AccountGroupFilter == getCookie('MTAccounts:' + snapshotData.accounts[i].id,false)) {
             if(snapshotData.accounts[i].hideFromList == false || skipHidden == 0) {
                 MTP = [];
                 MTP.isHeader = false;
                 MTP.UID = snapshotData.accounts[i].id;
-                if(isToday) {
+                if(isToday == true) {
                     useBalance = Number(snapshotData.accounts[i].displayBalance);
                 } else {
-                    useBalance = getAccountCacheBalance(MTP.UID);
+                    useBalance = getAccountPrevBalance(MTP.UID);
                 }
                 if(useBalance == null) {useBalance = 0;}
                 pastBalance = getAccountBalance(MTP.UID);
@@ -932,7 +932,6 @@ async function MenuReportsAccountsGoStd(){
                             MTFlexRow[MTFlexCR][MTFields+4] = useBalance - MTFlexRow[MTFlexCR][MTFields+5] - MTFlexRow[MTFlexCR][MTFields+6] + MTFlexRow[MTFlexCR][MTFields+7];
                         }
                     } else { MTFlexRow[MTFlexCR][MTFields+4] = pastBalance; }
-                    if(isToday) {updateAccountBalance(snapshotData.accounts[i].id,MTFlexRow[MTFlexCR][MTFields+5]);}
                     MTFlexRow[MTFlexCR][MTFields+4] = parseFloat(MTFlexRow[MTFlexCR][MTFields+4].toFixed(2));
                     MTFlexRow[MTFlexCR][MTFields+9] = useBalance - MTFlexRow[MTFlexCR][MTFields+4];
                     MTFlexRow[MTFlexCR][MTFields+9] = parseFloat(MTFlexRow[MTFlexCR][MTFields+9].toFixed(2));
@@ -972,6 +971,12 @@ async function MenuReportsAccountsGoStd(){
     function getAccountBalance(inId) {
         for (let k = 0; k < snapshotData3.accounts.length; k++) {
             if(snapshotData3.accounts[k].id == inId ) { return snapshotData3.accounts[k].displayBalance; }
+        }
+        return 0;
+    }
+    function getAccountPrevBalance(inId) {
+        for (let k = 0; k < snapshotData5.accounts.length; k++) {
+            if(snapshotData5.accounts[k].id == inId ) { return snapshotData5.accounts[k].displayBalance; }
         }
         return 0;
     }
@@ -2225,16 +2230,15 @@ function onClickMTDropdownRelease() {
 
 function onClickMTFlexBig() {
 
-  if(MTFlex.Name == 'MTTrend') {
-      if(getDates('isToday',TrendTodayIs)) {
-          TrendTodayIs = getDates('d_EndofLastMonth');} else { TrendTodayIs = getDates('d_Today');}
-      MenuReportsTrendsGo();
-  }
-  if(MTFlex.Name == 'MTAccounts') {
-      if(getDates('isToday',AccountsTodayIs)) {
-          AccountsTodayIs = getDates('d_EndofLastMonth');} else {AccountsTodayIs = getDates('d_Today');}
-      MenuReportsAccountsGo();
-  }
+    if(MTFlex.Name == 'MTTrend') {
+        if(getDates('isToday',TrendTodayIs)) {
+            TrendTodayIs = getDates('d_EndofLastMonth');} else { TrendTodayIs = getDates('d_Today');}
+    }
+    if(MTFlex.Name == 'MTAccounts') {
+        if(getDates('isToday',AccountsTodayIs)) {
+            AccountsTodayIs = getDates('d_EndofLastMonth');} else {AccountsTodayIs = getDates('d_Today');}
+    }
+    MenuReportsGo(MTFlex.Name);
 }
 
 function onClickMTFlexArrow(inP) {
@@ -2626,15 +2630,4 @@ function getCategoryGroupList(InId) {
 function getCategoryGroup(InId) {
     for (let i = 0; i < accountGroups.length; i++) {if(accountGroups[i].ID == InId || accountGroups[i].GROUP == InId) {return accountGroups[i];}}
     return [null];
-}
-
-function updateAccountBalance(inId,inBalance) {
-    accountBalances.push({"ID": inId, "BALANCE": inBalance});
-}
-
-function getAccountCacheBalance(inId) {
-  for (let i = 0; i < accountBalances.length; i++) {
-      if(accountBalances[i].ID == inId ) { return accountBalances[i].BALANCE; }
-  }
-    return 0;
 }
