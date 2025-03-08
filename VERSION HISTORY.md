@@ -13,6 +13,8 @@ Email any issues directly:  robert @ paresi.net
 
 • REGRESSION: The Export button stopped working in Trends & Accounts.
 
+• FIX: When running Accounts report for previous month, the Balanace was showing zero.
+
 
 
 **Version 2.00-2.45:** 
