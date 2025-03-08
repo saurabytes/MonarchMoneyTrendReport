@@ -9,6 +9,10 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Reports / Trends history side panel will now show a Sub Total.
 
+• REGRESSION: The Export button stopped working in Trends & Accounts.
+
+
+
 **Version 2.00-2.45:** 
 
 • FIX: Reports / Accounts could fail if user changed Account Groups to be less than the previous default selection.
