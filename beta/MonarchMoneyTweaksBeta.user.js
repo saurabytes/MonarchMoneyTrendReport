@@ -968,15 +968,16 @@ async function MenuReportsAccountsGoStd(){
     MF_GridRollDifference(5,1,3,1,'Net Worth/Totals','Add');
     MF_GridCalcDifference(5,1,3,[4,8,9,11],'Sub');
 
+    function getAccountUsed(inId) {
+        for (let k = 0; k < snapshotData2.allTransactions.results.length; k++) {
+            if(snapshotData2.allTransactions.results[k].account.id == inId) { return true; }
+        }
+        return false;
+    }
+
     function getAccountBalance(inId) {
         for (let k = 0; k < snapshotData3.accounts.length; k++) {
             if(snapshotData3.accounts[k].id == inId ) { return snapshotData3.accounts[k].displayBalance; }
-        }
-        return 0;
-    }
-    function getAccountPrevBalance(inId) {
-        for (let k = 0; k < snapshotData5.accounts.length; k++) {
-            if(snapshotData5.accounts[k].id == inId ) { return snapshotData5.accounts[k].displayBalance; }
         }
         return 0;
     }
@@ -989,11 +990,11 @@ async function MenuReportsAccountsGoStd(){
         }
         amt = amt * -1;return amt;
     }
-    function getAccountUsed(inId) {
-        for (let k = 0; k < snapshotData2.allTransactions.results.length; k++) {
-            if(snapshotData2.allTransactions.results[k].account.id == inId) { return true; }
+    function getAccountPrevBalance(inId) {
+        for (let k = 0; k < snapshotData5.accounts.length; k++) {
+            if(snapshotData5.accounts[k].id == inId ) { return snapshotData5.accounts[k].displayBalance; }
         }
-        return false;
+        return 0;
     }
 }
 
