@@ -11,10 +11,12 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Reports / Trends history side panel will now show a Sub Total.
 
-• REGRESSION: The Export button stopped working in Trends & Accounts.
-
 • FIX: When running Accounts report for previous month, the Balance column was showing zero.
 
+
+**Version 2.46:** 
+
+• REGRESSION: The Export button stopped working in Trends & Accounts.
 
 
 **Version 2.00-2.45:** 
