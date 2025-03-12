@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      3.00.04
+// @version      3.00.05
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '3.00.04';
+const version = '3.00.05';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -769,7 +769,7 @@ async function MenuReportsAccountsGoExt(){
     MTP.isHidden = false;
     MTP.Column = 15; MTP.Title = 'Current';MF_QueueAddTitle(MTP);
     MTP.Column = 16; MTP.Title = 'Average';MF_QueueAddTitle(MTP);
-
+hhh-0;
     snapshotData = await getAccountsData();
     if(debug == 1) console.log('MenuReportsAccountsGoExt',snapshotData,MTFlex.Subtotals);
     for (let i = 0; i < snapshotData.accounts.length; i += 1) {
@@ -1958,7 +1958,7 @@ function MenuDisplay(OnFocus) {
             MenuDisplay_Input('Ignore Budget Income remaining in "Left to Spend"','MT_PlanLTBII','checkbox','margin-left: 22px;');
             MenuDisplay_Input('Ignore Budget Expenses remaining in "Left to Spend"','MT_PlanLTBIE','checkbox','margin-left: 22px;');
             MenuDisplay_Input('Ignore Rollover budgets, always use actual Budget minus actual Spent for “Left to Spend”','MT_PlanLTBIR','checkbox','margin-left: 22px;');
-            MenuDisplay_Input('Reorder budget categories (Income, Expenses, Contributions)','MT_BudgetOrder','number-array',"",[0,1,2]);
+            MenuDisplay_Input('Reorder budget categories (Income, Expenses, Contributions)','MT_BudgetOrder','number-array','',[0,1,2]);
             MenuDisplay_Input('System','','spacer');
             MenuDisplay_Input('Debug data to console log (Only turn on if asked)','MT_Debug','checkbox');
         }
@@ -2027,7 +2027,7 @@ function MenuDisplay_Input(inValue,inCookie,inType,inStyle,defaultValue) {
 
                 budgetCategories.map((label, idx) => {
                     cec('div','',e1,label,'','font-size: 14px; font-weight: 500;');
-                    const e2 = cec('input','MTInputClass',e1,'','','margin-bottom: 10px;','type','number');
+                    e2 = cec('input','MTInputClass',e1,'','','margin-bottom: 10px;','type','number');
                     e2.min = 0;
                     e2.max = 99;
                     e2.value = value[idx];
@@ -2555,7 +2555,7 @@ async function getMonthlySnapshotData2(startDate, endDate,groupingType) {
 
 async function getMonthlySnapshotData(startDate, endDate, groupingType) {
     const options = callGraphQL({ operationName: 'GetAggregatesGraphCategoryGroup',variables: {startDate: startDate, endDate: endDate, },
-          query: "query GetAggregatesGraphCategoryGroup($startDate: Date, $endDate: Date) {\n aggregates(\n filters: { startDate: $startDate, endDate: $endDate }\n groupBy: [\"categoryGroup\", \"" + groupingType + "\"]\n fillEmptyValues: false\n ) {\n groupBy {\n categoryGroup {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
+          query: "query GetAggregatesGraphCategoryGroup($startDate: Date, $endDate: Date, ) {\n aggregates(\n filters: { startDate: $startDate, endDate: $endDate, }\n groupBy: [\"categoryGroup\", \"" + groupingType + "\"]\n fillEmptyValues: false\n ) {\n groupBy {\n categoryGroup {\n id\n }\n " + groupingType + "\n }\n summary {\n sum\n }\n }\n }\n"
       });
   return fetch(graphql, options)
     .then((response) => response.json())
