@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 3.00 (beta):** 
+**Version 3.00:** 
 
 • NEW: Monarch Money Tweaks no longer uses Cookies - which should help with people losing settings.  
 > [!IMPORTANT]
