@@ -8,6 +8,8 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
+// NOTICE: YOU HAVE TO REDO YOUR TWEAKS SETTINGS DURING THIS UPDATE!  See Version History for more information.
+
 const version = '3.00';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
