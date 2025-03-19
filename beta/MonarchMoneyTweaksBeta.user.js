@@ -313,11 +313,10 @@ function MT_GridDrawDetails() {
         if(MTFlex.TriggerEvents) {
             if(isSubTotal == true && useRow.PKTriggerEvent) {
                 elx = cec('td','',el,'','',ArrowSpacing + 'vertical-align: top;');
-                elx = cec('button','MTFlexCellArrow',elx);
+                elx = cec('button','MTFlexCellArrow tooltip',elx);
                 cec('span','MTFlexCellArrow',elx,'','','','triggers',useRow.PKTriggerEvent + '/');
                 let tt = cec('div','tooltip',elx,'');
-                cec('span','tooltiptext',tt,'');
-                elx.setAttribute("data-tooltip", useRow[MTFields]);
+                cec('span','tooltiptext',tt,useRow.PK);
             }
             else if(isSubTotal == false && useRow.SKTriggerEvent) {
                 elx = cec('td','',el,'','',ArrowSpacing);
