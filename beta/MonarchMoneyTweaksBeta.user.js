@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      3.00
+// @version      3.01.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '3.00';
+const version = '3.01.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -100,7 +100,9 @@ function MM_Init() {
     addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster",false),'block;') + '}');
     addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff",false),'block;') + '}');
     addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph",false),'block;') + '}');
-
+    addStyle('.tooltip {position: relative;display: inline-block;}');
+    addStyle('.tooltip .tooltiptext {visibility: hidden;width: 120px;background-color: black; color: #fff; text-align: center; font-size: 14px; padding: 12px 0; border-radius: 6px; position: absolute; z-index: 1; margin-bottom: 16px;bottom: 125%; left: 50%; margin-left: -60px; opacity: 0; transition: opacity 0.3s;}');
+    addStyle('.tooltip:hover .tooltiptext {visibility: visible;opacity: 1;}');
 }
 
 function MM_MenuFix() {
@@ -313,11 +315,16 @@ function MT_GridDrawDetails() {
                 elx = cec('td','',el,'','',ArrowSpacing + 'vertical-align: top;');
                 elx = cec('button','MTFlexCellArrow',elx);
                 cec('span','MTFlexCellArrow',elx,'','','','triggers',useRow.PKTriggerEvent + '/');
+                let tt = cec('div','tooltip',elx,'');
+                cec('span','tooltiptext',tt,'');
+                elx.setAttribute("data-tooltip", useRow[MTFields]);
             }
             else if(isSubTotal == false && useRow.SKTriggerEvent) {
                 elx = cec('td','',el,'','',ArrowSpacing);
-                elx = cec('button','MTFlexCellArrow',elx);
+                elx = cec('button','MTFlexCellArrow tooltip',elx);
                 cec('span','MTFlexCellArrow',elx,'','','','triggers',useRow.SKTriggerEvent + '/');
+                let tt = cec('div','tooltip',elx,'');
+                cec('span','tooltiptext',tt,useRow[MTFields]);
             } else {
                 elx = cec('td','',el,'','',ArrowSpacing );
             }
@@ -1524,13 +1531,15 @@ function MenuTrendsHistoryDraw() {
     const os = 'text-align:left; font-weight: 600;';
     const os2 = 'font-weight: 600;';
     const os3 = 'text-align:left; font-weight: 200; font-size: 12px;';
-    const os4 = 'margin-bottom: 10px; line-height: 10px !important; display: ' + getDisplay(getCookie('MT_div.TrendHistoryDetail',true),'');
-    const startYear = Number(getDates('n_CurYear') - 2);
-    const curYear = Number(getDates('n_CurYear'));
-    const curMonth = Number(getDates('n_CurMonth'));
+    const os4 = 'margin-bottom: 6px; line-height: 10px !important; display: ' + getDisplay(getCookie('MT_div.TrendHistoryDetail',true),'');
+    const startYear = getDates('n_CurYear') - 2;
+    const curYear = getDates('n_CurYear');
+    const curMonth = getDates('n_CurMonth');
+
     let curYears = 1,skiprow = false,inGroup = 1,useArrow = 0,c_r = 'red', c_g = 'green';
     let topDiv = document.querySelector('div.MTSideDrawerMotion');
     let T = ['Total',0,0,0,0];
+    let curSubTotal = 0;
     let div=null,div2 = null,div3=null;
 
     if(topDiv) {
@@ -1551,13 +1560,14 @@ function MenuTrendsHistoryDraw() {
         }
 
         div3 = cec('span','MTSideDrawerDetail3',div2);
-        div3 = cec('span','MTSideDrawerDetail',div2,'Average for Month');
+        div3 = cec('span','MTSideDrawerDetail',div2,'Average');
         div2 = cec('div','MTSideDrawerItem',div,'','',os2);
         div3 = cec('span','MTFlexSpacer',div2);
 
         for (let i = 0; i < 12; i++) {
             if(i > 0 && i == curMonth) {
-                MTHistoryTotals('Sub Total','height:38px;');
+                MTHistoryTotals('Sub Total','height:26px;');
+                curSubTotal = T[3];
             }
             if(sumQue[i].YR2 == sumQue[i].YR3){
                 useArrow = 2;}
@@ -1588,20 +1598,56 @@ function MenuTrendsHistoryDraw() {
             if(inGroup == 2) { MTHistoryDrawDetail(i+1,div); }
         }
         MTHistoryTotals('Total','');
+        MTHistoryTotals('Average','');
+        MTHistoryTotals('Highest','');
+        MTHistoryTotals('Lowest','');
         div = cec('div','MTSideDrawerHeader',topDiv);
         div2 = cec('div','MTPanelLink',div,'Download CSV','','padding: 0px; display:block; text-align:center;');
     }
 
     function MTHistoryTotals(inTitle,inStyle) {
+        let maxCol = 4;
+        switch (inTitle) {
+            case 'Lowest':
+                T[1]=0;T[2]=0;T[3];
+                 for (let i = 0; i < 12; i++) {
+                     if(sumQue[i].YR1 < T[1] || i == 0) T[1] = sumQue[i].YR1;
+                     if(sumQue[i].YR2 < T[2] || i == 0) T[2] = sumQue[i].YR2;
+                     if((sumQue[i].YR3 < T[3] || i == 0) && i < curMonth) T[3] = sumQue[i].YR3;
+                 }
+                maxCol = 3;
+                break;
+            case 'Highest':
+                T[1]=0;T[2]=0;T[3];
+                 for (let i = 0; i < 12; i++) {
+                     if(sumQue[i].YR1 > T[1] || i == 0) T[1] = sumQue[i].YR1;
+                     if(sumQue[i].YR2 > T[2] || i == 0) T[2] = sumQue[i].YR2;
+                     if((sumQue[i].YR3 > T[3] || i == 0) && i < curMonth) T[3] = sumQue[i].YR3;
+                 }
+                maxCol = 3;
+                break;
+            case 'Average':
+                T[1] = T[1] / 12;
+                T[2] = T[2] / 12;
+                T[3] = curSubTotal / curMonth;
+                maxCol = 3;
+                break;
+        }
         const tot = T[1]+T[2]+T[3];
         if(tot != 0) { T[4] = tot / curYears; }
-        div2 = cec('div','MTSideDrawerItem',div,'','',os2);
-        div3 = cec('span','MTFlexSpacer',div2);
+        if(inTitle.includes('Total')) {
+            div2 = cec('div','MTSideDrawerItem',div,'','',os2);
+            div3 = cec('span','MTFlexSpacer',div2);
+        }
         div2 = cec('div','MTSideDrawerItem',div,'','',os2);
         div3 = cec('span','MTSideDrawerDetail',div2,inTitle,'',os+inStyle);
         for (let i = 1; i < 5; i++) {
             if(skiprow == false || i > 1) {
-                div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(T[i]));
+                if(i > maxCol) {
+                    div3 = cec('span','MTSideDrawerDetail',div2,'');
+                } else {
+                    div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(T[i]));
+                }
                 if(i == 3) {
                     div3 = cec('span','MTSideDrawerDetail3',div2,' ');
                 }
@@ -2243,8 +2289,10 @@ function onClickMTFlexBig() {
 
 function onClickMTFlexArrow(inP) {
 
-    let p = inP.split('/');
-    if(p) { MenuTrendsHistory(p[0],p[1]); }
+    if(inP != null) {
+        let p = inP.split('/');
+        if(p) { MenuTrendsHistory(p[0],p[1]); }
+    }
 }
 
 function onClickGridSort() {
@@ -2260,6 +2308,8 @@ function onClickGridSort() {
         MF_GridDraw(1);
     }
 }
+
+
 // Monarch Money needed
 function isDarkMode() {
     const cssObj = window.getComputedStyle(document.querySelector('[class*=Page__Root]'), null);
