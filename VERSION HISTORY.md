@@ -3,6 +3,12 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
+**Version 3.01:** 
+
+• NEW: Added "Lowest", "Highest" and "Average" to Trends side panel
+
+• NEW: Added Tooltip to > Trigger to Flexgrid to choose easier.
+
 **Version 3.00:** 
 
 • NEW: Monarch Money Tweaks no longer uses Cookies - which should help with people losing settings.  
