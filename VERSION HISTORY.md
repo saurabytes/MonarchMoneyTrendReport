@@ -9,6 +9,8 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Added Tooltip to > Trigger to Flexgrid to choose easier.
 
+• NEW: Added Tooltip on Accounts Assets & Liabilities to show breakdown.
+
 **Version 3.00:** 
 
 • NEW: Monarch Money Tweaks no longer uses Cookies - which should help with people losing settings.  
