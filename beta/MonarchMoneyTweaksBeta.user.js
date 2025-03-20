@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      3.01.01
+// @version      3.01.02
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-const version = '3.01.01';
+const version = '3.01.02';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -101,7 +101,7 @@ function MM_Init() {
     addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff",false),'block;') + '}');
     addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph",false),'block;') + '}');
     addStyle('.tooltip {position: relative;display: inline-block;}');
-    addStyle('.tooltip .tooltiptext {visibility: hidden;width: 120px;background-color: black; color: #fff; text-align: center; font-size: 14px; padding: 12px 0; border-radius: 6px; position: absolute; z-index: 1; margin-bottom: 16px;bottom: 125%; left: 50%; margin-left: -60px; opacity: 0; transition: opacity 0.3s;}');
+    addStyle('.tooltip .tooltiptext {visibility: hidden; width: 120px; background-color: black; color: #fff; text-align: center; font-size: 14px; padding: 12px 0; border-radius: 6px; position: absolute; z-index: 1; margin-bottom: 16px;bottom: 125%; left: 50%; margin-left: -60px; opacity: 0; transition: opacity 0.3s;}');
     addStyle('.tooltip:hover .tooltiptext {visibility: visible;opacity: 1;}');
 }
 
@@ -1040,10 +1040,11 @@ async function MenuAccountsSummary() {
         for (let i = 0; i < snapshotData.accounts.length; i += 1) {
             if(snapshotData.accounts[i].hideFromList == false) {
                 let AccountGroupFilter = getCookie('MTAccounts:' + snapshotData.accounts[i].id,false);
-                MenuAccountSummaryUpdate(AccountGroupFilter, snapshotData.accounts[i].isAsset, snapshotData.accounts[i].displayBalance);
+                MenuAccountSummaryUpdate(AccountGroupFilter, snapshotData.accounts[i].isAsset, snapshotData.accounts[i].displayBalance,snapshotData.accounts[i].displayName);
             }
         }
         aSummary.sort();
+        console.log(aSummary);
         MenuAccountSummaryShow(elements[0],true);
         MenuAccountSummaryShow(elements[1],false);
     } else { MTSpawnProcess = 4; }
@@ -1059,21 +1060,41 @@ async function MenuAccountsSummary() {
         for (let j = 0; j < aSummary.length; j += 1) {
             if((isAsset && aSummary[j].Asset != 0) || (!isAsset && aSummary[j].Liability !=0)) {
                 divChild = cec('div',cnClass,div,'','','margin-bottom: 5px;');
-                cec('span','',divChild,aSummary[j].AccountGroup);
-                cec('span','',divChild,isAsset == true ? getDollarValue(aSummary[j].Asset) : getDollarValue(aSummary[j].Liability),'','color: rgb(119, 117, 115)');
+                let elx = cec('span','tooltip',divChild,aSummary[j].AccountGroup);
+                let tt = cec('div','tooltip',elx);
+                if(isAsset == true) {
+                    cec('span','tooltiptext',tt,aSummary[j].ToolTipAsset,'','width:260px;text-align: left;padding-left:10px;');
+                } else {
+                    cec('span','tooltiptext',tt,aSummary[j].ToolTipLiability,'','width:260px;text-align: left;padding-left:10px;');
+                }
+
+                elx = cec('span','',divChild,isAsset == true ? getDollarValue(aSummary[j].Asset) : getDollarValue(aSummary[j].Liability),'','color: rgb(119, 117, 115)');
+
             }
         }
         if(divChild) {cec('div','',div,'','','margin-bottom: 18px;');}
     }
 
-    function MenuAccountSummaryUpdate(inGroup,inA,inBal) {
+    function MenuAccountSummaryUpdate(inGroup,inA,inBal,inDesc) {
+        let ttLit = inDesc + ':  ' + getDollarValue(inBal,2);
+        let tta='',ttl='';
+        if(inA == true) {tta = ttLit;} else {ttl = ttLit;}
+
         for (let j = 0; j < aSummary.length; j += 1) {
             if(aSummary[j].AccountGroup == inGroup) {
-                if(inA == true) {aSummary[j].Asset += Number(inBal);} else {aSummary[j].Liability += Number(inBal);}
+                if(inA == true) {
+                    aSummary[j].Asset += Number(inBal);
+                    aSummary[j].ToolTipAsset += '\n' + ttLit;
+                    if(aSummary[j].ToolTipAsset.startsWith('\n')) {aSummary[j].ToolTipAsset = aSummary[j].ToolTipAsset.slice(1);}
+                } else {
+                    aSummary[j].Liability += Number(inBal);
+                    aSummary[j].ToolTipLiability += '\n' + ttLit;
+                    if(aSummary[j].ToolTipLiability.startsWith('\n')) {aSummary[j].ToolTipLiability=aSummary[j].ToolTipLiability.slice(1);}
+                }
                 return;
             }
         }
-        aSummary.push({"AccountGroup": inGroup, "Asset": inA == true ? Number(inBal) : 0, "Liability": inA == true ? 0 : Number(inBal) });
+        aSummary.push({"AccountGroup": inGroup, "ToolTipAsset": tta ,"ToolTipLiability":ttl,"Asset": inA == true ? Number(inBal) : 0, "Liability": inA == true ? 0 : Number(inBal) });
     }
 }
 
@@ -1634,6 +1655,7 @@ function MenuTrendsHistoryDraw() {
         }
         const tot = T[1]+T[2]+T[3];
         if(tot != 0) { T[4] = tot / curYears; }
+
         if(inTitle.includes('Total')) {
             div2 = cec('div','MTSideDrawerItem',div,'','',os2);
             div3 = cec('span','MTFlexSpacer',div2);
