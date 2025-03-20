@@ -5,7 +5,7 @@ Email any issues directly:  robert @ paresi.net
 
 **Version 3.01: (beta)** 
 
-• NEW: Added "Lowest", "Highest" and "Average" to Trends side panel
+• NEW: Added "Lowest", "Highest" and "Average" to Trends Monthly History side panel
 
 • NEW: Added Tooltip to > Trigger to Flexgrid to choose easier.
 
