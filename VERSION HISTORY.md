@@ -3,7 +3,7 @@ Here are a list of Open Issues, Unreleased changes and past changes:
 
 Email any issues directly:  robert @ paresi.net
 
-**Version 3.01: (beta)** 
+**Version 3.01:** 
 
 • NEW: Added "Lowest", "Highest" and "Average" to Trends Monthly History side panel
 
