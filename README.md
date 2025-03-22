@@ -1,6 +1,6 @@
 # Monarch Money Tweaks - GET STARTED! 
 
-[Already have MM Tweaks? - Click here to Update to V3.00](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js) - Settings have to be redone in this update.  See Version History for more information.
+[Already have MM Tweaks? - Click here to Update to V3.01](https://github.com/RobertParesi/MonarchMoneyTrendReport/raw/refs/heads/main/MonarchMoneyTweaks.user.js) - Settings have to be redone in this update.  See Version History for more information.
 
 Hello!  I use **Monarch Money**.  
 
