@@ -1,16 +1,14 @@
 // ==UserScript==
 // @name         Monarch Money Tweaks
 // @namespace    http://tampermonkey.net/
-// @version      3.00
+// @version      3.01
 // @description  Monarch Tweaks
 // @author       Robert P
 // @match        https://app.monarchmoney.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=monarchmoney.com
 // ==/UserScript==
 
-// NOTICE: YOU HAVE TO REDO YOUR TWEAKS SETTINGS DURING THIS UPDATE!  See Version History for more information.
-
-const version = '3.00';
+const version = '3.01';
 const css_currency = 'USD';
 const css_green = 'color: #2a7e3b;',css_red = 'color: #d13415;';
 const graphql = 'https://api.monarchmoney.com/graphql';
@@ -87,7 +85,7 @@ function MM_Init() {
     addStyle('.MTSideDrawerContainer {overflow: hidden; padding: 12px; width: 640px; -moz-box-pack: end; ' + sidepanelBackground + ' position: relative; overflow:auto;}');
     addStyle('.MTSideDrawerMotion {display: flex; flex-direction: column; transform:none;}');
     addStyle('.MTSideDrawerHeader { ' + standardText + ' padding: 12px; }');
-    addStyle('.MTSideDrawerItem { font-size: 14px;  margin-bottom: 10px;  place-content: stretch space-between;  display: flex;');
+    addStyle('.MTSideDrawerItem { font-size: 14px;  margin-bottom: 6px;  place-content: stretch space-between;  display: flex;');
     addStyle('.MTSideDrawerDetail { ' + standardText + ' width: 24%; text-align: right; font-size: 13px; }');
     addStyle('.MTSideDrawerDetail2, .MTSideDrawerDetail4 { ' + standardText + ' width: 24%; text-align: right; font-size: 12px; }');
     addStyle('.MTSideDrawerDetail3 { ' + standardText + ' width: 13px; text-align: center; font-size: 13px; font-family: MonarchIcons, sans-serif !important; }');
@@ -102,7 +100,9 @@ function MM_Init() {
     addStyle('.Toast__Root-sc-1mbc5m5-0 {display: ' + getDisplay(getCookie("MT_HideToaster",false),'block;') + '}');
     addStyle('.ReportsTooltipRow__Diff-k9pa1b-3 {display: ' + getDisplay(getCookie("MT_HideTipDiff",false),'block;') + '}');
     addStyle('.AccountNetWorthCharts__Root-sc-14tj3z2-0 {display: ' + getDisplay(getCookie("MT_HideAccountsGraph",false),'block;') + '}');
-
+    addStyle('.tooltip {position: relative;display: inline-block;}');
+    addStyle('.tooltip .tooltiptext {visibility: hidden; width: 120px; background-color: black; color: #fff; text-align: center; font-size: 14px; padding: 12px 0; border-radius: 6px; position: absolute; z-index: 1; margin-bottom: 16px;bottom: 125%; left: 50%; margin-left: -60px; opacity: 0; transition: opacity 0.3s;}');
+    addStyle('.tooltip:hover .tooltiptext {visibility: visible;opacity: 1;}');
 }
 
 function MM_MenuFix() {
@@ -313,13 +313,17 @@ function MT_GridDrawDetails() {
         if(MTFlex.TriggerEvents) {
             if(isSubTotal == true && useRow.PKTriggerEvent) {
                 elx = cec('td','',el,'','',ArrowSpacing + 'vertical-align: top;');
-                elx = cec('button','MTFlexCellArrow',elx);
+                elx = cec('button','MTFlexCellArrow tooltip',elx);
                 cec('span','MTFlexCellArrow',elx,'','','','triggers',useRow.PKTriggerEvent + '/');
+                let tt = cec('div','tooltip',elx,'');
+                cec('span','tooltiptext',tt,useRow.PK);
             }
             else if(isSubTotal == false && useRow.SKTriggerEvent) {
                 elx = cec('td','',el,'','',ArrowSpacing);
-                elx = cec('button','MTFlexCellArrow',elx);
+                elx = cec('button','MTFlexCellArrow tooltip',elx);
                 cec('span','MTFlexCellArrow',elx,'','','','triggers',useRow.SKTriggerEvent + '/');
+                let tt = cec('div','tooltip',elx,'');
+                cec('span','tooltiptext',tt,useRow[MTFields]);
             } else {
                 elx = cec('td','',el,'','',ArrowSpacing );
             }
@@ -1036,7 +1040,7 @@ async function MenuAccountsSummary() {
         for (let i = 0; i < snapshotData.accounts.length; i += 1) {
             if(snapshotData.accounts[i].hideFromList == false) {
                 let AccountGroupFilter = getCookie('MTAccounts:' + snapshotData.accounts[i].id,false);
-                MenuAccountSummaryUpdate(AccountGroupFilter, snapshotData.accounts[i].isAsset, snapshotData.accounts[i].displayBalance);
+                MenuAccountSummaryUpdate(AccountGroupFilter, snapshotData.accounts[i].isAsset, snapshotData.accounts[i].displayBalance,snapshotData.accounts[i].displayName);
             }
         }
         aSummary.sort();
@@ -1055,21 +1059,41 @@ async function MenuAccountsSummary() {
         for (let j = 0; j < aSummary.length; j += 1) {
             if((isAsset && aSummary[j].Asset != 0) || (!isAsset && aSummary[j].Liability !=0)) {
                 divChild = cec('div',cnClass,div,'','','margin-bottom: 5px;');
-                cec('span','',divChild,aSummary[j].AccountGroup);
-                cec('span','',divChild,isAsset == true ? getDollarValue(aSummary[j].Asset) : getDollarValue(aSummary[j].Liability),'','color: rgb(119, 117, 115)');
+                let elx = cec('span','tooltip',divChild,aSummary[j].AccountGroup);
+                let tt = cec('div','tooltip',elx);
+                if(isAsset == true) {
+                    cec('span','tooltiptext',tt,aSummary[j].ToolTipAsset,'','width:260px;text-align: left;padding-left:10px;');
+                } else {
+                    cec('span','tooltiptext',tt,aSummary[j].ToolTipLiability,'','width:260px;text-align: left;padding-left:10px;');
+                }
+
+                elx = cec('span','',divChild,isAsset == true ? getDollarValue(aSummary[j].Asset) : getDollarValue(aSummary[j].Liability),'','color: rgb(119, 117, 115)');
+
             }
         }
         if(divChild) {cec('div','',div,'','','margin-bottom: 18px;');}
     }
 
-    function MenuAccountSummaryUpdate(inGroup,inA,inBal) {
+    function MenuAccountSummaryUpdate(inGroup,inA,inBal,inDesc) {
+        let ttLit = inDesc + ': \xa0\xa0\xa0' + getDollarValue(inBal,2);
+        let tta='',ttl='';
+        if(inA == true) {tta = ttLit;} else {ttl = ttLit;}
+
         for (let j = 0; j < aSummary.length; j += 1) {
             if(aSummary[j].AccountGroup == inGroup) {
-                if(inA == true) {aSummary[j].Asset += Number(inBal);} else {aSummary[j].Liability += Number(inBal);}
+                if(inA == true) {
+                    aSummary[j].Asset += Number(inBal);
+                    aSummary[j].ToolTipAsset += '\n' + ttLit;
+                    if(aSummary[j].ToolTipAsset.startsWith('\n')) {aSummary[j].ToolTipAsset = aSummary[j].ToolTipAsset.slice(1);}
+                } else {
+                    aSummary[j].Liability += Number(inBal);
+                    aSummary[j].ToolTipLiability += '\n' + ttLit;
+                    if(aSummary[j].ToolTipLiability.startsWith('\n')) {aSummary[j].ToolTipLiability=aSummary[j].ToolTipLiability.slice(1);}
+                }
                 return;
             }
         }
-        aSummary.push({"AccountGroup": inGroup, "Asset": inA == true ? Number(inBal) : 0, "Liability": inA == true ? 0 : Number(inBal) });
+        aSummary.push({"AccountGroup": inGroup, "ToolTipAsset": tta ,"ToolTipLiability":ttl,"Asset": inA == true ? Number(inBal) : 0, "Liability": inA == true ? 0 : Number(inBal) });
     }
 }
 
@@ -1526,13 +1550,15 @@ function MenuTrendsHistoryDraw() {
     const os = 'text-align:left; font-weight: 600;';
     const os2 = 'font-weight: 600;';
     const os3 = 'text-align:left; font-weight: 200; font-size: 12px;';
-    const os4 = 'margin-bottom: 10px; line-height: 10px !important; display: ' + getDisplay(getCookie('MT_div.TrendHistoryDetail',true),'');
-    const startYear = Number(getDates('n_CurYear') - 2);
-    const curYear = Number(getDates('n_CurYear'));
-    const curMonth = Number(getDates('n_CurMonth'));
+    const os4 = 'margin-bottom: 6px; line-height: 10px !important; display: ' + getDisplay(getCookie('MT_div.TrendHistoryDetail',true),'');
+    const startYear = getDates('n_CurYear') - 2;
+    const curYear = getDates('n_CurYear');
+    const curMonth = getDates('n_CurMonth');
+
     let curYears = 1,skiprow = false,inGroup = 1,useArrow = 0,c_r = 'red', c_g = 'green';
     let topDiv = document.querySelector('div.MTSideDrawerMotion');
     let T = ['Total',0,0,0,0];
+    let curSubTotal = 0;
     let div=null,div2 = null,div3=null;
 
     if(topDiv) {
@@ -1553,13 +1579,14 @@ function MenuTrendsHistoryDraw() {
         }
 
         div3 = cec('span','MTSideDrawerDetail3',div2);
-        div3 = cec('span','MTSideDrawerDetail',div2,'Average for Month');
+        div3 = cec('span','MTSideDrawerDetail',div2,'Average');
         div2 = cec('div','MTSideDrawerItem',div,'','',os2);
         div3 = cec('span','MTFlexSpacer',div2);
 
         for (let i = 0; i < 12; i++) {
             if(i > 0 && i == curMonth) {
-                MTHistoryTotals('Sub Total','height:38px;');
+                MTHistoryTotals('Sub Total','height:26px;');
+                curSubTotal = T[3];
             }
             if(sumQue[i].YR2 == sumQue[i].YR3){
                 useArrow = 2;}
@@ -1590,23 +1617,52 @@ function MenuTrendsHistoryDraw() {
             if(inGroup == 2) { MTHistoryDrawDetail(i+1,div); }
         }
         MTHistoryTotals('Total','');
+        MTHistoryTotals('Average','');
+        MTHistoryTotals('Highest','');
+        MTHistoryTotals('Lowest','');
         div = cec('div','MTSideDrawerHeader',topDiv);
         div2 = cec('div','MTPanelLink',div,'Download CSV','','padding: 0px; display:block; text-align:center;');
     }
 
     function MTHistoryTotals(inTitle,inStyle) {
+        let maxCol = 4;
+        switch (inTitle) {
+            case 'Lowest':
+                T[1]=0;T[2]=0;T[3];
+                 for (let i = 0; i < 12; i++) {
+                     if(sumQue[i].YR1 < T[1] || i == 0) T[1] = sumQue[i].YR1;
+                     if(sumQue[i].YR2 < T[2] || i == 0) T[2] = sumQue[i].YR2;
+                     if((sumQue[i].YR3 < T[3] || i == 0) && i < curMonth) T[3] = sumQue[i].YR3;
+                 }
+                maxCol = 3; break;
+            case 'Highest':
+                T[1]=0;T[2]=0;T[3];
+                 for (let i = 0; i < 12; i++) {
+                     if(sumQue[i].YR1 > T[1] || i == 0) T[1] = sumQue[i].YR1;
+                     if(sumQue[i].YR2 > T[2] || i == 0) T[2] = sumQue[i].YR2;
+                     if((sumQue[i].YR3 > T[3] || i == 0) && i < curMonth) T[3] = sumQue[i].YR3;
+                 }
+                maxCol = 3; break;
+            case 'Average':
+                T[1] = T[1] / 12;
+                T[2] = T[2] / 12;
+                T[3] = curSubTotal / curMonth;
+                maxCol = 3; break;
+        }
         const tot = T[1]+T[2]+T[3];
         if(tot != 0) { T[4] = tot / curYears; }
-        div2 = cec('div','MTSideDrawerItem',div,'','',os2);
-        div3 = cec('span','MTFlexSpacer',div2);
+
+        if(inTitle.includes('Total')) {
+            div2 = cec('div','MTSideDrawerItem',div,'','',os2);
+            div3 = cec('span','MTFlexSpacer',div2);
+        }
         div2 = cec('div','MTSideDrawerItem',div,'','',os2);
         div3 = cec('span','MTSideDrawerDetail',div2,inTitle,'',os+inStyle);
         for (let i = 1; i < 5; i++) {
             if(skiprow == false || i > 1) {
-                div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(T[i]));
-                if(i == 3) {
-                    div3 = cec('span','MTSideDrawerDetail3',div2,' ');
-                }
+                if(i > maxCol) { div3 = cec('span','MTSideDrawerDetail',div2,''); } else {
+                    div3 = cec('span','MTSideDrawerDetail',div2,getDollarValue(T[i]));}
+                if(i == 3) { div3 = cec('span','MTSideDrawerDetail3',div2,' '); }
             }
         }
     }
@@ -1661,9 +1717,7 @@ function MenuTrendsHistoryDraw() {
     }
 
     function MTHistoryFind(inDesc) {
-         for (let i = 0; i < detailQue.length; i++) {
-             if(detailQue[i].DESC == inDesc) {return(i);}
-         }
+        for (let i = 0; i < detailQue.length; i++) { if(detailQue[i].DESC == inDesc) {return(i);} }
         detailQue.push({"DESC": inDesc,"YR1": 0,"YR2": 0,"YR3": 0, "ID": ''});
         return detailQue.length-1;
     }
@@ -2245,8 +2299,10 @@ function onClickMTFlexBig() {
 
 function onClickMTFlexArrow(inP) {
 
-    let p = inP.split('/');
-    if(p) { MenuTrendsHistory(p[0],p[1]); }
+    if(inP != null) {
+        let p = inP.split('/');
+        if(p) { MenuTrendsHistory(p[0],p[1]); }
+    }
 }
 
 function onClickGridSort() {
@@ -2262,6 +2318,8 @@ function onClickGridSort() {
         MF_GridDraw(1);
     }
 }
+
+
 // Monarch Money needed
 function isDarkMode() {
     const cssObj = window.getComputedStyle(document.querySelector('[class*=Page__Root]'), null);
