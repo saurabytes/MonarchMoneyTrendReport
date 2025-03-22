@@ -7,9 +7,9 @@ Email any issues directly:  robert @ paresi.net
 
 • NEW: Added "Lowest", "Highest" and "Average" to Trends Monthly History side panel
 
-• NEW: Added Tooltip to > on Flexgrid to see/choose easier.
+• NEW: Added Tooltip to > on Trends & Accounts reports.
 
-• NEW: Added Tooltip on Accounts Assets & Liabilities to show breakdown.
+• NEW: Added Tooltip on Accounts / Assets & Liabilities to show account breakdown.
 
 **Version 3.00:** 
 
